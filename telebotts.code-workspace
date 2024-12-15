@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"typescript.preferences.importModuleSpecifier": "relative",
+		"typescript.preferences.importModuleSpecifierEnding": "js",
+		"javascript.preferences.importModuleSpecifier": "relative",
+		"javascript.preferences.importModuleSpecifierEnding": "js"
+	}
+}
