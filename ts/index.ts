@@ -2,6 +2,9 @@ import { CHAIN } from "./core/actions.js";
 import { on, procedure } from "./core/chain.js";
 import { init, Bot, procedureListener } from "./core/index.js";
 import "dotenv/config.js";
+import { buttonCallback, createButtons } from "./custom/hooks.js";
+import { LocalState } from "./core/state.js";
+import TelegramBot from "node-telegram-bot-api";
 
 init(process.env.TOKEN as string, {
   polling: {
@@ -156,3 +159,44 @@ on("message", inp => inp.text === "short word") // respond to message
   .send(async state => {
     return "Your word was " + (await state.call(forWord)).text; // injection
   });
+
+const buttons = createButtons([
+  [
+    ["B1", 1],
+    ["B2", 2],
+    ["B3", 3]
+  ],
+  [
+    ["B4", 4],
+    ["B5", 5],
+    ["B6", 6]
+  ],
+]);
+
+const buttons2 = createButtons([
+  [
+    ["C1", 1],
+    ["C2", 2],
+  ]
+]);
+
+on("message", inp => inp.text === "keys")
+  .send("Choose a number!", buttons.get)
+  .func(async (state) => {
+    if(!state.data) state.data = {};
+    state.data.MESSAGE_ID = (state.lastMessageSent as TelegramBot.Message).message_id;
+  });
+
+on("message", inp => inp.text === "k2")
+  .send("Choose a number! (page 2)", buttons2.get);
+
+on("callback_query", buttonCallback(data => true, buttons))
+  .func(async state => {
+    try {
+      await Bot.deleteMessage(state.core.chatId, state.data.MESSAGE_ID);
+    } catch {}
+  })
+  .send("got it!");
+
+on("callback_query", buttonCallback(data => true, buttons2))
+  .send("got it 2!");

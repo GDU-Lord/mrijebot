@@ -28,12 +28,17 @@ export class UserState<dataType = any> {
     UserState.list[this.core.userId] = this;
   }
 
+  getLocalState(chatId: TelegramBot.ChatId, threadId: number) {
+    return this.localStates[chatId + ":" + threadId];
+  }
+
 }
 
 export class LocalState<dataType = any, userDataType = any> {
 
   core: {
     chatId: TelegramBot.ChatId;
+    threadId: number;
     userId: userId;
     userState: UserState<userDataType>;
     inputs: {
@@ -90,15 +95,16 @@ export class LocalState<dataType = any, userDataType = any> {
 
   declare data: dataType;
   declare lastInput: inputType;
+  declare lastMessageSent: TelegramBot.Message
 
-  constructor(chatId: TelegramBot.ChatId, userId: userId) {
+  constructor(chatId: TelegramBot.ChatId, threadId: number, userId: userId) {
     this.core = {
       userState: UserState.list[userId],
       inputs: {},
       procedures: {},
-      chatId, userId
+      chatId, userId, threadId
     };
-    this.core.userState.localStates[this.core.chatId] = this;
+    this.core.userState.localStates[this.core.chatId + ":" + this.core.threadId] = this;
   }
 
 }

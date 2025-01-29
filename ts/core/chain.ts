@@ -1,12 +1,13 @@
 import TelegramBot, { Message, CallbackQuery } from "node-telegram-bot-api";
 import { On, OnBot, Procedure } from "./on.js";
-import { Action, CHAIN, Check, CheckNest, Func, FuncCase, Send, SendCase, UserInput, UserInputCase } from "./actions.js";
+import { Action, CHAIN, Check, CheckNest, Func, FuncCase, optionsGenerator, Send, SendCase, UserInput, UserInputCase } from "./actions.js";
 import { LocalState } from "./state.js";
 import getId from "./id.js";
+import { availableEventTypes, availableInputTypes } from "../custom/listeners.js";
 
 
-type send = <localData = any, userData = any>(text: string | ((state: LocalState<localData, userData>) => Promise<string>), options?: TelegramBot.SendMessageOptions) => on;
-type sendCase = <localData = any, userData = any, caseType = any>(match: caseType, text: string | ((state: LocalState<localData, userData>) => Promise<string>), options?: TelegramBot.SendMessageOptions) => onCheck;
+type send = <localData = any, userData = any>(text: string | ((state: LocalState<localData, userData>) => Promise<string>), options?: TelegramBot.SendMessageOptions | optionsGenerator) => on;
+type sendCase = <localData = any, userData = any, caseType = any>(match: caseType, text: string | ((state: LocalState<localData, userData>) => Promise<string>), options?: TelegramBot.SendMessageOptions | optionsGenerator) => onCheck;
 type func = <localData = any, userData = any>(callback: (state: LocalState<localData, userData>) => Promise<CHAIN | void>) => on;
 type funcCase = <localData = any, userData = any, caseType = any>(match: caseType, callback: (state: LocalState<localData, userData>) => Promise<CHAIN | void>) => onCheck;
 type check = <localData = any, userData = any, resType = any>(callback: (state: LocalState<localData, userData>) => Promise<resType>) => onCheck;
@@ -37,7 +38,7 @@ export interface onCheck {
 }
 
 type last = on | onCheck;
-export type inputType = Message | CallbackQuery;
+export type inputType = availableInputTypes;
 
 class Binder<Type extends (On | Action<any>), lastType extends last> {
   constructor(
@@ -76,7 +77,7 @@ export const funcCase: funcCase = function<localData = any, userData = any, t = 
   return this.last;
 }
 
-export const sendCase: sendCase = function<localData = any, userData = any, t = any> (this: Binder<Check, onCheck>, match: t, text: string | ((state: LocalState<localData, userData>) => Promise<string>), options = {}) {
+export const sendCase: sendCase = function<localData = any, userData = any, t = any> (this: Binder<Check, onCheck>, match: t, text: string | ((state: LocalState<localData, userData>) => Promise<string>), options: TelegramBot.SendMessageOptions | optionsGenerator = {}) {
   new SendCase(this.chain, match, text, options);
   return this.last;
 }
@@ -109,12 +110,14 @@ export const func: func = function<localData = any, userData = any>(this: Binder
   return this.last;
 }
 
-export const send: send = function<localData = any, userData = any> (this: Binder<On, on>, text: string | ((state: LocalState<localData, userData>) => Promise<string>), options = {}) {
+export const send: send = function<localData = any, userData = any> (this: Binder<On, on>, text: string | ((state: LocalState<localData, userData>) => Promise<string>), options: TelegramBot.SendMessageOptions | optionsGenerator = {}) {
   this.chain.actions.push(new Send<localData, userData>(text, options, this.chain));
   return this.last;
 }
 
-export function on<Input extends inputType = Message>(type: keyof TelegramBot.TelegramEvents, filter: (inp: Input) => boolean): on {
+export function on<Input extends inputType = Message>(type: "message", filter: (inp: Input) => boolean): on;
+export function on<Input extends inputType = CallbackQuery>(type: "callback_query", filter: (inp: Input) => boolean): on;
+export function on<Input extends inputType>(type: availableEventTypes, filter: (inp: Input) => boolean): on {
   const chain = new OnBot(type, filter);
   const last: any = {};
   const binder = new Binder<On, on>(chain, last);
