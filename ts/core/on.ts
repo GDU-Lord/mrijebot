@@ -1,7 +1,7 @@
 import TelegramBot from "node-telegram-bot-api";
 import { Action, CHAIN, UserInput } from "./actions.js";
 import { inputType } from "./chain.js";
-import { Bot, procedureListener } from "./index.js";
+import { Bot, initPromise, procedureListener } from "./index.js";
 import { LocalState, UserState } from "./state.js";
 import getId from "./id.js";
 import { availableEventTypes, getState } from "../custom/listeners.js";
@@ -19,9 +19,13 @@ export class OnBot extends On {
     public filter: (...args: any) => boolean
   ) {
     super(filter);
-    Bot.addListener(type, async (inp: inputType) => {
-      if(!filter(inp)) return;
-      const [userState, localState] = getState(type, inp);
+    this.init();
+  }
+  async init() {
+    await initPromise;
+    Bot.addListener(this.type, async (inp: inputType) => {
+      if(!this.filter(inp)) return;
+      const [userState, localState] = getState(this.type, inp);
       if(localState != null) localState.lastInput = inp;
       for(const action of this.actions) {
         const res = await action.callback(action.parent, localState!);
@@ -38,11 +42,15 @@ export class Procedure extends On {
     public filter: (text: string) => boolean
   ) {
     super(filter);
-    procedureListener.add(name, filter, async (text: string, state: LocalState, index?: number) => {
+    this.init();
+  }
+  async init() {
+    await initPromise;
+    procedureListener.add(this.name, this.filter, async (text: string, state: LocalState, index?: number) => {
       return new Promise<any>(async resolve => {
-        if(!(name in state.core.procedures))
-          state.core.procedures[name] = [];
-        state.core.procedures[name][index ?? state.core.procedures[name].length] = {
+        if(!(this.name in state.core.procedures))
+          state.core.procedures[this.name] = [];
+        state.core.procedures[this.name][index ?? state.core.procedures[this.name].length] = {
           resolve,
           cache: {
             index: index ?? null
