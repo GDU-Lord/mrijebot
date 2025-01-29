@@ -4,6 +4,7 @@ import { inputType } from "./chain.js";
 import { Bot, procedureListener } from "./index.js";
 import { LocalState, UserState } from "./state.js";
 import getId from "./id.js";
+import { availableEventTypes, getState } from "../custom/listeners.js";
 
 export class On {
   actions: Action<On | UserInput>[] = [];
@@ -14,28 +15,14 @@ export class On {
 
 export class OnBot extends On {
   constructor(
-    public type: keyof TelegramBot.TelegramEvents,
+    public type: availableEventTypes,
     public filter: (...args: any) => boolean
   ) {
     super(filter);
     Bot.addListener(type, async (inp: inputType) => {
       if(!filter(inp)) return;
-      if(inp.from == null) return;
-      let userState = UserState.list[inp.from.id];
-      let localState: LocalState | null = null;
-      let chatId: TelegramBot.ChatId;
-      let threadId: number | undefined;
-      if(userState == null)
-        userState = new UserState(inp.from.id);
-      if(type === "message") {
-        chatId = (inp as TelegramBot.Message).chat.id;
-        threadId = (inp as TelegramBot.Message).message_thread_id;
-        localState = userState.localStates[chatId];
-        if(localState == null)
-          localState = new LocalState(chatId, inp.from.id);
-        localState.lastInput = inp;
-      }
-      // add additional data to queries (for chat id and thread)
+      const [userState, localState] = getState(type, inp);
+      if(localState != null) localState.lastInput = inp;
       for(const action of this.actions) {
         const res = await action.callback(action.parent, localState!);
         if(res !== CHAIN.NEXT_ACTION) break;

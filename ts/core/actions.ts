@@ -1,8 +1,9 @@
 import { SendMessageOptions, User } from "node-telegram-bot-api";
 import { On } from "./on.js";
-import { LocalState } from "./state.js";
+import { LocalState, UserState } from "./state.js";
 import { Bot, inputListener } from "./index.js";
 import { insertText } from "./insert.js";
+import { inputType } from "./chain.js";
 
 export enum CHAIN {
   NEXT_ACTION = 0,
@@ -20,7 +21,7 @@ export class Action<Parent extends On | Check | CheckNest | UserInput | UserInpu
 }
 
 export class Send<LocalData = any, UserData = any> extends Action<On | UserInput> {
-  constructor(text: string | ((state: LocalState<LocalData, UserData>) => Promise<string>), options: SendMessageOptions, parent: On | UserInput) {
+  constructor(text: string | ((state: LocalState<LocalData, UserData>) => Promise<string>), options: SendMessageOptions | optionsGenerator, parent: On | UserInput) {
     super(parent, async (p, state) => {
       let rawText: string;
       if(typeof text === "function")
@@ -28,7 +29,11 @@ export class Send<LocalData = any, UserData = any> extends Action<On | UserInput
       else
         rawText = text;
       const stateText = insertText(state, rawText);
-      await Bot.sendMessage(state.core.chatId, stateText, options);
+      let _options = typeof options === "function" ? await options(state) : options;
+      state.lastMessageSent = await Bot.sendMessage(state.core.chatId, stateText, {
+        message_thread_id: state.core.threadId,
+        ..._options
+      });
       return CHAIN.NEXT_ACTION;
     });
   }
@@ -80,7 +85,7 @@ export class Check<resType= any, LocalData = any, UserData = any> extends Action
 }
 
 export class SendCase<LocalData = any, UserData = any> extends ActionCase {
-  constructor(parent: Check, match: (typeof parent)['cases'][0][0], text: string | ((state: LocalState<LocalData, UserData>) => Promise<string>), options: SendMessageOptions) {
+  constructor(parent: Check, match: (typeof parent)['cases'][0][0], text: string | ((state: LocalState<LocalData, UserData>) => Promise<string>), options: SendMessageOptions | optionsGenerator) {
     super(parent, async (p, state) => {
       let rawText: string;
       if(typeof text === "function")
@@ -88,7 +93,11 @@ export class SendCase<LocalData = any, UserData = any> extends ActionCase {
       else
         rawText = text;
       const stateText = insertText(state, rawText);
-      await Bot.sendMessage(state.core.chatId, stateText, options);
+      let _options = typeof options === "function" ? await options(state) : options;
+      state.lastMessageSent = await Bot.sendMessage(state.core.chatId, stateText, {
+        message_thread_id: state.core.threadId,
+        ..._options
+      });
       return CHAIN.NEXT_ACTION;
     });
     parent.cases.push([match, this]);
@@ -139,3 +148,5 @@ export class UserInputCase extends ActionCase {
       parent.cases.push([match, this]);
   }
 }
+
+export type optionsGenerator = (localState: LocalState | null) => Promise<SendMessageOptions>;
