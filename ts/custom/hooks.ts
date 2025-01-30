@@ -15,12 +15,12 @@ export interface buttonsGenerator {
   tag: string;
 };
 
-export function createButtons(keys: keyboard): buttonsGenerator {
+export function createButtons(keys: keyboard | ((state: LocalState) => Promise<keyboard>)): buttonsGenerator {
   const tagId = getId();
   return {
     get: async function (state) {
       if(state == null) return {};
-      const keyboard = keys.map(row => row.map(key => {
+      const keyboard = (typeof keys === "function" ? await keys(state) : keys).map(row => row.map(key => {
         const cache = new InputInfoCache(state, key[1]);
         const text = key[0];
         return {
@@ -31,7 +31,8 @@ export function createButtons(keys: keyboard): buttonsGenerator {
       return {
         reply_markup: {
           inline_keyboard: keyboard
-        }
+        },
+        parse_mode: "HTML"
       };
     }, 
     tag: tagId
@@ -74,11 +75,13 @@ export function getLastData(state: LocalState) {
   return InputInfoCache.get(inp.data);
 }
 
-export function initState() {
+export function initState(force: boolean = false) {
   return async (state: LocalState) => {
-    if(typeof state.data !== "object") state.data = {
+    if(typeof state.data !== "object" || force) state.data = {
       crums: [],
-      land: "none"
+      land: "none",
+      user: null,
+      userIndex: null,
     };
   };
 }

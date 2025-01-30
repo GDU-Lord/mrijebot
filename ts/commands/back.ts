@@ -2,7 +2,7 @@ import { procedure } from "../core/chain.js";
 import { buttonsGenerator, createButtons, initState, routeCallback } from "../custom/hooks.js";
 
 export const backButtons = createButtons([
-  [["Назад", 1]]
+  [["⬅️Назад", 1]]
 ]);
 
 export const $back = procedure();
