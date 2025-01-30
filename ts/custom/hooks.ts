@@ -119,8 +119,15 @@ export function menuProcedure(procedure: procedure) {
     .func(initState())
     .func(addCrum(procedure))
     .func(async state => {
-      try {
-        Bot.deleteMessage(state.core.chatId, state.lastMessageSent.message_id);
-      } catch {}
+      // try {
+      //   Bot.deleteMessage(state.core.chatId, state.lastMessageSent.message_id);
+      // } catch {}
     });
+}
+
+export function editLast() {
+  return async (state: LocalState) => {
+    console.log(state.lastMessageSent?.message_id, state.lastMessageSent);
+    return state.lastMessageSent?.message_id;
+  };
 }

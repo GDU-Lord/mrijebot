@@ -1,7 +1,7 @@
 import TelegramBot from "node-telegram-bot-api";
 import { on, procedure } from "../core/chain.js";
 import { CHAIN } from "../core/actions.js";
-import { addCrum, buttonCallbackValue, call, createButtons, initState, routeCallback } from "../custom/hooks.js";
+import { addCrum, buttonCallbackValue, call, createButtons, editLast, initState, routeCallback } from "../custom/hooks.js";
 import { backOption } from "./back.js";
 import { $info } from "./info.js";
 import { $register } from "./register.js";
@@ -41,9 +41,9 @@ $start.make()
     }
   })
   .func(async state => {
-    try {
-      Bot.deleteMessage(state.core.chatId, state.lastMessageSent.message_id);
-    } catch {}
+    // try {
+    //   Bot.deleteMessage(state.core.chatId, state.lastMessageSent.message_id);
+    // } catch {}
   })
   .send(async state => {
     let mention = "Тебе";
@@ -51,6 +51,6 @@ $start.make()
       mention = "{data.user.2}, тебе";
     }
     return `<b><u>Головне меню</u></b>\n\n${mention} вітає українська ініціатива настільних рольових ігор у Німеччині "Мрієтворці | The DreamForgers"!\n\n<b>Через нашого телеграм бота ти можеш:</b>\n\n⭐️Подати заявку на вступ\n⭐️Отримати корисну інформацію\n⭐️Зв'язатися з організаторами`;
-  }, startButtons.get);
+  }, startButtons.get, editLast());
 
 afterStartInit();

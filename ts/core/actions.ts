@@ -1,4 +1,4 @@
-import { SendMessageOptions, User } from "node-telegram-bot-api";
+import TelegramBot, { EditMessageTextOptions, SendMessageOptions, User } from "node-telegram-bot-api";
 import { On } from "./on.js";
 import { LocalState, UserState } from "./state.js";
 import { Bot, inputListener } from "./index.js";
@@ -21,7 +21,7 @@ export class Action<Parent extends On | Check | CheckNest | UserInput | UserInpu
 }
 
 export class Send<LocalData = any, UserData = any> extends Action<On | UserInput> {
-  constructor(text: string | ((state: LocalState<LocalData, UserData>) => Promise<string>), options: SendMessageOptions | optionsGenerator, parent: On | UserInput) {
+  constructor(text: string | ((state: LocalState<LocalData, UserData>) => Promise<string>), options: SendMessageOptions | EditMessageTextOptions | optionsGenerator, parent: On | UserInput, message_id: ((state: LocalState<LocalData, UserData>) => Promise<number>) | number | null = null) {
     super(parent, async (p, state) => {
       let rawText: string;
       if(typeof text === "function")
@@ -30,6 +30,17 @@ export class Send<LocalData = any, UserData = any> extends Action<On | UserInput
         rawText = text;
       const stateText = insertText(state, rawText);
       let _options = typeof options === "function" ? await options(state) : options;
+      if(message_id) {
+        try {
+          await Bot.editMessageText(stateText, {
+            message_id: +(typeof message_id === "function" ? await message_id(state) : message_id),
+            ...(_options as EditMessageTextOptions)
+          });
+          return CHAIN.NEXT_ACTION;
+        } catch (err) {
+          console.log("ERROR", err);
+        }
+      }
       state.lastMessageSent = await Bot.sendMessage(state.core.chatId, stateText, {
         message_thread_id: state.core.threadId,
         ..._options
