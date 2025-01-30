@@ -6,8 +6,8 @@ import { $land } from "./land.js";
 
 export const registerButtons = createButtons(
   [
-    [["Зареєструватися", 1]],
-    [["Назад", 2]],
+    [["✅Подати заявку!", 1]],
+    [["⬅️Назад", 2]],
   ]
 );
 
@@ -16,4 +16,9 @@ routeCallback(registerButtons, 1, $land);
 
 export const $register = procedure();
 menuProcedure($register)
-  .send(`Твій акаунт ще не зареєстровано! Чи хотів би ти заповнити реєстраційну форму?`, registerButtons.get);
+  .send(async state => {
+    if(state.data.user) {
+      return `<b><u>Заявка</u></b>\n\nТи вже є у нашій системі! Якщо ти хочеш оновити свої дані або приєднатися до іншого осередку як гість, подавай заявку у зручному електронном форматі!`;
+    }
+    return `<b><u>Заявка</u></b>\n\nТвій акаунт ще не зареєстровано! Подавай заявку у зручному електронному форматі, щоб приєднатися до одного з наших осередків!`;
+  }, registerButtons.get);
