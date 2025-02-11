@@ -1,4 +1,6 @@
 import { procedure } from "../core/chain.js";
+import { inputListener } from "../core/index.js";
+import { InputListener } from "../core/input.js";
 import { buttonsGenerator, createButtons, initState, routeCallback } from "../custom/hooks.js";
 
 export const backButtons = createButtons([

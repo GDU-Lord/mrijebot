@@ -33,13 +33,12 @@ export class Send<LocalData = any, UserData = any> extends Action<On | UserInput
       if(message_id) {
         try {
           await Bot.editMessageText(stateText, {
+            chat_id: state.core.chatId,
             message_id: +(typeof message_id === "function" ? await message_id(state) : message_id),
             ...(_options as EditMessageTextOptions)
           });
           return CHAIN.NEXT_ACTION;
-        } catch (err) {
-          console.log("ERROR", err);
-        }
+        } catch {}
       }
       state.lastMessageSent = await Bot.sendMessage(state.core.chatId, stateText, {
         message_thread_id: state.core.threadId,
@@ -63,7 +62,11 @@ export class UserInput extends Action<On | UserInput> {
   actions: Action<On | UserInput>[] = [];
   constructor(key: string, parent: On | UserInput) {
     super(parent, async (p, state) => {
-      state.core.inputs[key] = await inputListener.getInput(state);
+      const res = await inputListener.getInput(state);
+      if(res == null) {
+        return CHAIN.NEXT_LISTENER;
+      }
+      state.core.inputs[key] = res;
       for(const action of this.actions) {
         const actionRes = await action.callback(this, state);
         if(actionRes !== CHAIN.NEXT_ACTION) break;
@@ -146,7 +149,11 @@ export class UserInputCase extends ActionCase {
   actions: ActionCase[] = [];
   constructor(parent: Check | CheckNest, key: string, match?: (typeof parent)['cases'][0][0]) {
     super(parent, async (p, state) => {
-      state.core.inputs[key] = await inputListener.getInput(state);
+      const res = await inputListener.getInput(state);
+      if(res == null) {
+        return CHAIN.NEXT_LISTENER;
+      }
+      state.core.inputs[key] = res;
       for(const action of this.actions) {
         const actionRes = await action.callback(this, state);
         if(actionRes !== CHAIN.NEXT_ACTION) break;
