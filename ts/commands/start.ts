@@ -1,13 +1,9 @@
 import TelegramBot from "node-telegram-bot-api";
-import { on, procedure } from "../core/chain.js";
+import { procedure } from "../core/chain.js";
 import { CHAIN } from "../core/actions.js";
-import { addCrum, buttonCallbackValue, call, createButtons, initState, routeCallback } from "../custom/hooks.js";
-import { backOption } from "./back.js";
+import { addCrum, createButtons, editLast, initState, routeCallback } from "../custom/hooks.js";
 import { $info } from "./info.js";
-import { $register } from "./register.js";
-import { Bot, initPromise } from "../core/index.js";
-import { getUserData, setUserData } from "../api/api.js";
-import { afterStartInit } from "./form.js";
+import { $email } from "./form/register/index.js";
 
 export const startButtons = createButtons([
   [["ℹ️ Інформація", 1]],
@@ -15,7 +11,7 @@ export const startButtons = createButtons([
 ]);
 
 routeCallback(startButtons, 1, $info);
-routeCallback(startButtons, 2, $register);
+routeCallback(startButtons, 2, $email);
 
 export const $start = procedure();
 $start.make()
@@ -27,23 +23,18 @@ $start.make()
   .func(initState(true))
   .func(addCrum($start))
   .func(async state => {
-    const username = state.lastInput.from?.username;
-    const userId = state.core.userId;
-    // get user data from the table
-    const [data, index] = getUserData(String(userId), username ?? "");
-    if(index > -1) {
-      if(data[3] !== String(userId)) {
-        data[3] = String(userId); // replace username with userId
-        await setUserData(data, index);
-      }
-      state.data.user = data;
-      state.data.userIndex = index;
-    }
-  })
-  .func(async state => {
-    try {
-      Bot.deleteMessage(state.core.chatId, state.lastMessageSent.message_id);
-    } catch {}
+    // const username = state.lastInput.from?.username;
+    // const userId = state.core.userId;
+    // // get user data from the table
+    // const [data, index] = getUserData(String(userId), username ?? "");
+    // if(index > -1) {
+    //   if(data[3] !== String(userId)) {
+    //     data[3] = String(userId); // replace username with userId
+    //     await setUserData(data, index);
+    //   }
+    //   state.data.user = data;
+    //   state.data.userIndex = index;
+    // }
   })
   .send(async state => {
     let mention = "Тебе";
@@ -51,6 +42,4 @@ $start.make()
       mention = "{data.user.2}, тебе";
     }
     return `<b><u>Головне меню</u></b>\n\n${mention} вітає українська ініціатива настільних рольових ігор у Німеччині "Мрієтворці | The DreamForgers"!\n\n<b>Через нашого телеграм бота ти можеш:</b>\n\n⭐️Подати заявку на вступ\n⭐️Отримати корисну інформацію\n⭐️Зв'язатися з організаторами`;
-  }, startButtons.get);
-
-afterStartInit();
+  }, startButtons.get, editLast());

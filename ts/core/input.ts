@@ -4,7 +4,7 @@ import { LocalState } from "./state.js";
 
 export class InputListener {
 
-  promises: [LocalState<any, any>, (msg: TelegramBot.Message) => void][] = [];
+  promises: [LocalState<any, any>, (msg: TelegramBot.Message | null) => void][] = [];
 
   constructor() {
     Bot.addListener('message', (msg) => {
@@ -18,8 +18,9 @@ export class InputListener {
   }
 
   getInput(state: LocalState<any, any>) {
-    return new Promise<TelegramBot.Message>((resolve) => {
+    return new Promise<TelegramBot.Message | null>((resolve) => {
       this.promises.push([state, resolve]);
+      console.log("create inputs", this.promises);
     });
   }
 

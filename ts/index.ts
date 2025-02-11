@@ -1,6 +1,7 @@
 import { init } from "./core/index.js";
 import "dotenv/config.js";
 import { initCommands } from "./commands/index.js";
+import { afterInit } from "./afterInit.js";
 
 init(process.env.TOKEN as string, {
   polling: {
@@ -14,3 +15,5 @@ init(process.env.TOKEN as string, {
 console.log("connected");
 
 initCommands();
+
+afterInit.forEach(func => func());

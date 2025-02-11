@@ -137,3 +137,4 @@ plan.txt
 example.index.ts
 key.json
 .env
+*.zip

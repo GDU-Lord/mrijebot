@@ -6,7 +6,7 @@ import getId from "./id.js";
 import { availableEventTypes, availableInputTypes } from "../custom/listeners.js";
 
 
-type send = <localData = any, userData = any>(text: string | ((state: LocalState<localData, userData>) => Promise<string>), options?: TelegramBot.SendMessageOptions | optionsGenerator) => on;
+type send = <localData = any, userData = any>(text: string | ((state: LocalState<localData, userData>) => Promise<string>), options?: TelegramBot.SendMessageOptions | optionsGenerator, message_id?: number | ((state: LocalState<localData, userData>) => Promise<number>) | null) => on;
 type sendCase = <localData = any, userData = any, caseType = any>(match: caseType, text: string | ((state: LocalState<localData, userData>) => Promise<string>), options?: TelegramBot.SendMessageOptions | optionsGenerator) => onCheck;
 type func = <localData = any, userData = any>(callback: (state: LocalState<localData, userData>) => Promise<CHAIN | void>) => on;
 type funcCase = <localData = any, userData = any, caseType = any>(match: caseType, callback: (state: LocalState<localData, userData>) => Promise<CHAIN | void>) => onCheck;
@@ -110,8 +110,8 @@ export const func: func = function<localData = any, userData = any>(this: Binder
   return this.last;
 }
 
-export const send: send = function<localData = any, userData = any> (this: Binder<On, on>, text: string | ((state: LocalState<localData, userData>) => Promise<string>), options: TelegramBot.SendMessageOptions | optionsGenerator = {}) {
-  this.chain.actions.push(new Send<localData, userData>(text, options, this.chain));
+export const send: send = function<localData = any, userData = any> (this: Binder<On, on>, text: string | ((state: LocalState<localData, userData>) => Promise<string>), options: TelegramBot.SendMessageOptions | optionsGenerator = {}, message_id: number | ((state: LocalState<localData, userData>) => Promise<number>) | null = null) {
+  this.chain.actions.push(new Send<localData, userData>(text, options, this.chain, message_id));
   return this.last;
 }
 

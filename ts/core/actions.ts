@@ -1,4 +1,4 @@
-import { SendMessageOptions, User } from "node-telegram-bot-api";
+import TelegramBot, { EditMessageTextOptions, SendMessageOptions, User } from "node-telegram-bot-api";
 import { On } from "./on.js";
 import { LocalState, UserState } from "./state.js";
 import { Bot, inputListener } from "./index.js";
@@ -21,7 +21,7 @@ export class Action<Parent extends On | Check | CheckNest | UserInput | UserInpu
 }
 
 export class Send<LocalData = any, UserData = any> extends Action<On | UserInput> {
-  constructor(text: string | ((state: LocalState<LocalData, UserData>) => Promise<string>), options: SendMessageOptions | optionsGenerator, parent: On | UserInput) {
+  constructor(text: string | ((state: LocalState<LocalData, UserData>) => Promise<string>), options: SendMessageOptions | EditMessageTextOptions | optionsGenerator, parent: On | UserInput, message_id: ((state: LocalState<LocalData, UserData>) => Promise<number>) | number | null = null) {
     super(parent, async (p, state) => {
       let rawText: string;
       if(typeof text === "function")
@@ -30,6 +30,16 @@ export class Send<LocalData = any, UserData = any> extends Action<On | UserInput
         rawText = text;
       const stateText = insertText(state, rawText);
       let _options = typeof options === "function" ? await options(state) : options;
+      if(message_id) {
+        try {
+          await Bot.editMessageText(stateText, {
+            chat_id: state.core.chatId,
+            message_id: +(typeof message_id === "function" ? await message_id(state) : message_id),
+            ...(_options as EditMessageTextOptions)
+          });
+          return CHAIN.NEXT_ACTION;
+        } catch {}
+      }
       state.lastMessageSent = await Bot.sendMessage(state.core.chatId, stateText, {
         message_thread_id: state.core.threadId,
         ..._options
@@ -52,7 +62,11 @@ export class UserInput extends Action<On | UserInput> {
   actions: Action<On | UserInput>[] = [];
   constructor(key: string, parent: On | UserInput) {
     super(parent, async (p, state) => {
-      state.core.inputs[key] = await inputListener.getInput(state);
+      const res = await inputListener.getInput(state);
+      if(res == null) {
+        return CHAIN.NEXT_LISTENER;
+      }
+      state.core.inputs[key] = res;
       for(const action of this.actions) {
         const actionRes = await action.callback(this, state);
         if(actionRes !== CHAIN.NEXT_ACTION) break;
@@ -135,7 +149,11 @@ export class UserInputCase extends ActionCase {
   actions: ActionCase[] = [];
   constructor(parent: Check | CheckNest, key: string, match?: (typeof parent)['cases'][0][0]) {
     super(parent, async (p, state) => {
-      state.core.inputs[key] = await inputListener.getInput(state);
+      const res = await inputListener.getInput(state);
+      if(res == null) {
+        return CHAIN.NEXT_LISTENER;
+      }
+      state.core.inputs[key] = res;
       for(const action of this.actions) {
         const actionRes = await action.callback(this, state);
         if(actionRes !== CHAIN.NEXT_ACTION) break;
