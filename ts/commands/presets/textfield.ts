@@ -1,9 +1,9 @@
-import TelegramBot from "node-telegram-bot-api";
 import { CHAIN } from "../../core/actions.js";
 import { on, procedure } from "../../core/chain.js";
-import { Bot } from "../../core/index.js";
 import { LocalState } from "../../core/state.js";
-import { addCrum, deleteLastInput, editLast, noRepeatCrum } from "../../custom/hooks.js";
+import { deleteLastInput } from "../../custom/hooks/inputs.js";
+import { noRepeatCrum, addCrum } from "../../custom/hooks/menu.js";
+import { editLast } from "../../custom/hooks/messageOptions.js";
 import { backButtons } from "../back.js";
 
 export function textField(key: string, text: (state: LocalState) => Promise<string>, validate: (value: string) => Promise<boolean> | boolean = () => true): [procedure, on] {

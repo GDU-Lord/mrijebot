@@ -1,5 +1,6 @@
 import { afterInit } from "../../../afterInit.js";
-import { getLastCallback, saveValue, toggleButtons, toggleValue, toggleValueInput } from "../../../custom/hooks.js";
+import { getLastCallback } from "../../../custom/hooks/buttons.js";
+import { saveValue, toggleButtons, toggleValue, toggleValueInput } from "../../../custom/hooks/options.js";
 import { optionsField } from "../../presets/options.js";
 import { optionsOtherField } from "../../presets/optionsOther.js";
 import { textField } from "../../presets/textfield.js";

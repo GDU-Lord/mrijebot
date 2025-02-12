@@ -1,6 +1,6 @@
 import { procedure } from "../core/chain.js";
-import { initPromise } from "../core/index.js";
-import { addCrum, editLast, initState, menuProcedure } from "../custom/hooks.js";
+import { menuProcedure } from "../custom/hooks/menu.js";
+import { editLast } from "../custom/hooks/messageOptions.js";
 import { backButtons } from "./back.js";
 
 export const $info = procedure();

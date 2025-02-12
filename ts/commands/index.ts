@@ -1,10 +1,10 @@
 import TelegramBot from "node-telegram-bot-api";
 import { on } from "../core/chain.js";
 import { Bot, initPromise } from "../core/index.js";
-import { buttonCallbackValue, call, command } from "../custom/hooks.js";
-import { $info } from "./info.js";
 import { ping } from "./ping.js";
-import { $start, startButtons } from "./start.js";
+import { $start } from "./start.js";
+import { command } from "../custom/hooks/filters.js";
+import { call } from "../custom/hooks/menu.js";
 
 export async function initCommands() {
 

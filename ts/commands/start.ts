@@ -1,9 +1,13 @@
 import TelegramBot from "node-telegram-bot-api";
 import { procedure } from "../core/chain.js";
 import { CHAIN } from "../core/actions.js";
-import { addCrum, createButtons, editLast, initState, routeCallback } from "../custom/hooks.js";
 import { $info } from "./info.js";
 import { $email } from "./form/register/index.js";
+import { createButtons } from "../custom/hooks/buttons.js";
+import { addCrum } from "../custom/hooks/menu.js";
+import { editLast } from "../custom/hooks/messageOptions.js";
+import { routeCallback } from "../custom/hooks/routes.js";
+import { initState } from "../custom/hooks/state.js";
 
 export const startButtons = createButtons([
   [["ℹ️ Інформація", 1]],

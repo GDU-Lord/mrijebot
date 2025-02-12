@@ -1,5 +1,5 @@
-import { afterInit } from "../../../afterInit.js";
-import { routeCallbackExcept, routeCallback, routeCallbackExceptArray, call } from "../../../custom/hooks.js";
+import { call } from "../../../custom/hooks/menu.js";
+import { routeCallbackExcept, routeCallback, routeCallbackExceptArray } from "../../../custom/hooks/routes.js";
 import { backOption } from "../../back.js";
 import { $start } from "../../start.js";
 import { email$, $land, landButtons, $city, city$, $source, sourceButtons, $played, playedButtons, $gamesPlayed, $formDone, gamesPlayedButtons, $systemsPlayed, systemsPlayedButtons, $playGameTypes, playGameTypes, $mastered, masteredButtons, $gamesMastered, $masterGameTypes, gamesMasteredButtons, $systemsMastered, systemsMasteredButtons, masterGameTypesButtons, formDoneButtons, $formSent, formSentButtons } from "./index.js";

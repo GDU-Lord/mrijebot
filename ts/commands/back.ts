@@ -1,7 +1,7 @@
 import { procedure } from "../core/chain.js";
-import { inputListener } from "../core/index.js";
-import { InputListener } from "../core/input.js";
-import { buttonsGenerator, createButtons, initState, routeCallback } from "../custom/hooks.js";
+import { createButtons, buttonsGenerator } from "../custom/hooks/buttons.js";
+import { routeCallback } from "../custom/hooks/routes.js";
+import { initState } from "../custom/hooks/state.js";
 
 export const backButtons = createButtons([
   [["⬅️Назад", 1]]
