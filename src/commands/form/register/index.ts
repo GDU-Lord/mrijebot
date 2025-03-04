@@ -221,7 +221,7 @@ export const [$formDone, formDone$, formDoneButtons] = optionsField(
 
 export const [$formSent, formSent$, formSentButtons] = optionsField(
   async state => {
-    return "<b><u>✅ Реєстрацію завершено</u></b>\n\nТут всі посилання:..."
+    return "<b><u>✅ Реєстрацію завершено</u></b>\n\nПриєднуйся до чатів свого Осередку Мрієтворців!\n\n👉Чат 1\n👉Чат 2\n👉Чат 3";
   },
   [
     [["Головне меню", 0]],
