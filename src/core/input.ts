@@ -20,7 +20,6 @@ export class InputListener {
   getInput(state: LocalState<any, any>) {
     return new Promise<TelegramBot.Message | null>((resolve) => {
       this.promises.push([state, resolve]);
-      console.log("create inputs", this.promises);
     });
   }
 

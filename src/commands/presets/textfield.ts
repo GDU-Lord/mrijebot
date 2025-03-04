@@ -6,19 +6,27 @@ import { noRepeatCrum, addCrum } from "../../custom/hooks/menu.js";
 import { editLast } from "../../custom/hooks/messageOptions.js";
 import { backButtons } from "../back.js";
 
-export function textField(key: string, text: (state: LocalState) => Promise<string>, validate: (value: string) => Promise<boolean> | boolean = () => true): [procedure, on] {
-  const $field = procedure();
-  const fields$ = $field.make()
-    .func(noRepeatCrum($field))
-    .func(addCrum($field))
+export interface textField {
+  proc: procedure;
+  chain: on;
+}
+
+export function textField<LocalData = any, UserData = any>(key: string, text: (state: LocalState<LocalData, UserData>) => Promise<string>, validate: (value: string) => Promise<boolean> | boolean = () => true): textField {
+  const fieldProcedure = procedure();
+  const fieldChain = fieldProcedure.make()
+    .func(noRepeatCrum(fieldProcedure))
+    .func(addCrum(fieldProcedure))
     .send(text, backButtons.get, editLast())
     .input(key)
     .func(deleteLastInput(key))
     .func(async state => {
       if(await validate(state.core.inputs[key]?.text ?? ""))
         return CHAIN.NEXT_ACTION;
-      await state.call($field);
+      await state.call(fieldProcedure);
       return CHAIN.NEXT_LISTENER;
     });
-  return [$field, fields$];
+  return {
+    proc: fieldProcedure,
+    chain: fieldChain,
+  }
 }

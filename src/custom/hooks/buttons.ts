@@ -13,7 +13,7 @@ export interface buttonsGenerator {
   tag: string;
 };
 
-export function createButtons(keys: keyboard | ((state: LocalState) => Promise<keyboard>)): buttonsGenerator {
+export function createButtons<LocalData = any, UserData = any>(keys: keyboard | ((state: LocalState<LocalData, UserData>) => Promise<keyboard>)): buttonsGenerator {
   const tagId = getId();
   return {
     get: async function (state) {

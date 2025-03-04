@@ -1,50 +1,50 @@
 import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Member } from "./member.entity";
-import { GameSystem } from "./game-system.entity";
+import { Member } from "./member.entity.js";
+import { GameSystem } from "./game-system.entity.js";
 
 export type UserDiscoverySource = 'telegram' | 'email';
 export type UserDurationPreference = 'one_shot' | 'short_campaign' | 'long_campaign';
 
-@Entity()
+// @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
+  // @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column('int')
+  // @Column('int')
   telegramId!: number;
 
-  @Column('varchar')
+  // @Column('varchar')
   email!: string;
 
-  @Column('boolean')
+  // @Column('boolean')
   isGlobalAdmin!: boolean;
 
-  @OneToMany(() => Member, member => member.user)
+  // @OneToMany(() => Member, member => member.user)
   memberships!: Member[];
 
-  @Column('varchar')
+  // @Column('varchar')
   city!: string;
 
-  @Column('varchar')
+  // @Column('varchar')
   discoverySource!: UserDiscoverySource;
 
-  @Column('int')
+  // @Column('int')
   playerGamesPlayed!: number;
 
-  @ManyToMany(() => GameSystem)
-  @JoinTable()
+  // @ManyToMany(() => GameSystem)
+  // @JoinTable()
   playerPreferredGameSystems!: GameSystem[];
 
-  @Column('simple-array')
+  // @Column('simple-array')
   playerPreferredDuration!: UserDurationPreference[];
 
-  @Column('int')
+  // @Column('int')
   masterGamesPlayed!: number;
 
-  @ManyToMany(() => GameSystem)
-  @JoinTable()
+  // @ManyToMany(() => GameSystem)
+  // @JoinTable()
   masterPreferredGameSystems!: GameSystem[];
 
-  @Column('simple-array', { nullable: true })
+  // @Column('simple-array', { nullable: true })
   masterPreferredDuration!: UserDurationPreference[];
 }

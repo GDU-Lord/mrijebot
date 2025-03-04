@@ -5,17 +5,15 @@ import { buttonCallback, buttonsGenerator, createButtons, keyboard } from "../..
 import { deleteLastInput } from "../../custom/hooks/inputs.js";
 import { noRepeatCrum, addCrum } from "../../custom/hooks/menu.js";
 import { editLast } from "../../custom/hooks/messageOptions.js";
+import { optionsField } from "./options.js";
 
-export function optionsOtherField(key: string, text: (state: LocalState) => Promise<string>, buttons: keyboard | ((state: LocalState) => Promise<keyboard>), validate: (value: string) => Promise<boolean> | boolean = () => true, processButtons: (state: LocalState, buttons: buttonsGenerator) => Promise<CHAIN | void> = async () => {}, processInputs: (state: LocalState, inp: string) => Promise<CHAIN | void> = async () => {}): [procedure, on, buttonsGenerator] {
+export function optionsOtherField<LocalData = any, UserData = any>(key: string, text: (state: LocalState<LocalData, UserData>) => Promise<string>, buttons: keyboard | ((state: LocalState<LocalData, UserData>) => Promise<keyboard>), validate: (value: string) => Promise<boolean> | boolean = () => true, processButtons: (state: LocalState<LocalData, UserData>, buttons: buttonsGenerator) => Promise<CHAIN | void> = async () => {}, processInputs: (state: LocalState<LocalData, UserData>, inp: string) => Promise<CHAIN | void> = async () => {}): optionsField {
   const fieldButtons = createButtons(buttons);
-  const $field = procedure();
-  const field$ = $field.make()
-    .func(noRepeatCrum($field))
-    .func(addCrum($field))
+  const fieldProcedure = procedure();
+  const fieldChain = fieldProcedure.make()
+    .func(noRepeatCrum(fieldProcedure))
+    .func(addCrum(fieldProcedure))
     .send(text, fieldButtons.get, editLast())
-    .func(async () => {
-      console.log("create input");
-    })
     .input(key)
     .func(deleteLastInput(key))
     .func(async state => {
@@ -23,12 +21,16 @@ export function optionsOtherField(key: string, text: (state: LocalState) => Prom
       if(await validate(inp))
         await processInputs(state, inp);
       state.data.crums.pop();
-      await state.call($field);
+      await state.call(fieldProcedure);
       return CHAIN.NEXT_LISTENER;
     });
   on("callback_query", buttonCallback(data => true, fieldButtons))
     .func(async state => {
       return await processButtons(state, fieldButtons);
     });
-  return [$field, field$, fieldButtons];
+  return {
+    proc: fieldProcedure,
+    btn: fieldButtons,
+    chain: fieldChain,
+  };
 }

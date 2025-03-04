@@ -2,54 +2,54 @@ import { call } from "../../../custom/hooks/menu.js";
 import { routeCallbackExcept, routeCallback, routeCallbackExceptArray } from "../../../custom/hooks/routes.js";
 import { backOption } from "../../back.js";
 import { $start } from "../../start.js";
-import { email$, $land, landButtons, $city, city$, $source, sourceButtons, $played, playedButtons, $gamesPlayed, $formDone, gamesPlayedButtons, $systemsPlayed, systemsPlayedButtons, $playGameTypes, playGameTypes, $mastered, masteredButtons, $gamesMastered, $masterGameTypes, gamesMasteredButtons, $systemsMastered, systemsMasteredButtons, masterGameTypesButtons, formDoneButtons, $formSent, formSentButtons } from "./index.js";
+import { $city, $email, $formDone, $formSent, $gamesMastered, $gamesPlayed, $land, $mastered, $masterGameTypes, $played, $playGameTypes, $source, $systemsMastered, $systemsPlayed } from "./index.js";
 
 export function registerRoutes() {
 
-  email$.func(call($land));
+ $email.chain.func(call($land.proc));
 
-  backOption(0, landButtons);
-  routeCallbackExcept(landButtons, 0, $city);
+  backOption(0, $land.btn);
+  routeCallbackExcept($land.btn, 0, $city.proc);
   
-  city$.func(call($source));
+  $city.chain.func(call($source.proc));
 
-  backOption(0, sourceButtons);
-  routeCallbackExcept(sourceButtons, 0, $played);
+  backOption(0, $source.btn);
+  routeCallbackExcept($source.btn, 0, $played.proc);
   
-  backOption(0, playedButtons);
-  routeCallback(playedButtons, 1, $gamesPlayed);
-  routeCallback(playedButtons, 2, $formDone);
+  backOption(0, $played.btn);
+  routeCallback($played.btn, 1, $gamesPlayed.proc);
+  routeCallback($played.btn, 2, $formDone.proc);
 
-  backOption(0, gamesPlayedButtons);
-  routeCallbackExcept(gamesPlayedButtons, 0, $systemsPlayed);
+  backOption(0, $gamesPlayed.btn);
+  routeCallbackExcept($gamesPlayed.btn, 0, $systemsPlayed.proc);
 
-  backOption(0, systemsPlayedButtons);
-  routeCallback(systemsPlayedButtons, 1, $playGameTypes);
-  routeCallbackExceptArray(systemsPlayedButtons, [0, 1], $systemsPlayed);
+  backOption(0, $systemsPlayed.btn);
+  routeCallback($systemsPlayed.btn, 1, $playGameTypes.proc);
+  routeCallbackExceptArray($systemsPlayed.btn, [0, 1], $systemsPlayed.proc);
 
-  backOption(0, playGameTypes);
-  routeCallback(playGameTypes, 1, $mastered);
-  routeCallbackExceptArray(playGameTypes, [0, 1], $playGameTypes);
+  backOption(0, $playGameTypes.btn);
+  routeCallback($playGameTypes.btn, 1, $mastered.proc);
+  routeCallbackExceptArray($playGameTypes.btn, [0, 1], $playGameTypes.proc);
 
-  backOption(0, masteredButtons);
-  routeCallback(masteredButtons, 1, $gamesMastered);
-  routeCallback(masteredButtons, 2, $masterGameTypes);
-  routeCallback(masteredButtons, 3, $formDone);
+  backOption(0, $mastered.btn);
+  routeCallback($mastered.btn, 1, $gamesMastered.proc);
+  routeCallback($mastered.btn, 2, $masterGameTypes.proc);
+  routeCallback($mastered.btn, 3, $formDone.proc);
 
-  backOption(0, gamesMasteredButtons);
-  routeCallbackExcept(gamesMasteredButtons, 0, $systemsMastered);
+  backOption(0, $gamesMastered.btn);
+  routeCallbackExcept($gamesMastered.btn, 0, $systemsMastered.proc);
 
-  backOption(0, systemsMasteredButtons);
-  routeCallback(systemsMasteredButtons, 1, $masterGameTypes);
-  routeCallbackExceptArray(systemsMasteredButtons, [0, 1], $systemsMastered);
+  backOption(0, $systemsMastered.btn);
+  routeCallback($systemsMastered.btn, 1, $masterGameTypes.proc);
+  routeCallbackExceptArray($systemsMastered.btn, [0, 1], $systemsMastered.proc);
 
-  backOption(0, masterGameTypesButtons);
-  routeCallback(masterGameTypesButtons, 1, $formDone);
-  routeCallbackExceptArray(masterGameTypesButtons, [0, 1], $masterGameTypes);
+  backOption(0, $masterGameTypes.btn);
+  routeCallback($masterGameTypes.btn, 1, $formDone.proc);
+  routeCallbackExceptArray($masterGameTypes.btn, [0, 1], $masterGameTypes.proc);
 
-  backOption(0, formDoneButtons);
-  routeCallback(formDoneButtons, 1, $formSent);
+  backOption(0, $formDone.btn);
+  routeCallback($formDone.btn, 1, $formSent.proc);
 
-  routeCallback(formSentButtons, 0, $start);
+  routeCallback($formSent.btn, 0, $start);
 
 }

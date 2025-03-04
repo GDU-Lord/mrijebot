@@ -3,7 +3,6 @@ import { LocalState } from "../../core/state.js";
 
 export function removeInputs() {
   return async (state: LocalState) => {
-    console.log("remove inputs");
     const indices: number[] = [];
     inputListener.promises.forEach(([_state, res], index) => {
       if(_state === state) {
@@ -13,7 +12,6 @@ export function removeInputs() {
     });
     for(const index of indices)
       inputListener.promises.splice(index, 1);
-    console.log(inputListener.promises);
   }
 }
 

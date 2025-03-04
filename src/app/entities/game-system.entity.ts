@@ -1,10 +1,10 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity()
+// @Entity()
 export class GameSystem {
-  @PrimaryGeneratedColumn()
+  // @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column('varchar')
+  // @Column('varchar')
   name!: number;
 }

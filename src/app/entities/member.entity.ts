@@ -1,29 +1,29 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { User } from "./user.entity";
-import { Land } from "./land.entity";
+import { User } from "./user.entity.js";
+import { Land } from "./land.entity.js";
 
 export type MemberStatus = 'guest' | 'participant';
 
-@Entity()
+// @Entity()
 export class Member {
-  @PrimaryGeneratedColumn()
+  // @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column('int')
+  // @Column('int')
   userId!: number;
 
-  @ManyToOne(() => User, (user) => user.memberships)
+  // @ManyToOne(() => User, (user) => user.memberships)
   user!: User;
 
-  @Column('int')
-  landId!: string;
+  // @Column('int')
+  landId!: number;
 
-  @ManyToOne(() => Land, (user) => user.members)
+  // @ManyToOne(() => Land, (user) => user.members)
   land!: Land;
 
-  @Column('varchar')
+  // @Column('varchar')
   status!: MemberStatus;
 
-  @Column('boolean')
+  // @Column('boolean')
   isLandAdmin!: boolean;
 }

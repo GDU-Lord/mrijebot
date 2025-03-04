@@ -5,16 +5,26 @@ import { keyboard, buttonsGenerator, createButtons, buttonCallback } from "../..
 import { noRepeatCrum, addCrum } from "../../custom/hooks/menu.js";
 import { editLast } from "../../custom/hooks/messageOptions.js";
 
-export function optionsField(text: (state: LocalState) => Promise<string>, buttons: keyboard | ((state: LocalState) => Promise<keyboard>), process: (state: LocalState, buttons: buttonsGenerator) => Promise<CHAIN | void> = async () => {}): [procedure, on, buttonsGenerator] {
+export interface optionsField {
+  proc: procedure;
+  btn: buttonsGenerator;
+  chain: on;
+};
+
+export function optionsField<LocalData = any, UserData = any>(text: (state: LocalState<LocalData, UserData>) => Promise<string>, buttons: keyboard | ((state: LocalState<LocalData, UserData>) => Promise<keyboard>), process: (state: LocalState<LocalData, UserData>, buttons: buttonsGenerator) => Promise<CHAIN | void> = async () => {}): optionsField {
   const fieldButtons = createButtons(buttons);
-  const $field = procedure();
-  const field$ = $field.make()
-    .func(noRepeatCrum($field))
-    .func(addCrum($field))
+  const fieldProcedure = procedure();
+  const fieldChain = fieldProcedure.make()
+    .func(noRepeatCrum(fieldProcedure))
+    .func(addCrum(fieldProcedure))
     .send(text, fieldButtons.get, editLast());
   on("callback_query", buttonCallback(data => true, fieldButtons))
     .func(async state => {
       return await process(state, fieldButtons);
     });
-  return [$field, field$, fieldButtons];
+  return {
+    proc: fieldProcedure,
+    btn: fieldButtons,
+    chain: fieldChain
+  };
 }

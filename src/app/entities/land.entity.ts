@@ -1,17 +1,17 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Member } from "./member.entity";
+import { Member } from "./member.entity.js";
 
-@Entity()
+// @Entity()
 export class Land {
-  @PrimaryGeneratedColumn()
+  // @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column('varchar')
+  // @Column('varchar')
   name!: string;
 
-  @Column('varchar')
+  // @Column('varchar')
   region!: string;
 
-  @OneToMany(() => Member, member => member.user)
+  // @OneToMany(() => Member, member => member.user)
   members!: Member[];
 }
