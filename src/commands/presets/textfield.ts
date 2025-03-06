@@ -1,3 +1,4 @@
+import TelegramBot from "node-telegram-bot-api";
 import { CHAIN } from "../../core/actions.js";
 import { on, procedure } from "../../core/chain.js";
 import { LocalState } from "../../core/state.js";
@@ -11,7 +12,7 @@ export interface textField {
   chain: on;
 }
 
-export function textField<LocalData = any, UserData = any>(key: string, text: (state: LocalState<LocalData, UserData>) => Promise<string>, validate: (value: string) => Promise<boolean> | boolean = () => true): textField {
+export function textField<LocalData = any, UserData = any>(key: string, text: (state: LocalState<LocalData, UserData>) => Promise<string>, validate: (value: string, message: TelegramBot.Message) => Promise<boolean> | boolean = () => true): textField {
   const fieldProcedure = procedure();
   const fieldChain = fieldProcedure.make()
     .func(noRepeatCrum(fieldProcedure))
@@ -20,7 +21,9 @@ export function textField<LocalData = any, UserData = any>(key: string, text: (s
     .input(key)
     .func(deleteLastInput(key))
     .func(async state => {
-      if(await validate(state.core.inputs[key]?.text ?? ""))
+      const inp = state.core.inputs[key]!;
+      const text = inp.text ?? "";
+      if(await validate(text, inp))
         return CHAIN.NEXT_ACTION;
       await state.call(fieldProcedure);
       return CHAIN.NEXT_LISTENER;

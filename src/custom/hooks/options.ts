@@ -9,6 +9,12 @@ export function saveValue(key: string, ...exclude: any[]) {
   }
 }
 
+export function saveValueInput(key: string) {
+  return async (state: LocalState, input: string) => {
+    state.data.options[key] = input;
+  }
+}
+
 export function toggleValue(key: string, ...exclude: any[]) {
   return async (state: LocalState, buttons: buttonsGenerator) => {
     const data = getLastCallback(state, buttons);
