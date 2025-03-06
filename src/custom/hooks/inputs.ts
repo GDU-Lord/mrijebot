@@ -22,3 +22,15 @@ export function deleteLastInput(key: string) {
     } catch {}
   }
 }
+
+export function getInputOptionsList(state: LocalState, part: string, field: string, validator: (input: string) => boolean) {
+  const list = [];
+  for(const i in state.data.options) {
+    const [_part, _field, ...rest] = i.split(":");
+    const value = rest.join(":");
+    const status = state.data.options[i];
+    if(_part === part && _field === field && validator(value) && status)
+      list.push(value);
+  }
+  return list;
+}

@@ -15,6 +15,10 @@ export function getInputInfo(type: availableEventTypes, input: inputType): [Chat
   }
   if(type === "callback_query") {
     const inp = input as TelegramBot.CallbackQuery;
+    const msg = inp.message;
+    if(msg) {
+      return [msg.chat.id, msg.chat.id ?? null, msg.message_thread_id ?? -1];
+    }
     const cache = InputInfoCache.get(inp.data);
     if(cache == null) return [null, null, -1];
     return [cache.state.core.chatId, cache.state.core.userId, cache.state.core.threadId ?? -1];

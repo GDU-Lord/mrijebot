@@ -5,6 +5,10 @@ import { ping } from "./ping.js";
 import { $start } from "./start.js";
 import { command } from "../custom/hooks/filters.js";
 import { call } from "../custom/hooks/menu.js";
+import { afterInit } from "../afterInit.js";
+import { initDefault } from "./default.js";
+
+afterInit.push(initDefault);
 
 export async function initCommands() {
 

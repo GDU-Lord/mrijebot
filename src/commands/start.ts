@@ -30,7 +30,9 @@ routeCallback(startButtons, 3, $main.proc);
 export const $start = procedure();
 $start.make()
   .func(async state => {
-    if(state.data == null && (state.lastInput as TelegramBot.Message).chat.type !== "private")
+    const lastInput = state.lastInput;
+    const message = (lastInput as TelegramBot.CallbackQuery).message ?? (lastInput as TelegramBot.Message);
+    if(state.data == null && message.chat.type !== "private")
       return CHAIN.NEXT_LISTENER;
     return CHAIN.NEXT_ACTION;
   })
