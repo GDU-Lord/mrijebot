@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { GameSystem, Land, Member, User } from './entities';
 import { APP_PIPE } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { UserController } from './controllers';
 
 @Module({
   imports: [
@@ -20,12 +21,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         synchronize: configService.get('DB_SYNC', 'true') === 'true',
       }),
     }),
-    TypeOrmModule.forFeature([GameSystem]),
-    TypeOrmModule.forFeature([Land]),
-    TypeOrmModule.forFeature([User]),
-    TypeOrmModule.forFeature([Member]),
+    TypeOrmModule.forFeature([GameSystem, Land, User, Member]),
   ],
-  controllers: [],
+  controllers: [UserController],
   providers: [
     {
       provide: APP_PIPE,
