@@ -17,7 +17,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         password: configService.get('DB_PASSWORD', 'postgres'),
         database: configService.get('DB_NAME', 'mrijebot'),
         autoLoadEntities: true,
-        synchronize: true,
+        synchronize: configService.get('DB_SYNC', 'true') === 'true',
       }),
     }),
     TypeOrmModule.forFeature([GameSystem]),

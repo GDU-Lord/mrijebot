@@ -1,7 +1,7 @@
 import TelegramBot, { ChatId } from "node-telegram-bot-api";
-import { inputType, on } from "../core/chain.js";
-import { LocalState, UserState } from "../core/state.js";
-import InputInfoCache from "./inputInfoCache.js";
+import { inputType, on } from "../core/chain";
+import { LocalState, UserState } from "../core/state";
+import InputInfoCache from "./inputInfoCache";
 
 export type availableInputTypes = TelegramBot.Message | TelegramBot.CallbackQuery;
 export type availableEventTypes = "message" | "callback_query";

@@ -1,6 +1,6 @@
 import TelegramBot from "node-telegram-bot-api";
-import { InputListener } from "./input.js";
-import { ProcedureListener } from "./on.js";
+import { InputListener } from "./input";
+import { ProcedureListener } from "./on";
 
 export let Bot: TelegramBot;
 export let inputListener: InputListener;

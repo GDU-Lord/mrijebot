@@ -1,7 +1,7 @@
-import { on, procedure } from "../../core/chain.js";
-import { buttonsGenerator, buttonCallbackValue, buttonCallbackArray, buttonCallbackExceptValue, buttonCallbackExceptArray } from "./buttons.js";
-import { removeInputs } from "./inputs.js";
-import { call } from "./menu.js";
+import { on, procedure } from "../../core/chain";
+import { buttonsGenerator, buttonCallbackValue, buttonCallbackArray, buttonCallbackExceptValue, buttonCallbackExceptArray } from "./buttons";
+import { removeInputs } from "./inputs";
+import { call } from "./menu";
 
 export function routeCallback(buttons: buttonsGenerator, value: any, procedure: procedure) {
   return on("callback_query", buttonCallbackValue(value, buttons))

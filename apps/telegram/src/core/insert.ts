@@ -1,4 +1,4 @@
-import { LocalState } from "./state.js";
+import { LocalState } from "./state";
 
 export function getBottom<T extends { [key: string]: any }> (o: T, path: string[]) {
   const fragment = path.shift() as string;

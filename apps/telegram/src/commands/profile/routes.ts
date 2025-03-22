@@ -1,16 +1,16 @@
-import { routeCallback, routeCallbackArray, routeCallbackExcept } from "../../custom/hooks/routes.js";
-import { $back, backOption } from "../back.js";
-import { $start } from "../start.js";
-import { $idCard } from "./idcard.js";
-import { $main } from "./index.js";
-import { $masterPanel } from "./master/index.js";
-import { $becomeGuest, $becomeGuestDone } from "./mylands/becomeguest.js";
-import { $changeMembership, $landChangeProceed, $landChanged } from "./mylands/changemembership.js";
-import { $myLands } from "./mylands/index.js";
-import { $myLandsList, $landPanel } from "./mylands/landlist.js";
-import { $playerPanel } from "./player/index.js";
-import { $experience, $gamesPlayed, $systemsPlayed } from "./player/systemsandxp.js";
-import { $myTriggers, $prefExplore, $prefferences, $prefFight, $prefSocial, $systemsPreferred, $textForMaster } from "./player/triggersandprefs.js";
+import { routeCallback, routeCallbackArray, routeCallbackExcept } from "../../custom/hooks/routes";
+import { $back, backOption } from "../back";
+import { $start } from "../start";
+import { $idCard } from "./idcard";
+import { $main } from "./index";
+import { $masterPanel } from "./master/index";
+import { $becomeGuest, $becomeGuestDone } from "./mylands/becomeguest";
+import { $changeMembership, $landChangeProceed, $landChanged } from "./mylands/changemembership";
+import { $myLands } from "./mylands/index";
+import { $myLandsList, $landPanel } from "./mylands/landlist";
+import { $playerPanel } from "./player/index";
+import { $experience, $gamesPlayed, $systemsPlayed } from "./player/systemsandxp";
+import { $myTriggers, $prefExplore, $prefferences, $prefFight, $prefSocial, $systemsPreferred, $textForMaster } from "./player/triggersandprefs";
 
 export function profileRoutes () {
 

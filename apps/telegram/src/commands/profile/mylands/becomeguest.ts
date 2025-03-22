@@ -1,4 +1,4 @@
-import { optionsField } from "../../presets/options.js";
+import { optionsField } from "../../presets/options";
 
 export const $becomeGuest = optionsField(
   async state => {

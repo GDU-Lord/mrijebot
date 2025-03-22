@@ -1,8 +1,8 @@
-import { call } from "../../../custom/hooks/menu.js";
-import { routeCallbackExcept, routeCallback, routeCallbackExceptArray } from "../../../custom/hooks/routes.js";
-import { backOption } from "../../back.js";
-import { $start } from "../../start.js";
-import { $city, $email, $formDone, $formSent, $gamesMastered, $gamesPlayed, $land, $mastered, $masterGameTypes, $played, $playGameTypes, $source, $systemsMastered, $systemsPlayed } from "./index.js";
+import { call } from "../../../custom/hooks/menu";
+import { routeCallbackExcept, routeCallback, routeCallbackExceptArray } from "../../../custom/hooks/routes";
+import { backOption } from "../../back";
+import { $start } from "../../start";
+import { $city, $email, $formDone, $formSent, $gamesMastered, $gamesPlayed, $land, $mastered, $masterGameTypes, $played, $playGameTypes, $source, $systemsMastered, $systemsPlayed } from "./index";
 
 export function registerRoutes() {
 

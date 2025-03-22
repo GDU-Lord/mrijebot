@@ -1,18 +1,18 @@
 import TelegramBot from "node-telegram-bot-api";
-import { procedure } from "../core/chain.js";
-import { CHAIN } from "../core/actions.js";
-import { $info } from "./info.js";
-import { $email } from "./form/register/index.js";
-import { createButtons, keyboard } from "../custom/hooks/buttons.js";
-import { addCrum } from "../custom/hooks/menu.js";
-import { editLast } from "../custom/hooks/messageOptions.js";
-import { routeCallback } from "../custom/hooks/routes.js";
-import { initState, StateType } from "../custom/hooks/state.js";
-import { User } from "../app/entities/user.entity.js";
-import { Member } from "../app/entities/member.entity.js";
-import { Land } from "../app/entities/land.entity.js";
-import { Bot } from "../core/index.js";
-import { $main } from "./profile/index.js";
+import { procedure } from "../core/chain";
+import { CHAIN } from "../core/actions";
+import { $info } from "./info";
+import { $email } from "./form/register/index";
+import { createButtons, keyboard } from "../custom/hooks/buttons";
+import { addCrum } from "../custom/hooks/menu";
+import { editLast } from "../custom/hooks/messageOptions";
+import { routeCallback } from "../custom/hooks/routes";
+import { initState, StateType } from "../custom/hooks/state";
+import { User } from "../app/entities/user.entity";
+import { Member } from "../app/entities/member.entity";
+import { Land } from "../app/entities/land.entity";
+import { Bot } from "../core/index";
+import { $main } from "./profile/index";
 
 export const startButtons = createButtons<StateType>(async state => {
   const buttons: keyboard = [

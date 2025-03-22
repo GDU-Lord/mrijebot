@@ -1,8 +1,8 @@
-import { getInputOptionsList } from "../../../custom/hooks/inputs.js";
-import { toggleButtons, toggleValue, toggleValueInput } from "../../../custom/hooks/options.js";
-import { text } from "../../form/validators.js";
-import { optionsField } from "../../presets/options.js";
-import { optionsOtherField } from "../../presets/optionsOther.js";
+import { getInputOptionsList } from "../../../custom/hooks/inputs";
+import { toggleButtons, toggleValue, toggleValueInput } from "../../../custom/hooks/options";
+import { text } from "../../form/validators";
+import { optionsField } from "../../presets/options";
+import { optionsOtherField } from "../../presets/optionsOther";
 
 export const $systemsPreferred = optionsOtherField(
   "lastInput",

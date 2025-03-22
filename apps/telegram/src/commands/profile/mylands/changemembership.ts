@@ -1,5 +1,5 @@
-import { StateType } from "../../../custom/hooks/state.js";
-import { optionsField } from "../../presets/options.js";
+import { StateType } from "../../../custom/hooks/state";
+import { optionsField } from "../../presets/options";
 
 export const $changeMembership = optionsField<StateType>(
   async state => {

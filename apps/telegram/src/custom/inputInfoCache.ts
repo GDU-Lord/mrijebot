@@ -1,5 +1,5 @@
-import getId from "../core/id.js";
-import { LocalState } from "../core/state.js";
+import getId from "../core/id";
+import { LocalState } from "../core/state";
 
 export default class InputInfoCache {
 

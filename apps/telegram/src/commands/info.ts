@@ -1,7 +1,7 @@
-import { procedure } from "../core/chain.js";
-import { menuProcedure } from "../custom/hooks/menu.js";
-import { editLast } from "../custom/hooks/messageOptions.js";
-import { backButtons } from "./back.js";
+import { procedure } from "../core/chain";
+import { menuProcedure } from "../custom/hooks/menu";
+import { editLast } from "../custom/hooks/messageOptions";
+import { backButtons } from "./back";
 
 export const $info = procedure();
 menuProcedure($info)

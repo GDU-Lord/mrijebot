@@ -1,9 +1,9 @@
-import { CHAIN } from "../../core/actions.js";
-import { on, procedure } from "../../core/chain.js";
-import { LocalState } from "../../core/state.js";
-import { keyboard, buttonsGenerator, createButtons, buttonCallback } from "../../custom/hooks/buttons.js";
-import { noRepeatCrum, addCrum } from "../../custom/hooks/menu.js";
-import { editLast } from "../../custom/hooks/messageOptions.js";
+import { CHAIN } from "../../core/actions";
+import { on, procedure } from "../../core/chain";
+import { LocalState } from "../../core/state";
+import { keyboard, buttonsGenerator, createButtons, buttonCallback } from "../../custom/hooks/buttons";
+import { noRepeatCrum, addCrum } from "../../custom/hooks/menu";
+import { editLast } from "../../custom/hooks/messageOptions";
 
 export interface optionsField {
   proc: procedure;

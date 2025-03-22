@@ -1,5 +1,5 @@
-import { inputListener, Bot } from "../../core/index.js";
-import { LocalState } from "../../core/state.js";
+import { inputListener, Bot } from "../../core/index";
+import { LocalState } from "../../core/state";
 
 export function removeInputs() {
   return async (state: LocalState) => {
@@ -24,7 +24,7 @@ export function deleteLastInput(key: string) {
 }
 
 export function getInputOptionsList(state: LocalState, part: string, field: string, validator: (input: string) => boolean) {
-  const list = [];
+  const list: string[] = [];
   for(const i in state.data.options) {
     const [_part, _field, ...rest] = i.split(":");
     const value = rest.join(":");

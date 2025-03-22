@@ -1,6 +1,6 @@
-import { procedure } from "../../core/chain.js";
-import { LocalState } from "../../core/state.js";
-import { initState } from "./state.js";
+import { procedure } from "../../core/chain";
+import { LocalState } from "../../core/state";
+import { initState } from "./state";
 
 export function addCrum(crum: procedure) {
   return async (state: LocalState) => {

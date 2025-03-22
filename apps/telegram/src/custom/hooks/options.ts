@@ -1,5 +1,5 @@
-import { LocalState } from "../../core/state.js";
-import { buttonsGenerator, getLastCallback, keyboard } from "./buttons.js";
+import { LocalState } from "../../core/state";
+import { buttonsGenerator, getLastCallback, keyboard } from "./buttons";
 
 export function saveValue(key: string, ...exclude: any[]) {
   return async (state: LocalState, buttons: buttonsGenerator) => {

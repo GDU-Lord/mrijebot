@@ -1,11 +1,11 @@
 import TelegramBot from "node-telegram-bot-api";
-import { CHAIN } from "../../core/actions.js";
-import { on, procedure } from "../../core/chain.js";
-import { LocalState } from "../../core/state.js";
-import { deleteLastInput } from "../../custom/hooks/inputs.js";
-import { noRepeatCrum, addCrum } from "../../custom/hooks/menu.js";
-import { editLast } from "../../custom/hooks/messageOptions.js";
-import { backButtons } from "../back.js";
+import { CHAIN } from "../../core/actions";
+import { on, procedure } from "../../core/chain";
+import { LocalState } from "../../core/state";
+import { deleteLastInput } from "../../custom/hooks/inputs";
+import { noRepeatCrum, addCrum } from "../../custom/hooks/menu";
+import { editLast } from "../../custom/hooks/messageOptions";
+import { backButtons } from "../back";
 
 export interface textField {
   proc: procedure;

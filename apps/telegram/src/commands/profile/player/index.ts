@@ -1,8 +1,8 @@
 import { profile } from "console";
-import { afterInit } from "../../../afterInit.js";
-import { getLastCallback } from "../../../custom/hooks/buttons.js";
-import { optionsField } from "../../presets/options.js";
-import { profilePlayerRoutes } from "./routes.js";
+import { afterInit } from "../../../afterInit";
+import { getLastCallback } from "../../../custom/hooks/buttons";
+import { optionsField } from "../../presets/options";
+import { profilePlayerRoutes } from "./routes";
 
 afterInit.push(profilePlayerRoutes);
 

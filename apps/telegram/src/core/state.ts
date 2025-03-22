@@ -1,7 +1,7 @@
 import TelegramBot from "node-telegram-bot-api";
-import { inputType, procedure } from "./chain.js";
-import { ProcedureListener } from "./on.js";
-import { procedureListener } from "./index.js";
+import { inputType, procedure } from "./chain";
+import { ProcedureListener } from "./on";
+import { procedureListener } from "./index";
 
 export type userId = number;
 

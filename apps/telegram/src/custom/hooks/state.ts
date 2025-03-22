@@ -1,6 +1,6 @@
-import { User } from "../../app/entities/user.entity.js";
-import { procedure } from "../../core/chain.js";
-import { LocalState } from "../../core/state.js";
+import { User } from "../../app/entities/user.entity";
+import { procedure } from "../../core/chain";
+import { LocalState } from "../../core/state";
 
 export function initState(force: boolean = false) {
   return async (state: LocalState) => {

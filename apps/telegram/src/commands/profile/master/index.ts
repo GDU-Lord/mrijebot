@@ -1,7 +1,7 @@
-import { afterInit } from "../../../afterInit.js";
-import { StateType } from "../../../custom/hooks/state.js";
-import { optionsField } from "../../presets/options.js";
-import { profileMasterRoutes } from "./routes.js";
+import { afterInit } from "../../../afterInit";
+import { StateType } from "../../../custom/hooks/state";
+import { optionsField } from "../../presets/options";
+import { profileMasterRoutes } from "./routes";
 
 afterInit.push(profileMasterRoutes);
 

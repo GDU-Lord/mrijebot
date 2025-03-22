@@ -1,9 +1,9 @@
-import { routeCallback, routeCallbackExcept } from "../../../custom/hooks/routes.js";
-import { backOption } from "../../back.js";
-import { $masterPanel } from "./index.js";
-import { $displayPlayerData, $playerData } from "./playerdata.js";
-import { $gamesPreferred, $systemsPreferred } from "./prefs.js";
-import { $experience, $gamesMastered, $systemsMastered } from "./systemsandxp.js";
+import { routeCallback, routeCallbackExcept } from "../../../custom/hooks/routes";
+import { backOption } from "../../back";
+import { $masterPanel } from "./index";
+import { $displayPlayerData, $playerData } from "./playerdata";
+import { $gamesPreferred, $systemsPreferred } from "./prefs";
+import { $experience, $gamesMastered, $systemsMastered } from "./systemsandxp";
 
 export function profileMasterRoutes () {
 

@@ -1,6 +1,6 @@
-import { on } from "../core/chain.js";
-import { initPromise } from "../core/index.js";
-import { match } from "../custom/hooks/filters.js";
+import { on } from "../core/chain";
+import { initPromise } from "../core/index";
+import { match } from "../custom/hooks/filters";
 
 export function ping() {
   on("message", match("ping"))

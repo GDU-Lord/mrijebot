@@ -1,4 +1,4 @@
-import { LocalState } from "../../core/state.js";
+import { LocalState } from "../../core/state";
 
 export function editLast() {
   return async (state: LocalState) => {

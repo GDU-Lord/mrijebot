@@ -1,6 +1,6 @@
 import { CallbackQuery } from "node-telegram-bot-api";
-import { on } from "../core/chain.js";
-import { $start } from "./start.js";
+import { on } from "../core/chain";
+import { $start } from "./start";
 
 export async function initDefault() {
 

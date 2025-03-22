@@ -1,6 +1,6 @@
 import TelegramBot from "node-telegram-bot-api";
-import { Bot } from "./index.js";
-import { LocalState } from "./state.js";
+import { Bot } from "./index";
+import { LocalState } from "./state";
 
 export class InputListener {
 

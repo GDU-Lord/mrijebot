@@ -1,9 +1,9 @@
 import TelegramBot, { Message, CallbackQuery } from "node-telegram-bot-api";
-import { On, OnBot, Procedure } from "./on.js";
-import { Action, CHAIN, Check, CheckNest, Func, FuncCase, optionsGenerator, Send, SendCase, UserInput, UserInputCase } from "./actions.js";
-import { LocalState } from "./state.js";
-import getId from "./id.js";
-import { availableEventTypes, availableInputTypes } from "../custom/listeners.js";
+import { On, OnBot, Procedure } from "./on";
+import { Action, CHAIN, Check, CheckNest, Func, FuncCase, optionsGenerator, Send, SendCase, UserInput, UserInputCase } from "./actions";
+import { LocalState } from "./state";
+import getId from "./id";
+import { availableEventTypes, availableInputTypes } from "../custom/listeners";
 
 
 type send = <localData = any, userData = any>(text: string | ((state: LocalState<localData, userData>) => Promise<string>), options?: TelegramBot.SendMessageOptions | optionsGenerator, message_id?: number | ((state: LocalState<localData, userData>) => Promise<number>) | null) => on;

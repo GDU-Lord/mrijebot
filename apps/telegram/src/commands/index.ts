@@ -1,12 +1,12 @@
 import TelegramBot from "node-telegram-bot-api";
-import { on } from "../core/chain.js";
-import { Bot, initPromise } from "../core/index.js";
-import { ping } from "./ping.js";
-import { $start } from "./start.js";
-import { command } from "../custom/hooks/filters.js";
-import { call } from "../custom/hooks/menu.js";
-import { afterInit } from "../afterInit.js";
-import { initDefault } from "./default.js";
+import { on } from "../core/chain";
+import { Bot, initPromise } from "../core/index";
+import { ping } from "./ping";
+import { $start } from "./start";
+import { command } from "../custom/hooks/filters";
+import { call } from "../custom/hooks/menu";
+import { afterInit } from "../afterInit";
+import { initDefault } from "./default";
 
 afterInit.push(initDefault);
 

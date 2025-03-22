@@ -1,11 +1,11 @@
-import { afterInit } from "../../../afterInit.js";
-import { getLastCallback } from "../../../custom/hooks/buttons.js";
-import { saveValue, toggleButtons, toggleValue, toggleValueInput } from "../../../custom/hooks/options.js";
-import { optionsField } from "../../presets/options.js";
-import { optionsOtherField } from "../../presets/optionsOther.js";
-import { textField } from "../../presets/textfield.js";
-import { email, text } from "../validators.js";
-import { registerRoutes } from "./routes.js";
+import { afterInit } from "../../../afterInit";
+import { getLastCallback } from "../../../custom/hooks/buttons";
+import { saveValue, toggleButtons, toggleValue, toggleValueInput } from "../../../custom/hooks/options";
+import { optionsField } from "../../presets/options";
+import { optionsOtherField } from "../../presets/optionsOther";
+import { textField } from "../../presets/textfield";
+import { email, text } from "../validators";
+import { registerRoutes } from "./routes";
 
 afterInit.push(registerRoutes);
 
@@ -85,7 +85,7 @@ export const $gamesPlayed = optionsField(
 export const $systemsPlayed = optionsOtherField(
   "lastInput",
   async state => {
-    const list = [];
+    const list: string[] = [];
     for(const i in state.data.options) {
       const [part, field, ...rest] = i.split(":");
       const value = rest.join(":");
@@ -160,7 +160,7 @@ export const $gamesMastered = optionsField(
 export const $systemsMastered = optionsOtherField(
   "lastInput",
   async state => {
-    const list = [];
+    const list: string[] = [];
     for(const i in state.data.options) {
       const [part, field, ...rest] = i.split(":");
       const value = rest.join(":");

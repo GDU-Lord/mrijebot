@@ -1,8 +1,8 @@
-import { Land } from "../../../app/entities/land.entity.js";
-import { keyboard } from "../../../custom/hooks/buttons.js";
-import { saveValue } from "../../../custom/hooks/options.js";
-import { StateType } from "../../../custom/hooks/state.js";
-import { optionsField } from "../../presets/options.js";
+import { Land } from "../../../app/entities/land.entity";
+import { keyboard } from "../../../custom/hooks/buttons";
+import { saveValue } from "../../../custom/hooks/options";
+import { StateType } from "../../../custom/hooks/state";
+import { optionsField } from "../../presets/options";
 
 export const $myLands = optionsField<StateType>(
   async state => {

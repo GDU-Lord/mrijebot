@@ -1,7 +1,7 @@
 import TelegramBot from "node-telegram-bot-api";
-import { StateType } from "../../../custom/hooks/state.js";
-import { optionsOtherField } from "../../presets/optionsOther.js";
-import { optionsField } from "../../presets/options.js";
+import { StateType } from "../../../custom/hooks/state";
+import { optionsOtherField } from "../../presets/optionsOther";
+import { optionsField } from "../../presets/options";
 
 function getUserData(msg: TelegramBot.Message): [string | null, number | null] {
   for(const e of msg?.entities ?? []) {

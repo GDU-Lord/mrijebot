@@ -1,8 +1,22 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { afterInit } from "./afterInit";
+import { initCommands } from "./commands/index";
+import "dotenv/config";
+import { init } from "./core/index";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  await app.listen(process.env.PORT ?? 3000);
+  init(process.env.TOKEN as string, {
+    polling: {
+      interval: 2000,
+      params: {
+        allowed_updates: ["chat_member", "message", "chat_join_request", "callback_query", "chat_member_updated"]
+      }
+    }
+  });
+  
+  console.log("connected");
+  
+  initCommands();
+  
+  afterInit.forEach(func => func());
 }
 bootstrap();

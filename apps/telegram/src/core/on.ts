@@ -1,10 +1,10 @@
 import TelegramBot from "node-telegram-bot-api";
-import { Action, CHAIN, UserInput } from "./actions.js";
-import { inputType } from "./chain.js";
-import { Bot, initPromise, procedureListener } from "./index.js";
-import { LocalState, UserState } from "./state.js";
-import getId from "./id.js";
-import { availableEventTypes, getState } from "../custom/listeners.js";
+import { Action, CHAIN, UserInput } from "./actions";
+import { inputType } from "./chain";
+import { Bot, initPromise, procedureListener } from "./index";
+import { LocalState, UserState } from "./state";
+import getId from "./id";
+import { availableEventTypes, getState } from "../custom/listeners";
 
 export class On {
   actions: Action<On | UserInput>[] = [];

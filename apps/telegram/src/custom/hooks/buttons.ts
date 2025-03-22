@@ -1,9 +1,9 @@
 import TelegramBot, { CallbackQuery } from "node-telegram-bot-api";
-import { optionsGenerator } from "../../core/actions.js";
-import getId from "../../core/id.js";
-import { LocalState } from "../../core/state.js";
-import InputInfoCache from "../inputInfoCache.js";
-import { getInputInfo } from "../listeners.js";
+import { optionsGenerator } from "../../core/actions";
+import getId from "../../core/id";
+import { LocalState } from "../../core/state";
+import InputInfoCache from "../inputInfoCache";
+import { getInputInfo } from "../listeners";
 
 export type key = [string, any];
 export type row = key[];

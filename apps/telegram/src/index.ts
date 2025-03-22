@@ -1,5 +1,4 @@
 import { init } from "./core/index.js";
-import "dotenv/config.js";
 import { initCommands } from "./commands/index.js";
 import { afterInit } from "./afterInit.js";
 

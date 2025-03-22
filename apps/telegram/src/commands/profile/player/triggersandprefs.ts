@@ -1,10 +1,10 @@
-import { getLastCallback } from "../../../custom/hooks/buttons.js";
-import { getInputOptionsList } from "../../../custom/hooks/inputs.js";
-import { saveValue, saveValueInput, toggleButtons, toggleValue, toggleValueInput } from "../../../custom/hooks/options.js";
-import { StateType } from "../../../custom/hooks/state.js";
-import { text } from "../../form/validators.js";
-import { optionsField } from "../../presets/options.js";
-import { optionsOtherField } from "../../presets/optionsOther.js";
+import { getLastCallback } from "../../../custom/hooks/buttons";
+import { getInputOptionsList } from "../../../custom/hooks/inputs";
+import { saveValue, saveValueInput, toggleButtons, toggleValue, toggleValueInput } from "../../../custom/hooks/options";
+import { StateType } from "../../../custom/hooks/state";
+import { text } from "../../form/validators";
+import { optionsField } from "../../presets/options";
+import { optionsOtherField } from "../../presets/optionsOther";
 
 export const $myTriggers = optionsOtherField<StateType>(
   "lastInput",

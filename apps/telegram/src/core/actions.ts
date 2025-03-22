@@ -1,9 +1,9 @@
 import TelegramBot, { EditMessageTextOptions, SendMessageOptions, User } from "node-telegram-bot-api";
-import { On } from "./on.js";
-import { LocalState, UserState } from "./state.js";
-import { Bot, inputListener } from "./index.js";
-import { insertText } from "./insert.js";
-import { inputType } from "./chain.js";
+import { On } from "./on";
+import { LocalState, UserState } from "./state";
+import { Bot, inputListener } from "./index";
+import { insertText } from "./insert";
+import { inputType } from "./chain";
 
 export enum CHAIN {
   NEXT_ACTION = 0,
