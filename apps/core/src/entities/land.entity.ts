@@ -12,6 +12,6 @@ export class Land {
   @Column('varchar')
   region!: string;
 
-  @OneToMany(() => Member, member => member.user)
+  @OneToMany(() => Member, member => member.land)
   members!: Member[];
 }

@@ -30,6 +30,16 @@ export class UserController {
     });
   }
 
+  @Get('byTelegramId/:telegramId')
+  async findOneByTelegram (@Param('telegramId', ParseIntPipe) telegramId: number): Promise<User> {
+    const user = await this.userRepository.findOne({ 
+      where: { telegramId }, 
+      relations: ['playerPreferredGameSystems', 'masterPreferredGameSystems', 'memberships'],
+    });
+    if (!user) throw new UserNotFoundException(telegramId, "telegram");
+    return user;
+  }
+
   @Get(':userId')
   async findOne(@Param('userId', ParseIntPipe) id: number): Promise<User> {
     const user = await this.userRepository.findOne({ 

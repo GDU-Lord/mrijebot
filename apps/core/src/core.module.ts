@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { GameSystem, Land, Member, User } from './entities';
 import { APP_PIPE } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UserController } from './controllers';
+import { LandController, UserController } from './controllers';
 
 @Module({
   imports: [
@@ -15,15 +15,16 @@ import { UserController } from './controllers';
         host: configService.get('DB_HOST', 'localhost'),
         port: configService.get('DB_PORT', 5432),
         username: configService.get('DB_USERNAME', 'postgres'),
-        password: configService.get('DB_PASSWORD', 'postgres'),
+        password: configService.get('DB_PASSWORD', 'sanitar203'),
         database: configService.get('DB_NAME', 'mrijebot'),
         autoLoadEntities: true,
         synchronize: configService.get('DB_SYNC', 'true') === 'true',
+        logging: true
       }),
     }),
     TypeOrmModule.forFeature([GameSystem, Land, User, Member]),
   ],
-  controllers: [UserController],
+  controllers: [UserController, LandController],
   providers: [
     {
       provide: APP_PIPE,

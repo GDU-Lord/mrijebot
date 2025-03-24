@@ -1,6 +1,8 @@
 import { afterInit } from "../../../afterInit";
+import { getLands } from "../../../api/land";
 import { getLastCallback } from "../../../custom/hooks/buttons";
 import { saveValue, toggleButtons, toggleValue, toggleValueInput } from "../../../custom/hooks/options";
+import { StateType } from "../../../custom/hooks/state";
 import { optionsField } from "../../presets/options";
 import { optionsOtherField } from "../../presets/optionsOther";
 import { textField } from "../../presets/textfield";
@@ -17,18 +19,16 @@ export const $email = textField(
   email()
 );
 
-export const $land = optionsField(
+export const $land = optionsField<StateType>(
   async state => {
-    return "<b><u>Реєстрація: Осередок</u></b>\n\nУ нас є різні Осередки (регіональні спільноти) по всій Німеччині. Обери ту, на території якої ти проживаєш! Після реєстрації ти отримаєш доступ до чатів свого Осередку!";
+    const lands = state.data.storage.lands = await getLands();
+    if(!lands) return "ПОМИЛКА!";
+    const list = lands.map(land => `"${land.name}":${land.region}`);
+    return `<b><u>Реєстрація: Осередок</u></b>\n\nУ нас є різні Осередки (регіональні спільноти) по всій Німеччині. Обери ту, на території якої ти проживаєш! Після реєстрації ти отримаєш доступ до чатів свого Осередку!\n\n${list}`;
   },
-  [
-    [["Berlin", 1]],
-    [["Bayern", 2]],
-    [["Mittledeutschland", 3]],
-    [["Niedersachsen", 4]],
-    [["Mecklenburg-Vorpommen", 5]],
-    [["⬅️Назад", 0]]
-  ],
+  async state => {
+    return state.data.storage.lands.map(land => [[land.name, land.id]]);
+  },
   saveValue("form:land", 0)
 );
 

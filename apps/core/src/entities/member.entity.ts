@@ -12,13 +12,13 @@ export class Member {
   @Column('int')
   userId!: number;
 
-  @ManyToOne(() => User, (user) => user.memberships)
+  @ManyToOne(() => User, user => user.memberships)
   user!: User;
 
   @Column('int')
   landId!: number;
 
-  @ManyToOne(() => Land, (user) => user.members)
+  @ManyToOne(() => Land, land => land.members)
   land!: Land;
 
   @Column('varchar')

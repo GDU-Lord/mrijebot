@@ -1,1 +1,1 @@
-export * from './user-not-found.exception';
+export * from './land-not-found.exception';
