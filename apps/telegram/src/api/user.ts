@@ -1,15 +1,16 @@
 import axios from "axios";
 import TelegramBot from "node-telegram-bot-api";
-import { GameSystem, Member, User, UserDiscoverySource, UserDurationPreference } from "../../../core/src/entities";
+import { GameSystem, Member, MemberStatus, User, UserDiscoverySource, UserDurationPreference } from "../../../core/src/entities";
 import { CreateUserDto } from "../../../core/src/controllers/user/dtos/create-user.dto";
+import { api } from ".";
+import { JoinLandDto, SetUserPreferencesDto } from "../../../core/src/controllers/user/dtos";
 
 export async function getUserByTelegram(telegramId: number) {
-  try {
-    const res = await axios.get<User>(`http://localhost:3000/users/byTelegramId/${telegramId}`);
-    return res.data;
-  } catch (err) {
-    return null;
-  }
+  return await api.get<User>(`/users/byTelegramId/${telegramId}`);
+}
+
+export async function getUser(userId: number) {
+  return await api.get<User>(`/users/${userId}`);
 }
 
 export async function createUser(
@@ -26,7 +27,57 @@ export async function createUser(
     discoverySource,
     playerGamesPlayed,
     masterGamesPlayed,
+    telegramId,
   };
-  const res = await axios.post(`http://localhost:3000/users`, data, { params: { telegramId } });
-  console.log(res.data);
+  const res = await api.post("/users", data);
+  if(!res) return null;
+  return await getUserByTelegram(telegramId);
+}
+
+export async function setPlayerPreferences(
+  userId: number,
+  gameSystemIds: number[],
+  gameSystemPlayedIds: number[],
+  customSystems: string[],
+  customSystemsPlayed: string[],
+  durations: UserDurationPreference[],
+) {
+  const data: SetUserPreferencesDto = {
+    gameSystemIds,
+    gameSystemPlayedIds,
+    customSystems,
+    customSystemsPlayed,
+    durations,
+  };
+  return await api.put(`/users/${userId}/preferences/player`, data, {}, err => console.log(err));
+}
+
+export async function setMasterPreferences(
+  userId: number,
+  gameSystemIds: number[],
+  gameSystemPlayedIds: number[],
+  customSystems: string[],
+  customSystemsPlayed: string[],
+  durations: UserDurationPreference[],
+) {
+  const data: SetUserPreferencesDto = {
+    gameSystemIds,
+    gameSystemPlayedIds,
+    customSystems,
+    customSystemsPlayed,
+    durations,
+  };
+  return await api.put(`/users/${userId}/preferences/master`, data, {}, err => console.log(err));
+}
+
+export async function joinLand(
+  userId: number,
+  landId: number,
+  status: MemberStatus,
+) {
+  const data: JoinLandDto = {
+    landId,
+    status,
+  };
+  return await api.post(`/users/${userId}/memberships`, data, {}, err => console.log(err));
 }

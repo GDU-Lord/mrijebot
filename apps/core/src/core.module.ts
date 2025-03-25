@@ -4,6 +4,7 @@ import { GameSystem, Land, Member, User } from './entities';
 import { APP_PIPE } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LandController, UserController } from './controllers';
+import { GameSystemController } from './controllers/game-system/game-system.controller';
 
 @Module({
   imports: [
@@ -24,7 +25,7 @@ import { LandController, UserController } from './controllers';
     }),
     TypeOrmModule.forFeature([GameSystem, Land, User, Member]),
   ],
-  controllers: [UserController, LandController],
+  controllers: [UserController, LandController, GameSystemController],
   providers: [
     {
       provide: APP_PIPE,

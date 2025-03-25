@@ -6,5 +6,5 @@ export class GameSystem {
   id!: number;
 
   @Column('varchar')
-  name!: number;
+  name!: string;
 }

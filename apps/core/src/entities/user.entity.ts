@@ -2,7 +2,7 @@ import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColum
 import { Member } from "./member.entity";
 import { GameSystem } from "./game-system.entity";
 
-export type UserDiscoverySource = 'telegram' | 'email';
+export type UserDiscoverySource = 'instagram' | 'linked_in' | "friends" | "chat_bot" | "community" | "none";
 export type UserDurationPreference = 'one_shot' | 'short_campaign' | 'long_campaign';
 
 @Entity()
@@ -35,8 +35,18 @@ export class User {
   @JoinTable()
   playerPreferredGameSystems!: GameSystem[];
 
+  @ManyToMany(() => GameSystem)
+  @JoinTable()
+  playerPlayedGameSystems!: GameSystem[];
+
   @Column('simple-array')
-  playerPreferredDuration!: UserDurationPreference[];
+  customPlayerPlayedGameSystems!: string[];
+
+  @Column('simple-array')
+  customPlayerPreferredGameSystems!: string[];
+
+  @Column('simple-array')
+  playerPreferredDuration!: (UserDurationPreference | never)[];
 
   @Column('int')
   masterGamesPlayed!: number;
@@ -44,6 +54,16 @@ export class User {
   @ManyToMany(() => GameSystem)
   @JoinTable()
   masterPreferredGameSystems!: GameSystem[];
+
+  @ManyToMany(() => GameSystem)
+  @JoinTable()
+  masterPlayedGameSystems!: GameSystem[];
+
+  @Column('simple-array')
+  customMasterPlayedGameSystems!: string[];
+
+  @Column('simple-array')
+  customMasterPreferredGameSystems!: string[];
 
   @Column('simple-array', { nullable: true })
   masterPreferredDuration!: UserDurationPreference[];

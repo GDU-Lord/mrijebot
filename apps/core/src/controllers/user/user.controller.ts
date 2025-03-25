@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { GameSystem, Land, Member, User } from "../../entities";
 import { In, Repository } from "typeorm";
 import { CreateUserDto, SetUserPreferencesDto, JoinLandDto, SetLandAdminDto } from "./dtos";
-import { CreateUserQuery, FindUserQuery } from "./queries";
+import { FindUserQuery } from "./queries";
 import { UserNotFoundException } from "./exceptions";
 import { LandNotFoundException } from "../land/exceptions";
 
@@ -51,10 +51,16 @@ export class UserController {
   }
 
   @Post()
-  async create(@Query() query: CreateUserQuery, @Body() body: CreateUserDto): Promise<User> {
-    return this.userRepository.create({
-      ...query,
+  async create(@Body() body: CreateUserDto): Promise<User> {
+    return this.userRepository.save({
       ...body,
+      isGlobalAdmin: false,
+      playerPreferredDuration: [],
+      masterPreferredDuration: [],
+      customPlayerPlayedGameSystems: [],
+      customPlayerPreferredGameSystems: [],
+      customMasterPlayedGameSystems: [],
+      customMasterPreferredGameSystems: [],
     });
   }
 
@@ -64,12 +70,16 @@ export class UserController {
     if (!user) throw new UserNotFoundException(id);
 
     const gameSystems = await this.gameSystemRepository.findBy({ id: In(body.gameSystemIds) });
-    if (!gameSystems.length) {
-      throw new BadRequestException('No game systems found for the provided IDs');
+    const gameSystemsPlayed = await this.gameSystemRepository.findBy({ id: In(body.gameSystemPlayedIds) });
+    if ((gameSystems.length < body.gameSystemIds.length) || (gameSystemsPlayed.length < body.gameSystemPlayedIds.length)) {
+      throw new BadRequestException('Not all IDs have a corresponding game system!');
     }
 
     user.playerPreferredGameSystems = gameSystems;
+    user.playerPlayedGameSystems = gameSystemsPlayed;
     user.playerPreferredDuration = body.durations;
+    user.customPlayerPreferredGameSystems = body.customSystems;
+    user.customPlayerPlayedGameSystems = body.customSystemsPlayed;
 
     return await this.userRepository.save(user);
   }
@@ -80,12 +90,16 @@ export class UserController {
     if (!user) throw new UserNotFoundException(id);
 
     const gameSystems = await this.gameSystemRepository.findBy({ id: In(body.gameSystemIds) });
-    if (!gameSystems.length) {
-      throw new BadRequestException('No game systems found for the provided IDs');
+    const gameSystemsPlayed = await this.gameSystemRepository.findBy({ id: In(body.gameSystemPlayedIds) });
+    if ((gameSystems.length < body.gameSystemIds.length) || (gameSystemsPlayed.length < body.gameSystemPlayedIds.length)) {
+      throw new BadRequestException('Not all IDs have a corresponding game system!');
     }
-
+    
     user.masterPreferredGameSystems = gameSystems;
+    user.masterPlayedGameSystems = gameSystemsPlayed;
     user.masterPreferredDuration = body.durations;
+    user.customMasterPreferredGameSystems = body.customSystems;
+    user.customMasterPlayedGameSystems = body.customSystemsPlayed;
 
     return await this.userRepository.save(user);
   }
@@ -101,7 +115,7 @@ export class UserController {
     const existingMember = await this.memberRepository.findOneBy({ userId: id, landId: body.landId });
     if (existingMember) throw new BadRequestException('User is already a member of this land');
 
-    return this.memberRepository.create({
+    return this.memberRepository.save({
       user,
       land,
       status: body.status,

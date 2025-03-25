@@ -2,10 +2,14 @@ import { BadRequestException, Body, Controller, Delete, Get, Param, ParseIntPipe
 import { InjectRepository } from "@nestjs/typeorm";
 import { GameSystem, Land, Member, User } from "../../entities";
 import { In, Repository } from "typeorm";
-import { CreateLandDto } from "./dtos/create-land.dto";
+// import { CreateUserDto, SetUserPreferencesDto, JoinLandDto, SetLandAdminDto } from "./dtos";
+// import { CreateUserQuery, FindUserQuery } from "./queries";
+import { UserNotFoundException } from "../user/exceptions";
+import { GameSystemNotFound } from "./exceptions";
+import { CreateGameSystemDto } from "./dtos/create-game-system.dto";
 
-@Controller('lands')
-export class LandController {
+@Controller('systems')
+export class GameSystemController {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -18,19 +22,18 @@ export class LandController {
   ) {}
 
   @Get()
-  async getLands() {
-    return await this.landRepository.find({
+  async getGameSystems() {
+    return await this.gameSystemRepository.find({
       order: {
-        id: 'ASC'
-      },
-      relations: ['members']
+        name: 'ASC'
+      }
     });
   }
 
   @Post()
-  async createLand(@Body() body: CreateLandDto) {
+  async createSystem(@Body() body: CreateGameSystemDto) {
     console.log('Received data:', body);
-    this.landRepository.save(body);
+    this.gameSystemRepository.save(body);
   }
  
 }

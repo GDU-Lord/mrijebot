@@ -2,6 +2,9 @@ import { IsEmail, IsEnum, IsInt, IsString, MaxLength, Min, MinLength } from "cla
 import { UserDiscoverySource } from "../../../entities";
 
 export class CreateUserDto {
+  @IsInt()
+  telegramId!: number;
+  
   @IsEmail()
   email!: string;
 
@@ -10,7 +13,7 @@ export class CreateUserDto {
   @MaxLength(255)
   city!: string;
 
-  @IsEnum(['telegram', 'email'])
+  @IsEnum(["instagram", "chat_bot", "community", "friends", "linked_in", "none"] as UserDiscoverySource[])
   discoverySource!: UserDiscoverySource;
 
   @IsInt()

@@ -1,4 +1,4 @@
-import { Land } from "../../../../core/src/entities";
+import { GameSystem, Land } from "../../../../core/src/entities";
 import { User } from "../../../../core/src/entities/user.entity";
 import { procedure } from "../../core/chain";
 import { LocalState } from "../../core/state";
@@ -12,7 +12,8 @@ export function initState(force: boolean = false) {
       storage: {
         user: null, // User
         isWizard: false,
-        lands: []
+        lands: [],
+        systems: [],
       }
     };
   };
@@ -29,6 +30,7 @@ export interface StateType {
     user: User | null;
     isWizard: boolean;
     lands: Land[];
+    systems: GameSystem[];
   }
 
 }

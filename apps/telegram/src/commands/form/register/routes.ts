@@ -3,6 +3,7 @@ import { routeCallbackExcept, routeCallback, routeCallbackExceptArray } from "..
 import { backOption } from "../../back";
 import { $start } from "../../start";
 import { $city, $email, $formDone, $formSent, $gamesMastered, $gamesPlayed, $land, $mastered, $masterGameTypes, $played, $playGameTypes, $source, $systemsMastered, $systemsPlayed } from "./index";
+import { MASTERED, PLAYED } from "./mapping";
 
 export function registerRoutes() {
 
@@ -17,35 +18,35 @@ export function registerRoutes() {
   routeCallbackExcept($source.btn, 0, $played.proc);
   
   backOption(0, $played.btn);
-  routeCallback($played.btn, 1, $gamesPlayed.proc);
-  routeCallback($played.btn, 2, $formDone.proc);
+  routeCallback($played.btn, PLAYED.has_experience, $gamesPlayed.proc);
+  routeCallback($played.btn, PLAYED.no_experience, $formDone.proc);
 
   backOption(0, $gamesPlayed.btn);
   routeCallbackExcept($gamesPlayed.btn, 0, $systemsPlayed.proc);
 
   backOption(0, $systemsPlayed.btn);
-  routeCallback($systemsPlayed.btn, 1, $playGameTypes.proc);
-  routeCallbackExceptArray($systemsPlayed.btn, [0, 1], $systemsPlayed.proc);
+  routeCallback($systemsPlayed.btn, -1, $playGameTypes.proc);
+  routeCallbackExceptArray($systemsPlayed.btn, [0, -1], $systemsPlayed.proc);
 
   backOption(0, $playGameTypes.btn);
-  routeCallback($playGameTypes.btn, 1, $mastered.proc);
-  routeCallbackExceptArray($playGameTypes.btn, [0, 1], $playGameTypes.proc);
+  routeCallback($playGameTypes.btn, -1, $mastered.proc);
+  routeCallbackExceptArray($playGameTypes.btn, [0, -1], $playGameTypes.proc);
 
   backOption(0, $mastered.btn);
-  routeCallback($mastered.btn, 1, $gamesMastered.proc);
-  routeCallback($mastered.btn, 2, $masterGameTypes.proc);
-  routeCallback($mastered.btn, 3, $formDone.proc);
+  routeCallback($mastered.btn, MASTERED.is_master, $gamesMastered.proc);
+  routeCallback($mastered.btn, MASTERED.wants_master, $masterGameTypes.proc);
+  routeCallback($mastered.btn, MASTERED.no_master, $formDone.proc);
 
   backOption(0, $gamesMastered.btn);
   routeCallbackExcept($gamesMastered.btn, 0, $systemsMastered.proc);
 
   backOption(0, $systemsMastered.btn);
-  routeCallback($systemsMastered.btn, 1, $masterGameTypes.proc);
-  routeCallbackExceptArray($systemsMastered.btn, [0, 1], $systemsMastered.proc);
+  routeCallback($systemsMastered.btn, -1, $masterGameTypes.proc);
+  routeCallbackExceptArray($systemsMastered.btn, [0, -1], $systemsMastered.proc);
 
   backOption(0, $masterGameTypes.btn);
-  routeCallback($masterGameTypes.btn, 1, $formDone.proc);
-  routeCallbackExceptArray($masterGameTypes.btn, [0, 1], $masterGameTypes.proc);
+  routeCallback($masterGameTypes.btn, -1, $formDone.proc);
+  routeCallbackExceptArray($masterGameTypes.btn, [0, -1], $masterGameTypes.proc);
 
   backOption(0, $formDone.btn);
   routeCallback($formDone.btn, 1, $formSent.proc);

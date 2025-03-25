@@ -13,6 +13,7 @@ import { createButtons } from "../../../custom/hooks/buttons";
 import { deleteLastInput } from "../../../custom/hooks/inputs";
 import { isWizard } from "../../../custom/hooks/wizard";
 import { createLand } from "../../../api/land";
+import { createSystem } from "../../../api";
 
 afterInit.push(WizardLoginRoutes);
 
@@ -73,11 +74,24 @@ $createLand.make()
       const name = inpName;
       const include = inpInclude.split(",").map(s => s.trim());
       const exclude = inpExclude === "/skip" ? [] : inpExclude.split(",").map(s => s.trim());
-      const except = exclude.length > 0 ? ` (крім: ${exclude.join(", ")})` : "";
+      const except = exclude.length > 0 ? `(крім: ${exclude.join(", ")})` : "";
       const region = include + except;
       const res = await createLand(name, region);
-      console.log(res);
       return "Осередок створено!";
     }
     return "Скасовано!";
+  }, wizardButtons.get, editLast());
+
+export const $createSystem = procedure();
+$createSystem.make()
+  .func(isWizard())
+  .send("Введи назву НОВОЇ системи", wizardButtons.get, editLast())
+  .input("wizard:newSystemName")
+  .func(deleteLastInput("wizard:newSystemName"))
+  .send<StateType>(async state => {
+    const name = state.core.inputs["wizard:newSystemName"]?.text;
+    if(!name) return "Помилка 1!";
+    const res = await createSystem(name);
+    if(!res) return "Помилка 2!";
+    return "Систему додано!";
   }, wizardButtons.get, editLast());
