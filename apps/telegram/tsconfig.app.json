@@ -1,0 +1,40 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "declaration": false,
+    "outDir": "../../dist/apps/telegram",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "node",
+    "importHelpers": true, 
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true, 
+    "strict": true, 
+    "noImplicitAny": true, 
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test",
+    "**/*spec.ts"
+  ]
+}
+
+// {
+//   "compilerOptions": {
+//     "experimentalDecorators": true,
+//     "emitDecoratorMetadata": true,
+//     "importHelpers": true, 
+//     "esModuleInterop": true,
+//     "forceConsistentCasingInFileNames": true, 
+//     "strict": true, 
+//     "noImplicitAny": true, 
+//     "skipLibCheck": true
+//   }
+// }
