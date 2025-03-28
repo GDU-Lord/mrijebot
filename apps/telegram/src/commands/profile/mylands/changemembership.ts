@@ -1,4 +1,5 @@
 import { StateType } from "../../../custom/hooks/state";
+import { CONTROL } from "../../mapping";
 import { optionsField } from "../../presets/options";
 
 export const $changeMembership = optionsField<StateType>(
@@ -13,7 +14,7 @@ export const $changeMembership = optionsField<StateType>(
       [["Mittledeutschland", 3]],
       [["Niedersachsen", 4]],
       [["Mecklenburg-Vorpommen", 5]],
-      [["⬅️Назад", 0]]
+      [["⬅️Назад", CONTROL.back]]
     ]
   }
 );
@@ -24,8 +25,8 @@ export const $landChangeProceed = optionsField<StateType>(
   },
   async state => {
     return [
-      [["❗Продовжити", 1]],
-      [["❌Скасувати", 0]]
+      [["❗Продовжити", CONTROL.next]],
+      [["❌Скасувати", CONTROL.back]]
     ]
   }
 );
@@ -35,6 +36,6 @@ export const $landChanged = optionsField<StateType>(
     return `<b><u>👤Профіль: Зміна осередку</u></b>\n\n❗Запит на зміну осередку відправлено! Дію твого акаунту тимчасово призупинено. За потреби ти все ще можеш зв'язатися нашою командою!`;
   },
   [
-    [["⬅️Головне меню", 0]],
+    [["⬅️Головне меню", CONTROL.back]],
   ]
 );

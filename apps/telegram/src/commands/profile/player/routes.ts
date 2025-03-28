@@ -1,51 +1,52 @@
-import { routeCallback, routeCallbackExcept } from "../../../custom/hooks/routes";
+import { routeCallback, routeCallbackExcept, routeCallbackExceptArray } from "../../../custom/hooks/routes";
 import { backOption } from "../../back";
+import { CONTROL, MENU } from "../../mapping";
 import { $playerPanel } from "./index";
 import { $experience, $systemsPlayed, $gamesPlayed } from "./systemsandxp";
 import { $systemsPreferred, $prefferences, $myTriggers, $prefFight, $textForMaster, $prefSocial, $prefExplore, $gamesPreferred } from "./triggersandprefs";
 
 export function profilePlayerRoutes () {
 
-  backOption(0, $playerPanel.btn);
-  routeCallback($playerPanel.btn, 1, $systemsPreferred.proc);
-  routeCallback($playerPanel.btn, 2, $experience.proc);
-  routeCallback($playerPanel.btn, 3, $prefferences.proc);
-  routeCallback($playerPanel.btn, 4, $myTriggers.proc);
+  backOption($playerPanel.btn);
+  routeCallback($playerPanel.btn, MENU.option[0], $systemsPreferred.proc);
+  routeCallback($playerPanel.btn, MENU.option[1], $experience.proc);
+  routeCallback($playerPanel.btn, MENU.option[2], $prefferences.proc);
+  routeCallback($playerPanel.btn, MENU.option[3], $myTriggers.proc);
 
-  backOption(0, $experience.btn);
-  routeCallback($experience.btn, 1, $systemsPlayed.proc);
-  routeCallback($experience.btn, 2, $gamesPlayed.proc);
+  backOption($experience.btn);
+  routeCallback($experience.btn, MENU.option[0], $systemsPlayed.proc);
+  routeCallback($experience.btn, MENU.option[1], $gamesPlayed.proc);
 
-  backOption(0, $systemsPlayed.btn);
-  routeCallbackExcept($systemsPlayed.btn, 0, $systemsPlayed.proc);
+  backOption($systemsPlayed.btn);
+  routeCallbackExcept($systemsPlayed.btn, CONTROL.back, $systemsPlayed.proc);
 
-  backOption(0, $gamesPlayed.btn);
-  routeCallbackExcept($gamesPlayed.btn, 0, $gamesPlayed.proc);
+  backOption($gamesPlayed.btn);
+  routeCallbackExcept($systemsPlayed.btn, CONTROL.back, $systemsPlayed.proc);
 
-  backOption(0, $myTriggers.btn);
-  routeCallback($myTriggers.btn, 1, $myTriggers.proc);
+  backOption($myTriggers.btn);
+  routeCallback($myTriggers.btn, CONTROL.clear, $myTriggers.proc);
 
-  backOption(0, $systemsPreferred.btn);
-  routeCallbackExcept($systemsPreferred.btn, 0, $systemsPreferred.proc);
+  backOption($systemsPreferred.btn);
+  routeCallbackExcept($systemsPreferred.btn, CONTROL.back, $systemsPreferred.proc);
 
-  backOption(0, $gamesPreferred.btn);
-  routeCallbackExcept($gamesPreferred.btn, 0, $gamesPreferred.proc);
+  backOption($gamesPreferred.btn);
+  routeCallbackExcept($gamesPreferred.btn, CONTROL.back, $gamesPreferred.proc);
 
-  backOption(0, $prefferences.btn);
-  routeCallback($prefferences.btn, 1, $prefFight.proc);
-  routeCallback($prefferences.btn, 2, $gamesPreferred.proc);
-  routeCallback($prefferences.btn, 3, $textForMaster.proc);
+  backOption($prefferences.btn);
+  routeCallback($prefferences.btn, MENU.option[0], $prefFight.proc);
+  routeCallback($prefferences.btn, MENU.option[1], $gamesPreferred.proc);
+  routeCallback($prefferences.btn, MENU.option[2], $textForMaster.proc);
 
-  backOption(0, $textForMaster.btn);
-  routeCallbackExcept($textForMaster.btn, 0, $textForMaster.proc);
+  backOption($textForMaster.btn);
+  routeCallbackExcept($textForMaster.btn, CONTROL.back, $textForMaster.proc);
 
-  backOption(0, $prefFight.btn);
-  routeCallbackExcept($prefFight.btn, 0, $prefSocial.proc);
+  backOption($prefFight.btn);
+  routeCallbackExcept($prefFight.btn, CONTROL.back, $prefSocial.proc);
 
-  backOption(0, $prefSocial.btn);
-  routeCallbackExcept($prefSocial.btn, 0, $prefExplore.proc);
+  backOption($prefSocial.btn);
+  routeCallbackExcept($prefSocial.btn, CONTROL.back, $prefExplore.proc);
 
-  backOption(0, $prefExplore.btn);
-  routeCallbackExcept($prefExplore.btn, 0, $prefferences.proc);
+  backOption($prefExplore.btn);
+  routeCallbackExcept($prefExplore.btn, CONTROL.back, $prefferences.proc);
 
 }

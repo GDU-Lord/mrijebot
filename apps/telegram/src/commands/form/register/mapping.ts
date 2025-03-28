@@ -1,8 +1,5 @@
 import { UserDiscoverySource, UserDurationPreference } from "../../../../../core/src/entities";
-
-export type MapOf<type extends string> = {
-  [key in type]: type;
-};
+import { MapOf } from "../../mapping";
 
 export const SOURCE: MapOf<UserDiscoverySource> = { 
   instagram: "instagram",

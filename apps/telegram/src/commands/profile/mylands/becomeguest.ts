@@ -1,3 +1,4 @@
+import { CONTROL } from "../../mapping";
 import { optionsField } from "../../presets/options";
 
 export const $becomeGuest = optionsField(
@@ -8,7 +9,7 @@ export const $becomeGuest = optionsField(
     return [
       [["Bayern", 1]],
       [["Mitteldeutschland", 2]],
-      [["⬅️Назад", 0]],
+      [["⬅️Назад", CONTROL.back]],
     ];
   }
 );
@@ -19,7 +20,7 @@ export const $becomeGuestDone = optionsField(
   },
   async state => {
     return [
-      [["⬅️Головне меню", 0]],
+      [["⬅️Головне меню", CONTROL.back]],
     ];
   }
 );

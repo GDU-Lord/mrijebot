@@ -1,5 +1,6 @@
 import { routeCallback, routeCallbackArray, routeCallbackExcept } from "../../custom/hooks/routes";
 import { $back, backOption } from "../back";
+import { CONTROL, MENU } from "../mapping";
 import { $start } from "../start";
 import { $idCard } from "./idcard";
 import { $main } from "./index";
@@ -14,36 +15,36 @@ import { $myTriggers, $prefExplore, $prefferences, $prefFight, $prefSocial, $sys
 
 export function profileRoutes () {
 
-  backOption(0, $main.btn);
-  routeCallback($main.btn, 1, $myLands.proc);
-  routeCallback($main.btn, 3, $playerPanel.proc);
-  routeCallback($main.btn, 4, $masterPanel.proc);
-  routeCallback($main.btn, 6, $idCard.proc);
+  backOption($main.btn);
+  routeCallback($main.btn, MENU.option[0], $myLands.proc);
+  routeCallback($main.btn, MENU.option[2], $playerPanel.proc);
+  routeCallback($main.btn, MENU.option[3], $masterPanel.proc);
+  routeCallback($main.btn, MENU.option[5], $idCard.proc);
 
-  backOption(0, $idCard.btn);
+  backOption($idCard.btn);
 
-  backOption(0, $myLands.btn);
-  routeCallback($myLands.btn, 1, $myLandsList.proc);
-  routeCallback($myLands.btn, 2, $changeMembership.proc);
-  routeCallback($myLands.btn, 3, $becomeGuest.proc);
+  backOption($myLands.btn);
+  routeCallback($myLands.btn, MENU.option[0], $myLandsList.proc);
+  routeCallback($myLands.btn, MENU.option[1], $changeMembership.proc);
+  routeCallback($myLands.btn, MENU.option[2], $becomeGuest.proc);
 
-  backOption(0, $myLandsList.btn);
-  routeCallbackExcept($myLandsList.btn, 0, $landPanel.proc);
+  backOption($myLandsList.btn);
+  routeCallbackExcept($myLandsList.btn, CONTROL.back, $landPanel.proc);
 
-  backOption(0, $landPanel.btn);
-  routeCallback($landPanel.btn, 2, $changeMembership.proc);
+  backOption($landPanel.btn);
+  routeCallback($landPanel.btn, MENU.option[1], $changeMembership.proc);
 
-  backOption(0, $changeMembership.btn);
-  routeCallbackExcept($changeMembership.btn, 0, $landChangeProceed.proc);
+  backOption($changeMembership.btn);
+  routeCallbackExcept($changeMembership.btn, CONTROL.back, $landChangeProceed.proc);
 
-  backOption(0, $landChangeProceed.btn);
-  routeCallback($landChangeProceed.btn, 1, $landChanged.proc);
+  backOption($landChangeProceed.btn);
+  routeCallback($landChangeProceed.btn, CONTROL.next, $landChanged.proc);
 
-  routeCallback($landChanged.btn, 0, $start);
+  routeCallback($landChanged.btn, CONTROL.back, $start);
 
-  backOption(0, $becomeGuest.btn);
-  routeCallbackExcept($becomeGuest.btn, 0, $becomeGuestDone.proc);
+  backOption($becomeGuest.btn);
+  routeCallbackExcept($becomeGuest.btn, CONTROL.back, $becomeGuestDone.proc);
 
-  routeCallback($becomeGuestDone.btn, 0, $start);
+  routeCallback($becomeGuestDone.btn, CONTROL.back, $start);
 
 }

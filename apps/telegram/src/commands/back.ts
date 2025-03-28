@@ -2,9 +2,10 @@ import { procedure } from "../core/chain";
 import { createButtons, buttonsGenerator } from "../custom/hooks/buttons";
 import { routeCallback } from "../custom/hooks/routes";
 import { initState } from "../custom/hooks/state";
+import { CONTROL } from "./mapping";
 
 export const backButtons = createButtons([
-  [["⬅️Назад", 1]]
+  [["⬅️Назад", CONTROL.back]]
 ]);
 
 export const $back = procedure();
@@ -19,8 +20,8 @@ $back.make()
     }
   });
 
-backOption(1, backButtons);
+backOption(backButtons);
 
-export function backOption(value: any, buttons: buttonsGenerator) {
+export function backOption(buttons: buttonsGenerator, value = CONTROL.back) {
   return routeCallback(buttons, value, $back);
 }

@@ -14,19 +14,20 @@ import { Land } from "../app/entities/land.entity";
 import { Bot } from "../core/index";
 import { $main } from "./profile/index";
 import * as api from "../api";
+import { CONTROL, MENU } from "./mapping";
 
 export const startButtons = createButtons<StateType>(async state => {
   const buttons: keyboard = [
-    [["ℹ️ Інформація", 1]]
+    [["ℹ️ Інформація", MENU.option[0]]]
   ];
-  if(state.data.storage.user) buttons.push([["👤Мій профіль", 3]]);
-  else buttons.push([["👤Реєстрація", 2]]);
+  if(state.data.storage.user) buttons.push([["👤Мій профіль", MENU.option[2]]]);
+  else buttons.push([["👤Реєстрація", MENU.option[1]]]);
   return buttons;
 });
 
-routeCallback(startButtons, 1, $info);
-routeCallback(startButtons, 2, $email.proc);
-routeCallback(startButtons, 3, $main.proc);
+routeCallback(startButtons, MENU.option[0], $info);
+routeCallback(startButtons, MENU.option[1], $email.proc);
+routeCallback(startButtons, MENU.option[2], $main.proc);
 
 export const $start = procedure();
 $start.make()

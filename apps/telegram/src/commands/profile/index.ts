@@ -1,5 +1,6 @@
 import { afterInit } from "../../afterInit";
 import { StateType } from "../../custom/hooks/state";
+import { CONTROL, MENU } from "../mapping";
 import { optionsField } from "../presets/options";
 import { profileRoutes } from "./routes";
 
@@ -23,11 +24,11 @@ export const $main = optionsField<StateType>(
   },
   async state => {
     return [
-      [["📍Мої осередки", 1], ["📧Контактні дані", 2]],
-      [["💙Панель гравця", 3], ["💛Панель майстра", 4]],
-      [["⚙️Налаштування оголошень", 5]],
-      [["💳Ідентифікаційна Картка", 6]],
-      [["⬅️Назад", 0]],
+      [["📍Мої осередки", MENU.option[0]], ["📧Контактні дані", MENU.option[1]]],
+      [["💙Панель гравця", MENU.option[2]], ["💛Панель майстра", MENU.option[3]]],
+      [["⚙️Налаштування оголошень", MENU.option[4]]],
+      [["💳Ідентифікаційна Картка", MENU.option[5]]],
+      [["⬅️Назад", CONTROL.back]],
     ];
   }
 );

@@ -1,5 +1,6 @@
 import { routeCallback, routeCallbackExcept } from "../../../custom/hooks/routes";
 import { backOption } from "../../back";
+import { CONTROL, MENU } from "../../mapping";
 import { $masterPanel } from "./index";
 import { $displayPlayerData, $playerData } from "./playerdata";
 import { $gamesPreferred, $systemsPreferred } from "./prefs";
@@ -7,29 +8,29 @@ import { $experience, $gamesMastered, $systemsMastered } from "./systemsandxp";
 
 export function profileMasterRoutes () {
 
-  backOption(0, $masterPanel.btn);
-  routeCallback($masterPanel.btn, 1, $systemsPreferred.proc);
-  routeCallback($masterPanel.btn, 2, $gamesPreferred.proc);
-  routeCallback($masterPanel.btn, 3, $experience.proc);
-  routeCallback($masterPanel.btn, 4, $playerData.proc);
+  backOption($masterPanel.btn);
+  routeCallback($masterPanel.btn, MENU.option[0], $systemsPreferred.proc);
+  routeCallback($masterPanel.btn, MENU.option[1], $gamesPreferred.proc);
+  routeCallback($masterPanel.btn, MENU.option[2], $experience.proc);
+  routeCallback($masterPanel.btn, MENU.option[3], $playerData.proc);
 
-  backOption(0, $experience.btn);
-  routeCallback($experience.btn, 1, $systemsMastered.proc);
-  routeCallback($experience.btn, 2, $gamesMastered.proc);
+  backOption($experience.btn);
+  routeCallback($experience.btn, MENU.option[0], $systemsMastered.proc);
+  routeCallback($experience.btn, MENU.option[1], $gamesMastered.proc);
 
-  backOption(0, $systemsMastered.btn);
-  routeCallbackExcept($systemsMastered.btn, 0, $systemsMastered.proc);
+  backOption($systemsMastered.btn);
+  routeCallbackExcept($systemsMastered.btn, CONTROL.back, $systemsMastered.proc);
 
-  backOption(0, $gamesMastered.btn);
-  routeCallbackExcept($gamesMastered.btn, 0, $gamesMastered.proc);
+  backOption($gamesMastered.btn);
+  routeCallbackExcept($gamesMastered.btn, CONTROL.back, $gamesMastered.proc);
 
-  backOption(0, $systemsPreferred.btn);
-  routeCallbackExcept($systemsPreferred.btn, 0, $systemsPreferred.proc);
+  backOption($systemsPreferred.btn);
+  routeCallbackExcept($systemsPreferred.btn, CONTROL.back, $systemsPreferred.proc);
 
-  backOption(0, $gamesPreferred.btn);
-  routeCallbackExcept($gamesPreferred.btn, 0, $gamesPreferred.proc);
+  backOption($gamesPreferred.btn);
+  routeCallbackExcept($gamesPreferred.btn, CONTROL.back, $gamesPreferred.proc);
 
-  backOption(0, $playerData.btn);
-  backOption(0, $displayPlayerData.btn);
+  backOption($playerData.btn);
+  backOption($displayPlayerData.btn);
 
 }

@@ -2,6 +2,7 @@ import { Land } from "../../../app/entities/land.entity";
 import { keyboard } from "../../../custom/hooks/buttons";
 import { saveValue } from "../../../custom/hooks/options";
 import { StateType } from "../../../custom/hooks/state";
+import { CONTROL, MENU } from "../../mapping";
 import { optionsField } from "../../presets/options";
 
 export const $myLandsList = optionsField<StateType>(
@@ -14,9 +15,9 @@ export const $myLandsList = optionsField<StateType>(
     const landsById = state.data.storage.user!.memberships.map(m => m.land);
     state.data.options["profile:landsById"] = {};
     landsById.forEach(land => state.data.options["profile:landsById"][land.id] = land);
-    return [...member, ...guest, [["⬅️Назад", 0]]] as keyboard;
+    return [...member, ...guest, [["⬅️Назад", CONTROL.back]]] as keyboard;
   },
-  saveValue("profile:landId", 0)
+  saveValue("profile:landId", CONTROL.back)
 );
 
 export const $landPanel = optionsField<StateType>(
@@ -35,12 +36,12 @@ export const $landPanel = optionsField<StateType>(
     // add option to leave 
     const land = state.data.options["profile:chosenLand"] as Land;
     const isMember = !!land.members.find(m => m.userId === state.data.storage.user?.id && m.status === "participant");
-    let keyboard: keyboard = [[["⬅️Назад", 0]]];
+    let keyboard: keyboard = [[["⬅️Назад", CONTROL.back]]];
     if(!isMember) {
-      keyboard = [[["👋Покинути осередок", 1]], ...keyboard];
+      keyboard = [[["👋Покинути осередок", MENU.option[0]]], ...keyboard];
     }
     else {
-      keyboard = [[["🔁Змінити членство", 2]], ...keyboard];
+      keyboard = [[["🔁Змінити членство", MENU.option[1]]], ...keyboard];
     }
     return keyboard;
   }

@@ -2,6 +2,7 @@ import TelegramBot from "node-telegram-bot-api";
 import { StateType } from "../../../custom/hooks/state";
 import { optionsOtherField } from "../../presets/optionsOther";
 import { optionsField } from "../../presets/options";
+import { CONTROL } from "../../mapping";
 
 function getUserData(msg: TelegramBot.Message): [string | null, number | null] {
   for(const e of msg?.entities ?? []) {
@@ -25,7 +26,7 @@ export const $playerData = optionsOtherField<StateType>(
     return `<b><u>👤Палень майстра: Дані гравця</u></b>\n\nТегни свого гравця!\n\n❕Якщо в нього/неї немає тегу в Телеграмі, попроси його/її переслати тобі свою Ідентифікаційну Картку.\n❕Її можна знайти у <b>Профіль</b> > <b>Ідентифікаційна Картка</b>\n❕Перешли цю картку сюди в чат замість тега гравця (у вигляді повідомлення)!`;
   },
   [
-    [["⬅️Назад", 0]]
+    [["⬅️Назад", CONTROL.back]]
   ],
   (text, msg) => {
     const [username, telegramId] = getUserData(msg);
@@ -52,6 +53,6 @@ export const $displayPlayerData = optionsField<StateType>(
     return `<b><u>👤Палень майстра: Дані гравця ІМ'Я</u></b>\n\n${state.data.options["masterPanel:userData"]}`;
   },
   [
-    [["⬅️Назад", 0]]
+    [["⬅️Назад", CONTROL.back]]
   ]
 );

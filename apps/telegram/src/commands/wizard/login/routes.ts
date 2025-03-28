@@ -1,9 +1,10 @@
 import { wizardButtons } from ".";
 import { routeCallback } from "../../../custom/hooks/routes";
+import { CONTROL } from "../../mapping";
 import { $start } from "../../start";
 
 export function WizardLoginRoutes () {
 
-  routeCallback(wizardButtons, 0, $start);
+  routeCallback(wizardButtons, CONTROL.back, $start);
 
 }

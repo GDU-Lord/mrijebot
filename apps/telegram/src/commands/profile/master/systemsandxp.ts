@@ -1,6 +1,7 @@
 import { getInputOptionsList } from "../../../custom/hooks/inputs";
 import { toggleButtons, toggleValue, toggleValueInput } from "../../../custom/hooks/options";
 import { text } from "../../form/validators";
+import { CONTROL, MENU } from "../../mapping";
 import { optionsField } from "../../presets/options";
 import { optionsOtherField } from "../../presets/optionsOther";
 
@@ -8,15 +9,15 @@ export const $experience = optionsField(async state => {
   return `<b><u>👤Профіль: Досвід майстра</u></b>\n\nТут ти можеш змінити дані свого досвіду в НРІ (як майстра)`;
 },
 [
-  [["🎲 Проведені системи", 1], ["♦️ Проведені сесії", 2]],
-  [["⬅️Назад", 0]]
+  [["🎲 Проведені системи", MENU.option[0]], ["♦️ Проведені сесії", MENU.option[1]]],
+  [["⬅️Назад", CONTROL.back]]
 ]);
 
 export const $systemsMastered = optionsOtherField(
   "lastInput",
   async state => {
     const list = getInputOptionsList(state, "masterPanel", "systemsMastered", text());
-    return `<b><u>👤Профіль: Досвід майстра</u></b>\n\nУ які Настільні Рольові Системи ти водив(ла/ли)?\n\nТи можеш додати власні варіанти, ввівши їх у повідомленні. Щоб прибрати введений вручну варіант, введи його назву ще раз!\n\nВведені вручну: ${list.join("; ")}`;
+    return `<b><u>👤Профіль: Досвід майстра</u></b>\n\nУ які Настільні Рольові Системи ти водив(ла/ли)?\n\nТи можеш додати власні варіанти, ввівши їх у повідомленні. Щоб прибрати введений вручну варіант, введи його назву ще раз!\n\n✍️<b>Введені вручну:</b> ${list.join("; ")}`;
   },
   toggleButtons(
     "masterPanel:systemsMastered", 
@@ -25,13 +26,13 @@ export const $systemsMastered = optionsOtherField(
       [["Кіберпанк", 2]],
       [["Савага", 3]],
       [["Архетерика", 4]],
-      [["✔️Зберегти", 0]],
+      [["✔️Зберегти", CONTROL.back]],
     ],
     "✅ ",
     "",
-    0),
+    CONTROL.back),
   text(),
-  toggleValue("masterPanel:systemsMastered", 0),
+  toggleValue("masterPanel:systemsMastered", CONTROL.back),
   toggleValueInput("masterPanel:systemsMastered")
 );
 
@@ -46,7 +47,7 @@ export const $gamesMastered = optionsField(
       [["Від 5 до 10 сесій", 2]],
       [["Від 10 до 50 сесій", 3]],
       [["Понад 50 сесій", 4]],
-      [["✔️Зберегти", 0]],
+      [["✔️Зберегти", CONTROL.back]],
     ]
   }
 );
