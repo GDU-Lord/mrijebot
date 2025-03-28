@@ -6,8 +6,8 @@
 	],
 	"settings": {
 		"typescript.preferences.importModuleSpecifier": "relative",
-		"typescript.preferences.importModuleSpecifierEnding": "js",
+		// "typescript.preferences.importModuleSpecifierEnding": "js",
 		"javascript.preferences.importModuleSpecifier": "relative",
-		"javascript.preferences.importModuleSpecifierEnding": "js"
+		// "javascript.preferences.importModuleSpecifierEnding": "js"
 	}
 }
