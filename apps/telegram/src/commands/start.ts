@@ -53,65 +53,9 @@ $start.make()
     //   state.data.user = data;
     //   state.data.userIndex = index;
     // }
-    let user = state.data.storage.user;
-    if(!user) user = await api.getUserByTelegram(state.core.userId);
-    // if(!user) { // emulate user
-    //   user = new User;
-    //   user.id = 1;
-    //   user.telegramId = state.core.userId;
-    //   user.email = "usertest@example.com";
-    //   user.city = "Berlin";
-    //   user.memberships = [];
-    //   {
-    //     const member = new Member;
-    //     member.id = 2;
-    //     member.isLandAdmin = false;
-    //     member.user = user;
-    //     member.userId = 1;
-    //     member.status = "participant";
-    //     const land = new Land;
-    //     land.id = 3;
-    //     land.members = [member];
-    //     land.name = "Berlin";
-    //     land.region = "Berlin, Brandenburg";
-    //     member.land = land;
-    //     member.landId = land.id;
-    //     user.memberships.push(member);
-    //   }
-    //   {
-    //     const member = new Member;
-    //     member.id = 4;
-    //     member.isLandAdmin = false;
-    //     member.user = user;
-    //     member.userId = 1;
-    //     member.status = "guest";
-    //     const land = new Land;
-    //     land.id = 5;
-    //     land.members = [member];
-    //     land.name = "Niedersachsen";
-    //     land.region = "Bremen, Hamburg, Niedersachsen";
-    //     member.land = land;
-    //     member.landId = land.id;
-    //     user.memberships.push(member);
-    //   }
-    //   {
-    //     const member = new Member;
-    //     member.id = 6;
-    //     member.isLandAdmin = false;
-    //     member.user = user;
-    //     member.userId = 1;
-    //     member.status = "guest";
-    //     const land = new Land;
-    //     land.id = 7;
-    //     land.members = [member];
-    //     land.name = "Mecklenburg-Vorpommen";
-    //     land.region = "Mecklenburg-Vorpommen";
-    //     member.land = land;
-    //     member.landId = land.id;
-    //     user.memberships.push(member);
-    //   }
-    //   state.data.storage.user = user;
-    // }
+    let user = state.data.storage.user = await api.getUserByTelegram(state.core.userId);
+    console.log(user);
+    if(!user) return CHAIN.EXIT;
   })
   .send<StateType>(async state => {
     let mention = "Тебе";

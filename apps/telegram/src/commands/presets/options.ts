@@ -17,10 +17,20 @@ export function optionsField<LocalData = any, UserData = any>(text: (state: Loca
   const fieldChain = fieldProcedure.make()
     .func(noRepeatCrum(fieldProcedure))
     .func(addCrum(fieldProcedure))
-    .send(text, fieldButtons.get, editLast());
+    .send(text, fieldButtons.get, editLast())
+    .func(async state => {
+      const pname = fieldProcedure.id;
+      state.core.promises.promise[pname] = new Promise<any>((res, rej) => {
+        state.core.promises.resolve[pname] = res;
+      });
+    });
   on("callback_query", buttonCallback(data => true, fieldButtons))
     .func(async state => {
-      return await process(state, fieldButtons);
+      const res = await process(state, fieldButtons);
+      const pname = fieldProcedure.id;
+      state.core.promises.resolve[pname](res);
+      delete state.core.promises.resolve[pname];
+      return res;
     });
   return {
     proc: fieldProcedure,

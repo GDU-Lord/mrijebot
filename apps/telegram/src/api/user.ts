@@ -1,6 +1,4 @@
-import axios from "axios";
-import TelegramBot from "node-telegram-bot-api";
-import { GameSystem, Member, MemberStatus, User, UserDiscoverySource, UserDurationPreference } from "../../../core/src/entities";
+import { MemberStatus, User, UserDiscoverySource, UserDurationPreference } from "../../../core/src/entities";
 import { CreateUserDto } from "../../../core/src/controllers/user/dtos/create-user.dto";
 import { api } from ".";
 import { JoinLandDto, SetUserPreferencesDto } from "../../../core/src/controllers/user/dtos";
@@ -80,4 +78,11 @@ export async function joinLand(
     status,
   };
   return await api.post(`/users/${userId}/memberships`, data, {}, err => console.log(err));
+}
+
+export async function leaveLand(
+  userId: number,
+  landId: number,
+) {
+  return await api.delete(`/users/${userId}/memberships/${landId}`, {}, err => console.log(err));
 }

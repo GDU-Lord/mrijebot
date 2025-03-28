@@ -8,7 +8,7 @@ import { $masterPanel } from "./master/index";
 import { $becomeGuest, $becomeGuestDone } from "./mylands/becomeguest";
 import { $changeMembership, $landChangeProceed, $landChanged } from "./mylands/changemembership";
 import { $myLands } from "./mylands/index";
-import { $myLandsList, $landPanel } from "./mylands/landlist";
+import { $myLandsList, $landPanel, $leaveLand, $landLeft } from "./mylands/landlist";
 import { $playerPanel } from "./player/index";
 import { $experience, $gamesPlayed, $systemsPlayed } from "./player/systemsandxp";
 import { $myTriggers, $prefExplore, $prefferences, $prefFight, $prefSocial, $systemsPreferred, $textForMaster } from "./player/triggersandprefs";
@@ -32,7 +32,13 @@ export function profileRoutes () {
   routeCallbackExcept($myLandsList.btn, CONTROL.back, $landPanel.proc);
 
   backOption($landPanel.btn);
+  routeCallback($landPanel.btn, MENU.option[0], $leaveLand.proc);
   routeCallback($landPanel.btn, MENU.option[1], $changeMembership.proc);
+
+  backOption($leaveLand.btn);
+  routeCallback($leaveLand.btn, CONTROL.next, $landLeft.proc, $leaveLand.proc.id);
+
+  routeCallback($landLeft.btn, CONTROL.back, $start);
 
   backOption($changeMembership.btn);
   routeCallbackExcept($changeMembership.btn, CONTROL.back, $landChangeProceed.proc);
@@ -43,7 +49,7 @@ export function profileRoutes () {
   routeCallback($landChanged.btn, CONTROL.back, $start);
 
   backOption($becomeGuest.btn);
-  routeCallbackExcept($becomeGuest.btn, CONTROL.back, $becomeGuestDone.proc);
+  routeCallbackExcept($becomeGuest.btn, CONTROL.back, $becomeGuestDone.proc, $becomeGuest.proc.id);
 
   routeCallback($becomeGuestDone.btn, CONTROL.back, $start);
 

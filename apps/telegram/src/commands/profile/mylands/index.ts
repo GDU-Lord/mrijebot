@@ -1,3 +1,4 @@
+import { getUserMemberships } from "../../../api";
 import { Land } from "../../../app/entities/land.entity";
 import { keyboard } from "../../../custom/hooks/buttons";
 import { saveValue } from "../../../custom/hooks/options";
@@ -7,16 +8,18 @@ import { optionsField } from "../../presets/options";
 
 export const $myLands = optionsField<StateType>(
   async state => {
-    let member = state.data.storage.user?.memberships.filter(m => m.status === "participant").map(m => m.land.name).join(", ");
-    let guest = state.data.storage.user?.memberships.filter(m => m.status === "guest").map(m => m.land.name).join(", ");
-    if(member !== "") member = "\n<b>Членство</b>: " + member;
+    if(!state.data.storage.user) return "ПОМИЛКА!";
+    const memberships = await getUserMemberships(state.data.storage.user);
+    let participant = memberships.participant.map(m => m.land.name).join(", ");
+    let guest = memberships.guest.map(m => m.land.name).join(", ");
+    if(participant !== "") participant = "\n<b>Учасник</b>: " + participant;
     if(guest !== "") guest = "\n<b>Гість</b>: " + guest;
-    return `<b><u>👤Профіль: Мої осередки</u></b>\n${member}${guest}`;
+    return `<b><u>👤Профіль: Мої осередки</u></b>\n${participant}${guest}`;
   },
   async state => {
     return [
       [["📍Панель осередків", MENU.option[0]]],
-      [["🔁Змінити членство", MENU.option[1]], ["👋Стати гостем", MENU.option[2]]],
+      [["🔁Змінити осередок*", MENU.option[1]], ["👋Стати гостем", MENU.option[2]]],
       [["⬅️Назад", CONTROL.back]]
     ];
   }

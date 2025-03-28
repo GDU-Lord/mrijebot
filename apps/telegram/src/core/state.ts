@@ -37,6 +37,14 @@ export class UserState<dataType = any> {
 export class LocalState<dataType = any, userDataType = any> {
 
   core: {
+    promises: {
+      resolve: {
+        [key: string]: (arg?: any) => void;
+      },
+      promise: {
+        [key: string]: Promise<any>;
+      }
+    };
     chatId: TelegramBot.ChatId;
     threadId: number;
     userId: userId;
@@ -46,12 +54,12 @@ export class LocalState<dataType = any, userDataType = any> {
     };
     procedures: {
       [key: string]: {
-          resolve: (data: any) => void;
-          cache: {
-            index: number | null;
-            [key: string]: any;
-          }
-        }[];
+        resolve: (data: any) => void;
+        cache: {
+          index: number | null;
+          [key: string]: any;
+        }
+      }[];
     };
   };
 
@@ -100,6 +108,10 @@ export class LocalState<dataType = any, userDataType = any> {
   constructor(chatId: TelegramBot.ChatId, threadId: number, userId: userId) {
     this.core = {
       userState: UserState.list[userId],
+      promises: {
+        resolve: {},
+        promise: {}
+      },
       inputs: {},
       procedures: {},
       chatId, userId, threadId

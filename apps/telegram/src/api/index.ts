@@ -46,6 +46,16 @@ export class API {
     }
   }
 
+  async delete(path: string, params: { [key: string]: any } = {}, errorHandler: (err: any) => void = () => {}): Promise<boolean> {
+    try {
+      const res = await axios.delete(this.host + path, params);
+      return true;
+    } catch (err) {
+      errorHandler(err);
+      return false;
+    }
+  }
+
 }
 
 export const api = new API("http://localhost:3000");
