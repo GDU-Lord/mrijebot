@@ -1,23 +1,26 @@
+import { getLastCallback } from "../../../custom/hooks/buttons";
+import { call, removeCrum } from "../../../custom/hooks/menu";
 import { routeCallback, routeCallbackExcept, routeCallbackExceptArray } from "../../../custom/hooks/routes";
 import { backOption } from "../../back";
 import { CONTROL, MENU } from "../../mapping";
 import { $playerPanel } from "./index";
+import { loadPlayerPrefs, savePlayedSystems, savePreferredSystems } from "./middleware";
 import { $experience, $systemsPlayed, $gamesPlayed } from "./systemsandxp";
 import { $systemsPreferred, $prefferences, $myTriggers, $prefFight, $textForMaster, $prefSocial, $prefExplore, $gamesPreferred } from "./triggersandprefs";
 
 export function profilePlayerRoutes () {
 
   backOption($playerPanel.btn);
-  routeCallback($playerPanel.btn, MENU.option[0], $systemsPreferred.proc);
+  routeCallback($playerPanel.btn, MENU.option[0], $systemsPreferred.proc, null, loadPlayerPrefs);
   routeCallback($playerPanel.btn, MENU.option[1], $experience.proc);
   routeCallback($playerPanel.btn, MENU.option[2], $prefferences.proc);
   routeCallback($playerPanel.btn, MENU.option[3], $myTriggers.proc);
 
   backOption($experience.btn);
-  routeCallback($experience.btn, MENU.option[0], $systemsPlayed.proc);
+  routeCallback($experience.btn, MENU.option[0], $systemsPlayed.proc, null, loadPlayerPrefs);
   routeCallback($experience.btn, MENU.option[1], $gamesPlayed.proc);
 
-  backOption($systemsPlayed.btn);
+  backOption($systemsPlayed.btn, CONTROL.back, savePlayedSystems);
   routeCallbackExcept($systemsPlayed.btn, CONTROL.back, $systemsPlayed.proc);
 
   backOption($gamesPlayed.btn);
@@ -25,8 +28,8 @@ export function profilePlayerRoutes () {
 
   backOption($myTriggers.btn);
   routeCallback($myTriggers.btn, CONTROL.clear, $myTriggers.proc);
-
-  backOption($systemsPreferred.btn);
+  
+  backOption($systemsPreferred.btn, CONTROL.back, savePreferredSystems);
   routeCallbackExcept($systemsPreferred.btn, CONTROL.back, $systemsPreferred.proc);
 
   backOption($gamesPreferred.btn);

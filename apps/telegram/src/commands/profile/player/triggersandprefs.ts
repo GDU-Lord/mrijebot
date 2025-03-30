@@ -1,5 +1,9 @@
-import { getLastCallback } from "../../../custom/hooks/buttons";
+import { $playerPanel } from ".";
+import { getSystems } from "../../../api";
+import { procedure } from "../../../core/chain";
+import { getLastCallback, keyboard } from "../../../custom/hooks/buttons";
 import { getInputOptionsList } from "../../../custom/hooks/inputs";
+import { call } from "../../../custom/hooks/menu";
 import { saveValue, saveValueInput, toggleButtons, toggleValue, toggleValueInput } from "../../../custom/hooks/options";
 import { StateType } from "../../../custom/hooks/state";
 import { GAME_TYPES } from "../../form/register/mapping";
@@ -29,20 +33,24 @@ export const $myTriggers = optionsOtherField<StateType>(
 export const $systemsPreferred = optionsOtherField(
   "lastInput",
   async state => {
+    state.data.storage.systems = await getSystems() ?? [];
+    console.log("load");
     const list = getInputOptionsList(state, "playerPanel", "systemsPreferred", text());
-    return `<b><u>👤Профіль: Твої системи</u></b>\n\nУ які Настільні Рольові Системи ти плануєш грати?\n\nТи можеш додати власні варіанти, ввівши їх у повідомленні. Щоб прибрати введений вручну варіант, введи його назву ще раз!\n\n✍️<b>Введені вручну:</b> ${list.join("; ")}`;
+    return "<b><u>👤Реєстрація: Досвід в НРІ</u></b>\n\n🎲 У які Настільні Рольові Системи ти плануєш грати?\n\nℹ️ Ти можеш додати власні варіанти, ввівши їх у повідомленні.\nℹ️ Щоб прибрати введений вручну варіант, введи його назву ще раз!\n\n✍️<b>Введені вручну:</b> " + list.join("; ");
   },
-  toggleButtons(
+  toggleButtons<StateType>(
     "playerPanel:systemsPreferred", 
-    [
-      [["ДнД", 1]],
-      [["Кіберпанк", 2]],
-      [["Савага", 3]],
-      [["Архетерика", 4]],
-      [["✔️Зберегти", CONTROL.back]],
-    ],
+    async state => {
+      const buttons = state.data.storage.systems.map(s => {
+        return [[s.name, s.id]];
+      }) as keyboard;
+      return [
+        ...buttons, 
+        [["✔️Зберегти", CONTROL.back]],
+      ];
+    }, 
     "✅ ",
-    "",
+    "", 
     CONTROL.back),
   text(),
   toggleValue("playerPanel:systemsPreferred", CONTROL.back),

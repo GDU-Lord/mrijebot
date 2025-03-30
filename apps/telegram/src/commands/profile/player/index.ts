@@ -13,7 +13,7 @@ export const $playerPanel = optionsField(
   },
   [
     [["🎲 Ігрові системи", MENU.option[0]], ["♦️ Мій досвід", MENU.option[1]]],
-    [["👍Мої вподобання", MENU.option[2]], ["🥲Мої тригери", MENU.option[3]]],
+    [["👍Мої вподобання*", MENU.option[2]], ["🥲Мої тригери*", MENU.option[3]]],
     [["⬅️Назад", CONTROL.back]],
   ],
   async (state, buttons) => {

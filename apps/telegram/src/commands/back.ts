@@ -1,4 +1,6 @@
+import { CHAIN } from "../core/actions";
 import { procedure } from "../core/chain";
+import { LocalState } from "../core/state";
 import { createButtons, buttonsGenerator } from "../custom/hooks/buttons";
 import { routeCallback } from "../custom/hooks/routes";
 import { initState } from "../custom/hooks/state";
@@ -22,6 +24,6 @@ $back.make()
 
 backOption(backButtons);
 
-export function backOption(buttons: buttonsGenerator, value = CONTROL.back) {
-  return routeCallback(buttons, value, $back);
+export function backOption(buttons: buttonsGenerator, value = CONTROL.back, middleware: (state: LocalState) => Promise<CHAIN | void> = async () => {}) {
+  return routeCallback(buttons, value, $back, null, middleware);
 }

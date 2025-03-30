@@ -31,7 +31,7 @@ export const $main = optionsField<StateType>(
   async state => {
     return [
       [["📍Мої осередки", MENU.option[0]], ["📧Контактні дані*", MENU.option[1]]],
-      [["💙Панель гравця*", MENU.option[2]], ["💛Панель майстра*", MENU.option[3]]],
+      [["💙Панель гравця", MENU.option[2]], ["💛Панель майстра*", MENU.option[3]]],
       [["⚙️Налаштування оголошень*", MENU.option[4]]],
       [["💳Ідентифікаційна Картка", MENU.option[5]]],
       [["⬅️Назад", CONTROL.back]],

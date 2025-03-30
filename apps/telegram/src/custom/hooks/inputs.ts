@@ -1,5 +1,6 @@
 import { inputListener, Bot } from "../../core/index";
 import { LocalState } from "../../core/state";
+import { StateType } from "./state";
 
 export function removeInputs() {
   return async (state: LocalState) => {
@@ -23,7 +24,7 @@ export function deleteLastInput(key: string) {
   }
 }
 
-export function getInputOptionsList(state: LocalState, part: string, field: string, validator: (input: string) => boolean) {
+export function getInputOptionsList(state: LocalState<StateType>, part: string, field: string, validator: (input: string) => boolean) {
   const list: string[] = [];
   for(const i in state.data.options) {
     const [_part, _field, ...rest] = i.split(":");
@@ -33,4 +34,14 @@ export function getInputOptionsList(state: LocalState, part: string, field: stri
       list.push(value);
   }
   return list;
+}
+
+export function setInputOptionsList(state: LocalState<StateType>, part: string, field: string, data: any[]) {
+  for(const t of data) state.data.options[`${part}:${field}:${t}`] = true; 
+}
+
+export function clearOptions(state: LocalState<StateType>, startsWith: string) {
+  for(const i in state.data.options) {
+    if(i.startsWith(startsWith)) delete state.data.options[i];
+  }
 }

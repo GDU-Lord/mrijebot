@@ -28,7 +28,7 @@ export function optionsField<LocalData = any, UserData = any>(text: (state: Loca
     .func(async state => {
       const res = await process(state, fieldButtons);
       const pname = fieldProcedure.id;
-      state.core.promises.resolve[pname](res);
+      state.core.promises.resolve[pname]?.(res);
       delete state.core.promises.resolve[pname];
       return res;
     });

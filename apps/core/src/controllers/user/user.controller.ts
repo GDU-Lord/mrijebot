@@ -34,7 +34,7 @@ export class UserController {
   async findOneByTelegram (@Param('telegramId', ParseIntPipe) telegramId: number): Promise<User> {
     const user = await this.userRepository.findOne({ 
       where: { telegramId }, 
-      relations: ['playerPreferredGameSystems', 'masterPreferredGameSystems', 'memberships'],
+      relations: ['playerPreferredGameSystems', 'playerPlayedGameSystems', 'masterPreferredGameSystems', 'masterPlayedGameSystems', 'memberships'],
     });
     if (!user) throw new UserNotFoundException(telegramId, "telegram");
     return user;
@@ -44,7 +44,7 @@ export class UserController {
   async findOne(@Param('userId', ParseIntPipe) id: number): Promise<User> {
     const user = await this.userRepository.findOne({ 
       where: { id }, 
-      relations: ['playerPreferredGameSystems', 'masterPreferredGameSystems', 'memberships'],
+      relations: ['playerPreferredGameSystems', 'playerPlayedGameSystems', 'masterPreferredGameSystems', 'masterPlayedGameSystems', 'memberships'],
     });
     if (!user) throw new UserNotFoundException(id);
     return user;
