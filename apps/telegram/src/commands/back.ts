@@ -24,6 +24,6 @@ $back.make()
 
 backOption(backButtons);
 
-export function backOption(buttons: buttonsGenerator, value = CONTROL.back, middleware: (state: LocalState) => Promise<CHAIN | void> = async () => {}) {
-  return routeCallback(buttons, value, $back, null, middleware);
+export function backOption(buttons: buttonsGenerator, value = CONTROL.back, ...middleware: ((state: LocalState) => Promise<CHAIN | void>)[]) {
+  return routeCallback(buttons, value, $back, ...middleware);
 }

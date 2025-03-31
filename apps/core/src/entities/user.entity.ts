@@ -67,4 +67,20 @@ export class User {
 
   @Column('simple-array', { nullable: true })
   masterPreferredDuration!: UserDurationPreference[];
+
+  @Column('int', { nullable: true })
+  playerAspectFight!: number | null;
+
+  @Column('int', { nullable: true })
+  playerAspectSocial!: number | null;
+
+  @Column('int', { nullable: true })
+  playerAspectExplore!: number | null;
+
+  @Column('text', { nullable: true })
+  playerMasterMessage!: string | null;
+
+  @Column('text', { nullable: true })
+  playerTriggers!: string | null;
+
 }

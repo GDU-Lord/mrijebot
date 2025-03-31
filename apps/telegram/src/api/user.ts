@@ -2,6 +2,8 @@ import { MemberStatus, User, UserDiscoverySource, UserDurationPreference } from 
 import { CreateUserDto } from "../../../core/src/controllers/user/dtos/create-user.dto";
 import { api } from ".";
 import { JoinLandDto, SetUserPreferencesDto } from "../../../core/src/controllers/user/dtos";
+import { SetPlayerAspectsDto } from "../../../core/src/controllers/user/dtos/set-player-aspects.dto";
+import { SetPlayerMessagesDto } from "../../../core/src/controllers/user/dtos/set-player-messages.dto";
 
 export async function getUserByTelegram(telegramId: number) {
   return await api.get<User>(`/users/byTelegramId/${telegramId}`);
@@ -39,6 +41,7 @@ export async function setPlayerPreferences(
   customSystems: string[],
   customSystemsPlayed: string[],
   durations: UserDurationPreference[],
+  gamesPlayed: number,
 ) {
   const data: SetUserPreferencesDto = {
     gameSystemIds,
@@ -46,6 +49,7 @@ export async function setPlayerPreferences(
     customSystems,
     customSystemsPlayed,
     durations,
+    gamesPlayed,
   };
   return await api.put(`/users/${userId}/preferences/player`, data, {}, err => console.log(err));
 }
@@ -57,6 +61,7 @@ export async function setMasterPreferences(
   customSystems: string[],
   customSystemsPlayed: string[],
   durations: UserDurationPreference[],
+  gamesPlayed: number,
 ) {
   const data: SetUserPreferencesDto = {
     gameSystemIds,
@@ -64,8 +69,35 @@ export async function setMasterPreferences(
     customSystems,
     customSystemsPlayed,
     durations,
+    gamesPlayed,
   };
   return await api.put(`/users/${userId}/preferences/master`, data, {}, err => console.log(err));
+}
+
+export async function setPlayerAspects(
+  userId: number,
+  playerAspectFight: number | null,
+  playerAspectSocial: number | null,
+  playerAspectExplore: number | null,
+) {
+  const data: SetPlayerAspectsDto = {
+    playerAspectFight,
+    playerAspectSocial,
+    playerAspectExplore,
+  };
+  return await api.put(`/users/${userId}/aspects`, data, {}, err => console.log(err));
+}
+
+export async function setPlayerMessages(
+  userId: number,
+  playerMasterMessage: string,
+  playerTriggers: string,
+) {
+  const data: SetPlayerMessagesDto = {
+    playerMasterMessage,
+    playerTriggers,
+  };
+  return await api.put(`/users/${userId}/messages/player`, data, {}, err => console.log(err));
 }
 
 export async function joinLand(

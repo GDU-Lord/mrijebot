@@ -6,6 +6,8 @@ import { CreateUserDto, SetUserPreferencesDto, JoinLandDto, SetLandAdminDto } fr
 import { FindUserQuery } from "./queries";
 import { UserNotFoundException } from "./exceptions";
 import { LandNotFoundException } from "../land/exceptions";
+import { SetPlayerAspectsDto } from "./dtos/set-player-aspects.dto";
+import { SetPlayerMessagesDto } from "./dtos/set-player-messages.dto";
 
 @Controller('users')
 export class UserController {
@@ -64,6 +66,29 @@ export class UserController {
     });
   }
 
+  @Put(':userId/aspects')
+  async setPlayerAspects(@Param('userId', ParseIntPipe) id: number, @Body() body: SetPlayerAspectsDto): Promise<User> {
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) throw new UserNotFoundException(id);
+    
+    user.playerAspectFight = body.playerAspectFight;
+    user.playerAspectSocial = body.playerAspectSocial;
+    user.playerAspectExplore = body.playerAspectExplore;
+
+    return await this.userRepository.save(user);
+  }
+
+  @Put(':userId/messages/player')
+  async setPlayerMessages(@Param('userId', ParseIntPipe) id: number, @Body() body: SetPlayerMessagesDto): Promise<User> {
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) throw new UserNotFoundException(id);
+    
+    user.playerTriggers = body.playerTriggers;
+    user.playerMasterMessage = body.playerMasterMessage;
+
+    return await this.userRepository.save(user);
+  }
+
   @Put(':userId/preferences/player')
   async setPlayerPreferences(@Param('userId', ParseIntPipe) id: number, @Body() body: SetUserPreferencesDto): Promise<User> {
     const user = await this.userRepository.findOneBy({ id });
@@ -75,6 +100,7 @@ export class UserController {
       throw new BadRequestException('Not all IDs have a corresponding game system!');
     }
 
+    user.playerGamesPlayed = body.gamesPlayed;
     user.playerPreferredGameSystems = gameSystems;
     user.playerPlayedGameSystems = gameSystemsPlayed;
     user.playerPreferredDuration = body.durations;
@@ -95,6 +121,7 @@ export class UserController {
       throw new BadRequestException('Not all IDs have a corresponding game system!');
     }
     
+    user.playerGamesPlayed = body.gamesPlayed;
     user.masterPreferredGameSystems = gameSystems;
     user.masterPlayedGameSystems = gameSystemsPlayed;
     user.masterPreferredDuration = body.durations;

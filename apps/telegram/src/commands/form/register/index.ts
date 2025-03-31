@@ -77,7 +77,7 @@ export const $played = optionsField(
 
 export const $gamesPlayed = optionsField(
   async state => {
-    return "<b><u>👤Реєстрація: Досвід в НРІ</u></b>\n\n🎲 Скільки в тебе досвіду в НРІ як гравця?"
+    return "<b><u>👤Реєстрація: Досвід в НРІ</u></b>\n\n🎲 Скільки в тебе досвіду в НРІ як у гравця?"
   },
   [
     [["До 5 сесій", 5]],
@@ -239,9 +239,6 @@ export const $formDone = optionsField<StateType>(
     const playGameTypes: UserDurationPreference[] = [];
     const masterGameTypes: UserDurationPreference[] = [];
 
-    console.log(state.data.options);
-    // console.log(state.core.);
-
     for(const i in state.data.options) {
       const parts = i.split(":");
       if(parts[0] === "form") {
@@ -290,6 +287,7 @@ export const $formDone = optionsField<StateType>(
       customSystemsPlayed,
       customSystemsPlayed,
       playGameTypes,
+      state.data.options["form:gamesPlayed"] ?? 0
     );
 
     if(!playerPrefs) return;
@@ -303,6 +301,8 @@ export const $formDone = optionsField<StateType>(
       customSystemsMastered,
       customSystemsMastered,
       masterGameTypes,
+      state.data.options["form:gamesMastered"] ?? 0,
+
     );
 
     if(!masterPrefs) return;

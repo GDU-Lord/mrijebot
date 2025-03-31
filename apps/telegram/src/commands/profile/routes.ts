@@ -1,4 +1,4 @@
-import { routeCallback, routeCallbackArray, routeCallbackExcept } from "../../custom/hooks/routes";
+import { routeCallback, routeCallbackArray, routeCallbackExcept, waitFor } from "../../custom/hooks/routes";
 import { $back, backOption } from "../back";
 import { CONTROL, MENU } from "../mapping";
 import { $start } from "../start";
@@ -36,7 +36,7 @@ export function profileRoutes () {
   routeCallback($landPanel.btn, MENU.option[1], $changeMembership.proc);
 
   backOption($leaveLand.btn);
-  routeCallback($leaveLand.btn, CONTROL.next, $landLeft.proc, $leaveLand.proc.id);
+  routeCallback($leaveLand.btn, CONTROL.next, $landLeft.proc, waitFor($leaveLand.proc));
 
   routeCallback($landLeft.btn, CONTROL.back, $start);
 
@@ -49,7 +49,7 @@ export function profileRoutes () {
   routeCallback($landChanged.btn, CONTROL.back, $start);
 
   backOption($becomeGuest.btn);
-  routeCallbackExcept($becomeGuest.btn, CONTROL.back, $becomeGuestDone.proc, $becomeGuest.proc.id);
+  routeCallbackExcept($becomeGuest.btn, CONTROL.back, $becomeGuestDone.proc, waitFor($becomeGuest.proc));
 
   routeCallback($becomeGuestDone.btn, CONTROL.back, $start);
 

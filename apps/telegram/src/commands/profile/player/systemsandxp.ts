@@ -1,7 +1,7 @@
 import { getSystems } from "../../../api";
 import { keyboard } from "../../../custom/hooks/buttons";
 import { getInputOptionsList } from "../../../custom/hooks/inputs";
-import { toggleButtons, toggleValue, toggleValueInput } from "../../../custom/hooks/options";
+import { saveValue, toggleButtons, toggleValue, toggleValueInput } from "../../../custom/hooks/options";
 import { StateType } from "../../../custom/hooks/state";
 import { text } from "../../form/validators";
 import { CONTROL, MENU } from "../../mapping";
@@ -12,7 +12,7 @@ export const $experience = optionsField(async state => {
   return `<b><u>👤Профіль: Досвід гравця</u></b>\n\nТут ти можеш змінити дані свого досвіду в НРІ (як гравця)`;
 },
 [
-  [["🎲 Зіграні системи", MENU.option[0]], ["♦️ Зіграні сесії*", MENU.option[1]]],
+  [["🎲 Зіграні системи", MENU.option[0]], ["♦️ Зіграні сесії", MENU.option[1]]],
   [["⬅️Назад", CONTROL.back]]
 ]);
 
@@ -42,18 +42,24 @@ export const $systemsPlayed = optionsOtherField(
   toggleValueInput("playerPanel:systemsPlayed")
 );
 
-export const $gamesPlayed = optionsField(
+export const $gamesPlayed = optionsField<StateType>(
   async state => {
-    return `<b><u>👤Профіль: Досвід гравця</u></b>\n\nСкільки в тебе досвіду в НРІ як гравця?\n\n<b>ℹ️ Сесія</b> - зазвичай триває 3-6 годин\n<b>ℹ️ Ваншот</b> - цілісна гра на одну сесію\n<b>ℹ️ Міні-кампанія</b> - гра до 5 сесій\n<b>ℹ️ Кампанія</b> - гра, що триває більше 5 сесій і може тривати й роками.`
+    return `<b><u>👤Профіль: Досвід гравця</u></b>\n\n🎲 Скільки в тебе досвіду в НРІ як у гравця?`;
   },
   async state => {
-    // highlight the current one
+    const list = new Array(4).fill("");
+    const games = state.data.options["playerPanel:gamesPlayed"] as number;
+    if(games <= 5) list[0] = "✅ ";
+    if(games > 5 && games <= 10) list[1] = "✅ ";
+    if(games > 10 && games <= 50) list[2] = "✅ ";
+    if(games > 50) list[3] = "✅ ";
     return [
-      [["До 5 сесій", 1]],
-      [["Від 5 до 10 сесій", 2]],
-      [["Від 10 до 50 сесій", 3]],
-      [["Понад 50 сесій", 4]],
+      [[list[0] + "До 5 сесій", 5]],
+      [[list[1] + "Від 6 до 10 сесій", 10]],
+      [[list[2] + "Від 11 до 50 сесій", 50]],
+      [[list[3] + "Понад 50 сесій", 100]],
       [["✔️Зберегти", CONTROL.back]],
     ]
-  }
+  },
+  saveValue("playerPanel:gamesPlayed", CONTROL.back)
 );

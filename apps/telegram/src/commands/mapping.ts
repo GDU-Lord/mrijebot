@@ -9,7 +9,7 @@ export type ArrayMapOf<keyType extends string, arrayType = unknown> = {
 export const CONTROL: MapOf<"back" | "next" | "clear"> = {
   back: "back",
   next: "next",
-  clear: "back",
+  clear: "clear",
 }
 
 export const MENU: ArrayMapOf<"option", string> = {

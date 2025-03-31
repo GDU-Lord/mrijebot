@@ -1,4 +1,4 @@
-import { IsInt, IsPositive, IsEnum, IsString, MinLength, MaxLength } from "class-validator";
+import { IsInt, IsPositive, IsEnum, IsString, MinLength, MaxLength, Min, Max } from "class-validator";
 import { UserDurationPreference } from "../../../entities";
 
 export class SetUserPreferencesDto {
@@ -22,4 +22,8 @@ export class SetUserPreferencesDto {
 
   @IsEnum(['one_shot', 'short_campaign', 'long_campaign'], { each: true })
   durations!: UserDurationPreference[];
+  
+  @IsInt()
+  gamesPlayed!: number;
+  
 } 

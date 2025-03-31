@@ -1,7 +1,8 @@
 import { $playerPanel } from ".";
 import { getSystems } from "../../../api";
 import { procedure } from "../../../core/chain";
-import { getLastCallback, keyboard } from "../../../custom/hooks/buttons";
+import { LocalState } from "../../../core/state";
+import { buttonsGenerator, getLastCallback, keyboard } from "../../../custom/hooks/buttons";
 import { getInputOptionsList } from "../../../custom/hooks/inputs";
 import { call } from "../../../custom/hooks/menu";
 import { saveValue, saveValueInput, toggleButtons, toggleValue, toggleValueInput } from "../../../custom/hooks/options";
@@ -15,7 +16,8 @@ import { optionsOtherField } from "../../presets/optionsOther";
 export const $myTriggers = optionsOtherField<StateType>(
   "lastInput",
   async state => {
-    let triggers = state.data.options["playerPanel:triggers"] ?? "<i>(немає)</i>";
+    let triggers = state.data.options["playerPanel:triggers"] ?? "";
+    if(triggers === "") triggers = "<i>(немає)</i>";
     return `<b><u>👤Профіль: Тригери в іграх</u></b>\n\nТут ти можеш описати неприйнятні для тебе теми та речі у іграх.\n\n<b>Твої поточні тригери:</b>\n\n${triggers}`;
   },
   [
@@ -25,7 +27,7 @@ export const $myTriggers = optionsOtherField<StateType>(
   text(),
   async (state, buttons) => {
     const data = getLastCallback(state, buttons);
-    if(data === CONTROL.clear) delete state.data.options["playerPanel:triggers"];
+    if(data === CONTROL.clear) state.data.options["playerPanel:triggers"] = "";
   },
   saveValueInput("playerPanel:triggers")
 );
@@ -34,7 +36,6 @@ export const $systemsPreferred = optionsOtherField(
   "lastInput",
   async state => {
     state.data.storage.systems = await getSystems() ?? [];
-    console.log("load");
     const list = getInputOptionsList(state, "playerPanel", "systemsPreferred", text());
     return "<b><u>👤Реєстрація: Досвід в НРІ</u></b>\n\n🎲 У які Настільні Рольові Системи ти плануєш грати?\n\nℹ️ Ти можеш додати власні варіанти, ввівши їх у повідомленні.\nℹ️ Щоб прибрати введений вручну варіант, введи його назву ще раз!\n\n✍️<b>Введені вручну:</b> " + list.join("; ");
   },
@@ -70,10 +71,10 @@ export const $prefferences = optionsField(
 
 export const $gamesPreferred = optionsField(
   async state => {
-    return `<b><u>👤Профіль: Види ігор</u></b>\n\nУ які види Настільних Рольових Ігор ти плануєш грати?\n\n<b>Ваншот</b>: одна сесія\n<b>Міні-кампанія</b>: до 5 сесій\n<b>Кампанія</b>: 5+ сесій\n`;
+    return `<b><u>👤Профіль: Види ігор</u></b>\n\n🎲 У які види НРІ тебе цікавлять як гравця?\n\n<b>ℹ️ Сесія</b> - зазвичай триває 3-6 годин\n<b>ℹ️ Ваншот</b> - цілісна гра на одну сесію\n<b>ℹ️ Міні-кампанія</b> - гра до 5 сесій\n<b>ℹ️ Кампанія</b> - гра, що триває більше 5 сесій і може тривати й роками.`;
   },
   toggleButtons(
-    "playerPanel:gamesPreferred", 
+    "playerPanel:gamesPreferred",
     [
       [["Ваншоти", GAME_TYPES.one_shot]],
       [["Міні-кампанії", GAME_TYPES.short_campaign]],
@@ -89,8 +90,9 @@ export const $gamesPreferred = optionsField(
 export const $textForMaster = optionsOtherField<StateType>(
   "lastInput",
   async state => {
-    let message = state.data.options["playerPanel:textForMaster"] ?? "<i>(немає)</i>";
-    return `<b><u>👤Профіль: Послання майстру</u></b>\n\nТут ти можеш описати свої вподобання та очікування. Їх зможе прочитати твій майстер.\n\n<b>Твої поточні вподобання:</b>\n\n${message}`;
+    let message = state.data.options["playerPanel:textForMaster"] ?? "";
+    if(message === "") message = "<i>(немає)</i>";
+    return `<b><u>👤Профіль: Послання майстру</u></b>\n\n💌 Тут ти можеш описати свої вподобання та очікування. Їх зможе прочитати твій майстер.\n\n<b>Твої поточні вподобання:</b>\n\n${message}`;
   },
   [
     [["❌Очистити", CONTROL.clear]],
@@ -99,48 +101,33 @@ export const $textForMaster = optionsOtherField<StateType>(
   text(),
   async (state, buttons) => {
     const data = getLastCallback(state, buttons);
-    if(data === CONTROL.clear) delete state.data.options["playerPanel:textForMaster"];
+    if(data === CONTROL.clear) state.data.options["playerPanel:textForMaster"] = "";
   },
   saveValueInput("playerPanel:textForMaster")
 );
 
 export const $prefFight = optionsField<StateType>(
   async state => {
-    return `<b><u>👤Профіль: Вподобання в НРІ</u></b>\n\nВкажи важливість <b>БОЙОВКИ</b> для тебе`;
+    return `<b><u>👤Профіль: Вподобання в НРІ</u></b>\n\n🎲 Вкажи важливість <b>БОЙОВКИ</b> для тебе`;
   },
-  [
-    [["🟢 Висока", 3]],
-    [["🟡 Середня", 2]],
-    [["🔴 Низька", 1]],
-    [["⬅️Назад", CONTROL.back]],
-  ],
-  saveValue("playerPanel:prefFighting")
+  getAspectButtons("aspectFight"),
+  saveValue("playerPanel:aspectFight", CONTROL.back)
 );
 
 export const $prefSocial = optionsField<StateType>(
   async state => {
-    return `<b><u>👤Профіль: Вподобання в НРІ</u></b>\n\nВкажи важливість <b>ВІДІГРАШУ</b> для тебе`;
+    return `<b><u>👤Профіль: Вподобання в НРІ</u></b>\n\n🎲 Вкажи важливість <b>ВІДІГРАШУ</b> для тебе`;
   },
-  [
-    [["🟢 Висока", 3]],
-    [["🟡 Середня", 2]],
-    [["🔴 Низька", 1]],
-    [["⬅️Назад", CONTROL.back]],
-  ],
-  saveValue("playerPanel:prefFighting")
+  getAspectButtons("aspectSocial"),
+  saveValue("playerPanel:aspectSocial")
 );
 
 export const $prefExplore = optionsField<StateType>(
   async state => {
-    return `<b><u>👤Профіль: Вподобання в НРІ</u></b>\n\nВкажи важливість <b>ДОСЛІДЖЕННЯ</b> для тебе`;
+    return `<b><u>👤Профіль: Вподобання в НРІ</u></b>\n\n🎲 Вкажи важливість <b>ДОСЛІДЖЕННЯ</b> для тебе`;
   },
-  [
-    [["🟢 Висока", 3]],
-    [["🟡 Середня", 2]],
-    [["🔴 Низька", 1]],
-    [["⬅️Назад", CONTROL.back]],
-  ],
-  saveValue("playerPanel:prefExplore")
+  getAspectButtons("aspectExplore"),
+  saveValue("playerPanel:aspectExplore")
 );
 
 $prefExplore.chain.func<StateType>(async state => {
@@ -148,3 +135,16 @@ $prefExplore.chain.func<StateType>(async state => {
   state.data.crums.pop();
   state.data.crums.pop();
 });
+
+export function getAspectButtons(aspect: "aspectFight" | "aspectSocial" | "aspectExplore") {
+  return async function(state: LocalState<StateType>) {
+    const asp = state.data.options[`playerPanel:${aspect}`] as number | null;
+    const list = new Array(3).fill("").map((v, i) => (i+1) === asp ? " ✅" : "");
+    return [
+      [["🟢 Висока" + list[0], 3]],
+      [["🟡 Середня" + list[1], 2]],
+      [["🔴 Низька" + list[2], 1]],
+      [["⬅️Назад", CONTROL.back]],
+    ] as keyboard;
+  };
+}
