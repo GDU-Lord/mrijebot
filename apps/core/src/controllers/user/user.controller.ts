@@ -121,7 +121,7 @@ export class UserController {
       throw new BadRequestException('Not all IDs have a corresponding game system!');
     }
     
-    user.playerGamesPlayed = body.gamesPlayed;
+    user.masterGamesPlayed = body.gamesPlayed;
     user.masterPreferredGameSystems = gameSystems;
     user.masterPlayedGameSystems = gameSystemsPlayed;
     user.masterPreferredDuration = body.durations;

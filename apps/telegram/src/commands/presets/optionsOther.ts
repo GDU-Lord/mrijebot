@@ -20,10 +20,12 @@ export function optionsOtherField<LocalData = any, UserData = any>(key: string, 
     .func(async state => {
       const inp = state.core.inputs[key]!;
       const text = inp?.text ?? "";
-      if(await validate(text, inp))
-        await processInputs(state, text, inp);
+      if(await validate(text, inp)) {
+        const res = await processInputs(state, text, inp);
+        if(res !== CHAIN.NEXT_ACTION) return res;
+      }
       state.data.crums.pop();
-      await state.call(fieldProcedure);
+      state.call(fieldProcedure);
       return CHAIN.NEXT_LISTENER;
     });
   on("callback_query", buttonCallback(data => true, fieldButtons))

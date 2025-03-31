@@ -55,9 +55,10 @@ $start.make()
     // }
     let user = state.data.storage.user = await api.getUserByTelegram(state.core.userId);
     console.log(user);
-    if(!user) return CHAIN.EXIT;
+    // if(!user) return CHAIN.EXIT;
   })
   .send<StateType>(async state => {
+    console.log(123);
     let mention = "Тебе";
     let options = [
       "⭐️Отримати корисну інформацію",

@@ -3,9 +3,7 @@ import { CONTROL } from "../mapping";
 import { optionsField } from "../presets/options";
 
 export const $idCard = optionsField<StateType>(
-  async state => {
-    return `<b><u>Ідентифікаційна Картка</u></b>\n\nTelegramId: {core.userId}`;
-  },
+  async state => `<b><u>Ідентифікаційна Картка</u></b>\n\nUserId: {data.storage.user.id}`,
   [
     [["⬅️Назад", CONTROL.back]]
   ]

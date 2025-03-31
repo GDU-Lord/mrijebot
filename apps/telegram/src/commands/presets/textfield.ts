@@ -25,7 +25,7 @@ export function textField<LocalData = any, UserData = any>(key: string, text: (s
       const text = inp.text ?? "";
       if(await validate(text, inp))
         return CHAIN.NEXT_ACTION;
-      await state.call(fieldProcedure);
+      state.call(fieldProcedure);
       return CHAIN.NEXT_LISTENER;
     });
   return {
