@@ -2,6 +2,7 @@ import { routeCallback, routeCallbackArray, routeCallbackExcept, waitFor } from 
 import { $back, backOption } from "../back";
 import { CONTROL, MENU } from "../mapping";
 import { $start } from "../start";
+import { $admin } from "./admin";
 import { $idCard } from "./idcard";
 import { $main } from "./index";
 import { $masterPanel } from "./master/index";
@@ -20,6 +21,7 @@ export function profileRoutes () {
   routeCallback($main.btn, MENU.option[2], $playerPanel.proc);
   routeCallback($main.btn, MENU.option[3], $masterPanel.proc);
   routeCallback($main.btn, MENU.option[5], $idCard.proc);
+  routeCallback($main.btn, MENU.option[6], $admin.proc);
 
   backOption($idCard.btn);
 

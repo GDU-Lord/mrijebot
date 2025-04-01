@@ -13,6 +13,10 @@ export async function getUser(userId: number) {
   return await api.get<User>(`/users/${userId}`);
 }
 
+export async function getUserNames() {
+  return await api.get<User[]>(`/users/names`);
+}
+
 export async function createUser(
   telegramId: number,
   email: string,
@@ -109,7 +113,7 @@ export async function joinLand(
     landId,
     status,
   };
-  return await api.post(`/users/${userId}/memberships`, data, {}, err => console.log(err));
+  return await api.put(`/users/${userId}/memberships`, data, {}, err => console.log(err));
 }
 
 export async function leaveLand(

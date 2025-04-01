@@ -32,11 +32,22 @@ export class UserController {
     });
   }
 
+  @Get('names')
+  async findNames(): Promise<User[]> {
+    return this.userRepository.find({
+      order: { id: 'ASC' },
+      select: {
+        id: true,
+        name: true,
+      }
+    });
+  }
+
   @Get('byTelegramId/:telegramId')
   async findOneByTelegram (@Param('telegramId', ParseIntPipe) telegramId: number): Promise<User> {
     const user = await this.userRepository.findOne({ 
       where: { telegramId }, 
-      relations: ['playerPreferredGameSystems', 'playerPlayedGameSystems', 'masterPreferredGameSystems', 'masterPlayedGameSystems', 'memberships'],
+      relations: ['globalRoles', 'playerPreferredGameSystems', 'playerPlayedGameSystems', 'masterPreferredGameSystems', 'masterPlayedGameSystems', 'memberships'],
     });
     if (!user) throw new UserNotFoundException(telegramId, "telegram");
     return user;
@@ -46,7 +57,7 @@ export class UserController {
   async findOne(@Param('userId', ParseIntPipe) id: number): Promise<User> {
     const user = await this.userRepository.findOne({ 
       where: { id }, 
-      relations: ['playerPreferredGameSystems', 'playerPlayedGameSystems', 'masterPreferredGameSystems', 'masterPlayedGameSystems', 'memberships'],
+      relations: ['globalRoles', 'playerPreferredGameSystems', 'playerPlayedGameSystems', 'masterPreferredGameSystems', 'masterPlayedGameSystems', 'memberships'],
     });
     if (!user) throw new UserNotFoundException(id);
     return user;
@@ -131,7 +142,7 @@ export class UserController {
     return await this.userRepository.save(user);
   }
 
-  @Post(':userId/memberships')
+  @Put(':userId/memberships')
   async joinLand(@Param('userId', ParseIntPipe) id: number, @Body() body: JoinLandDto): Promise<Member> {
     const user = await this.userRepository.findOneBy({ id });
     if (!user) throw new UserNotFoundException(id);
@@ -150,19 +161,6 @@ export class UserController {
     });
   }
 
-  @Put(':userId/memberships/:landId/land-admin')
-  async setLandAdmin(
-    @Param('userId', ParseIntPipe) userId: number, 
-    @Param('landId', ParseIntPipe) landId: number,
-    @Body() body: SetLandAdminDto,
-  ): Promise<Member> {
-    const member = await this.memberRepository.findOneBy({ userId, landId });
-    if (!member) throw new BadRequestException('User is not a member of this land');
-
-    member.isLandAdmin = body.isLandAdmin;
-    return this.memberRepository.save(member);
-  }
-
   @Delete(':userId/memberships/:landId')
   async leaveLand(
     @Param('userId', ParseIntPipe) userId: number, 
@@ -170,6 +168,8 @@ export class UserController {
   ): Promise<void> {
     const member = await this.memberRepository.findOneBy({ userId, landId });
     if (!member) throw new BadRequestException('User is not a member of this land');
-    this.memberRepository.delete(member);
+    this.memberRepository.delete({
+      id: member.id
+    });
   }
 }

@@ -1,6 +1,7 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./user.entity";
 import { Land } from "./land.entity";
+import { Role } from "./role.entity";
 
 export type MemberStatus = 'guest' | 'participant';
 
@@ -26,4 +27,8 @@ export class Member {
 
   @Column('boolean')
   isLandAdmin!: boolean;
+
+  @ManyToMany(() => Role)
+  @JoinTable()
+  localRoles!: Role[];
 }

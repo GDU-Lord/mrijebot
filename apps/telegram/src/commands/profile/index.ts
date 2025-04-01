@@ -1,9 +1,12 @@
 import { afterInit } from "../../afterInit";
 import { getLands, getLandsById, getUserMemberships } from "../../api";
 import { Bot } from "../../core";
+import { CHAIN } from "../../core/actions";
+import { keyboard } from "../../custom/hooks/buttons";
 import { StateType } from "../../custom/hooks/state";
 import { CONTROL, MENU } from "../mapping";
 import { optionsField } from "../presets/options";
+import { isGlobalAdmin } from "./admin/hooks";
 import { profileRoutes } from "./routes";
 
 afterInit.push(profileRoutes);
@@ -29,12 +32,14 @@ export const $main = optionsField<StateType>(
     return `<b><u>👤Профіль</u></b>\n\n<b>Ім'я</b>: ${chatMember.user.first_name}\n<b>Займенники</b>: <i>в розробці</i>\n<b>Email</b>: {data.storage.user.email}${status}${participant}${guest}`;
   },
   async state => {
-    return [
+    const buttons: keyboard = [
       [["📍Мої осередки", MENU.option[0]], ["📧 Контактні дані*", MENU.option[1]]],
       [["💙Панель гравця", MENU.option[2]], ["💛Панель майстра", MENU.option[3]]],
       [["⚙️Налаштування оголошень*", MENU.option[4]]],
       [["💳Ідентифікаційна Картка", MENU.option[5]]],
-      [["⬅️Назад", CONTROL.back]],
     ];
+    if(isGlobalAdmin(state)) buttons.push([["®️Адмінська Панель", MENU.option[6]]]);
+    buttons.push([["⬅️Назад", CONTROL.back]]);
+    return buttons;
   }
 );

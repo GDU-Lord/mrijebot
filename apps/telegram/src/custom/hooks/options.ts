@@ -27,6 +27,7 @@ export function toggleValueInput<LocalData extends { options: { [key: string]: a
   return async (state: LocalState<LocalData, UserData>, input: string) => {
     if(exclude.includes(input)) return;
     state.data.options[`${key}:${input}`] = !state.data.options[`${key}:${input}`];
+    console.log("INP", key, input, state.data.options[`${key}:${input}`]);
   }
 }
 

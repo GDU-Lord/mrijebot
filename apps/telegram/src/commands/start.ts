@@ -8,9 +8,6 @@ import { addCrum } from "../custom/hooks/menu";
 import { editLast } from "../custom/hooks/messageOptions";
 import { routeCallback } from "../custom/hooks/routes";
 import { initState, StateType } from "../custom/hooks/state";
-import { User } from "../app/entities/user.entity";
-import { Member } from "../app/entities/member.entity";
-import { Land } from "../app/entities/land.entity";
 import { Bot } from "../core/index";
 import { $main } from "./profile/index";
 import * as api from "../api";
@@ -41,24 +38,11 @@ $start.make()
   .func(initState())
   .func(addCrum($start))
   .func<StateType>(async state => {
-    // const username = state.lastInput.from?.username;
-    // const userId = state.core.userId;
-    // // get user data from the table
-    // const [data, index] = getUserData(String(userId), username ?? "");
-    // if(index > -1) {
-    //   if(data[3] !== String(userId)) {
-    //     data[3] = String(userId); // replace username with userId
-    //     await setUserData(data, index);
-    //   }
-    //   state.data.user = data;
-    //   state.data.userIndex = index;
-    // }
     let user = state.data.storage.user = await api.getUserByTelegram(state.core.userId);
     console.log(user);
     // if(!user) return CHAIN.EXIT;
   })
   .send<StateType>(async state => {
-    console.log(123);
     let mention = "Тебе";
     let options = [
       "⭐️Отримати корисну інформацію",
@@ -74,3 +58,18 @@ $start.make()
     }
     return `<b><u>Головне меню</u></b>\n\n${mention} вітає українська ініціатива настільних рольових ігор у Німеччині "Мрієтворці | The DreamForgers"!\n\n<b>Через нашого телеграм бота ти можеш:</b>\n\n${options.join("\n")}`;
   }, startButtons.get, editLast());
+
+
+  // OLD CODE for GoogleAPI:
+  // const username = state.lastInput.from?.username;
+    // const userId = state.core.userId;
+    // // get user data from the table
+    // const [data, index] = getUserData(String(userId), username ?? "");
+    // if(index > -1) {
+    //   if(data[3] !== String(userId)) {
+    //     data[3] = String(userId); // replace username with userId
+    //     await setUserData(data, index);
+    //   }
+    //   state.data.user = data;
+    //   state.data.userIndex = index;
+    // }

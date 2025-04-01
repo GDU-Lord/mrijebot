@@ -21,7 +21,7 @@ export function optionsOtherField<LocalData = any, UserData = any>(key: string, 
       const inp = state.core.inputs[key]!;
       const text = inp?.text ?? "";
       if(await validate(text, inp)) {
-        const res = await processInputs(state, text, inp);
+        const res = await processInputs(state, text, inp) ?? CHAIN.NEXT_ACTION;
         if(res !== CHAIN.NEXT_ACTION) return res;
       }
       state.data.crums.pop();

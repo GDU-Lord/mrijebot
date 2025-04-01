@@ -1,6 +1,7 @@
 import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Member } from "./member.entity";
 import { GameSystem } from "./game-system.entity";
+import { Role } from "./role.entity";
 
 export type UserDiscoverySource = 'instagram' | 'linked_in' | "friends" | "chat_bot" | "community" | "none";
 export type UserDurationPreference = 'one_shot' | 'short_campaign' | 'long_campaign';
@@ -12,6 +13,9 @@ export class User {
 
   @Column('int')
   telegramId!: number;
+
+  @Column('varchar')
+  name!: string;
 
   @Column('varchar')
   email!: string;
@@ -82,5 +86,9 @@ export class User {
 
   @Column('text', { nullable: true })
   playerTriggers!: string | null;
+
+  @ManyToMany(() => Role)
+  @JoinTable()
+  globalRoles!: Role[];
 
 }

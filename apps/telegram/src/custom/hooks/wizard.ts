@@ -4,7 +4,7 @@ import { StateType } from "./state";
 
 export function isWizard() {
   return async (state: LocalState<StateType>) => {
-    return CHAIN.NEXT_ACTION;
+    return;
     if(!state.data.storage.isWizard) return CHAIN.EXIT;
   }
 }
