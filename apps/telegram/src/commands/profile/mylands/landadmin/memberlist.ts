@@ -8,7 +8,7 @@ import { addCrum } from "../../../../custom/hooks/menu";
 import { editLast } from "../../../../custom/hooks/messageOptions";
 import { StateType } from "../../../../custom/hooks/state";
 import { CONTROL } from "../../../mapping";
-import { isLocalAdmin, isSupervisor, verifyEitherRole, verifyGlobalAdmin } from "../../admin/hooks";
+import { isLocalAdmin, isSupervisor, verifyEitherRole, verifyGlobalAdmin } from "../../roles";
 import fs from "fs";
 
 export const memberListButtons = createButtons([

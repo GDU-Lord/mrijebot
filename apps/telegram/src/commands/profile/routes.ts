@@ -5,14 +5,13 @@ import { $start } from "../start";
 import { $admin } from "./admin";
 import { $idCard } from "./idcard";
 import { $main } from "./index";
+import { $becomeMaster } from "./master/becomemaster";
 import { $masterPanel } from "./master/index";
 import { $becomeGuest, $becomeGuestDone } from "./mylands/becomeguest";
 import { $changeMembership, $landChangeProceed, $landChanged } from "./mylands/changemembership";
 import { $myLands } from "./mylands/index";
 import { $myLandsList, $landPanel, $leaveLand, $landLeft } from "./mylands/landlist";
 import { $playerPanel } from "./player/index";
-import { $experience, $gamesPlayed, $systemsPlayed } from "./player/systemsandxp";
-import { $myTriggers, $prefExplore, $prefferences, $prefFight, $prefSocial, $systemsPreferred, $textForMaster } from "./player/triggersandprefs";
 
 export function profileRoutes () {
 
@@ -22,6 +21,7 @@ export function profileRoutes () {
   routeCallback($main.btn, MENU.option[3], $masterPanel.proc);
   routeCallback($main.btn, MENU.option[5], $idCard.proc);
   routeCallback($main.btn, MENU.option[6], $admin.proc);
+  routeCallback($main.btn, MENU.option[7], $becomeMaster.proc);
 
   backOption($idCard.btn);
 

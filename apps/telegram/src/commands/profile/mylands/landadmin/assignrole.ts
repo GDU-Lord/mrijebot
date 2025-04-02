@@ -7,7 +7,7 @@ import { StateType } from "../../../../custom/hooks/state";
 import { textField } from "../../../presets/textfield";
 import { number } from "../../../presets/validators";
 import { $start } from "../../../start";
-import { isLocalAdmin, isSupervisor } from "../../admin/hooks";
+import { isLocalAdmin, isSupervisor } from "../../roles";
 import { Land, Member } from "../../../../../../core/src/entities";
 import { updateLocalRoles } from "./middleware";
 

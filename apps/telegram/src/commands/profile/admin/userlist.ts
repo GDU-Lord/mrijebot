@@ -9,7 +9,7 @@ import { StateType } from "../../../custom/hooks/state";
 import { backButtons } from "../../back";
 import { CONTROL } from "../../mapping";
 import { optionsField } from "../../presets/options";
-import { isGlobalAdmin, verifyGlobalAdmin } from "./hooks";
+import { isGlobalAdmin, verifyGlobalAdmin } from "../roles";
 import fs from "fs";
 
 export const userListButtons = createButtons([

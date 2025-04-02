@@ -10,7 +10,7 @@ import { editLast } from "../../../custom/hooks/messageOptions";
 import { StateType } from "../../../custom/hooks/state";
 import { backButtons } from "../../back";
 import { CONTROL } from "../../mapping";
-import { verifyGlobalAdmin } from "./hooks";
+import { verifyGlobalAdmin } from "../roles";
 
 export const editRoleButtons = createButtons([
   [["Редагувати далі", CONTROL.next]],

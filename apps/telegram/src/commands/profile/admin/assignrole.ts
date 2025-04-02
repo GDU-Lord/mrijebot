@@ -10,7 +10,7 @@ import { optionsField } from "../../presets/options";
 import { textField } from "../../presets/textfield";
 import { number } from "../../presets/validators";
 import { $start } from "../../start";
-import { isGlobalAdmin, isSupervisor } from "./hooks";
+import { isGlobalAdmin, isSupervisor } from "../roles";
 import { removeCrum, updateGlobalRoles } from "./middleware";
 
 export const $assignRole = textField<StateType>(

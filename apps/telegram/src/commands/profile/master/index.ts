@@ -7,7 +7,7 @@ import { profileMasterRoutes } from "./routes";
 afterInit.push(profileMasterRoutes);
 
 export const $masterPanel = optionsField<StateType>(async state => {
-  return `<b><u>👤Профіль: Панель майстра</u></b>\n\n`;
+  return `<b><u>👤Профіль: Панель майстра</u></b>`;
 },
 [
   [["🎲 Ігрові системи", MENU.option[0]], ["⏳Види ігор", MENU.option[1]]],

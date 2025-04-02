@@ -1,6 +1,9 @@
 import { routeCallback, routeCallbackExcept } from "../../../custom/hooks/routes";
 import { backOption } from "../../back";
 import { CONTROL, MENU } from "../../mapping";
+import { $start } from "../../start";
+import { $becomeGuest } from "../mylands/becomeguest";
+import { $becomeMaster, $masterRequestSent } from "./becomemaster";
 import { $masterPanel } from "./index";
 import { loadMasterPrefs, saveDuration, saveGamesPlayed, saveSystemsPlayed, saveSystemsPreferred } from "./middleware";
 import { $displayPlayerData, $playerData } from "./playerdata";
@@ -33,5 +36,10 @@ export function profileMasterRoutes () {
 
   backOption($playerData.btn);
   backOption($displayPlayerData.btn);
+
+  backOption($becomeMaster.btn);
+  routeCallback($becomeMaster.btn, CONTROL.next, $masterRequestSent.proc);
+
+  routeCallback($masterRequestSent.btn, CONTROL.back, $start);
 
 }

@@ -7,6 +7,8 @@ import { LandController, UserController } from './controllers';
 import { GameSystemController } from './controllers/game-system/game-system.controller';
 import { Role } from './entities/role.entity';
 import { RoleController } from './controllers/roles/role.controller';
+import { RequestController } from './controllers/request/request.controller';
+import { Request } from './entities/request.entity';
 
 @Module({
   imports: [
@@ -25,9 +27,9 @@ import { RoleController } from './controllers/roles/role.controller';
         logging: true
       }),
     }),
-    TypeOrmModule.forFeature([GameSystem, Land, User, Member, Role]),
+    TypeOrmModule.forFeature([GameSystem, Land, User, Member, Role, Request]),
   ],
-  controllers: [UserController, LandController, GameSystemController, RoleController],
+  controllers: [UserController, LandController, GameSystemController, RoleController, RequestController],
   providers: [
     {
       provide: APP_PIPE,

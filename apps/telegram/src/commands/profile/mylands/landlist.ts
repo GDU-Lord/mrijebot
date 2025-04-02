@@ -7,7 +7,7 @@ import { saveValue } from "../../../custom/hooks/options";
 import { StateType } from "../../../custom/hooks/state";
 import { CONTROL, MENU } from "../../mapping";
 import { optionsField } from "../../presets/options";
-import { isGlobalAdmin, isLocalAdmin, isSupervisor } from "../admin/hooks";
+import { isGlobalAdmin, isLocalAdmin, isMasterInspector, isSupervisor } from "../roles";
 import { parseRoles } from "../roles";
 
 export const $myLandsList = optionsField<StateType>(
@@ -82,8 +82,13 @@ export const $landPanel = optionsField<StateType>(
       keyboard = [
         [["Список учасників", MENU.option[10]]],
         [["Ролі учасників", MENU.option[11]]],
-        [["Запити*", MENU.option[12]]],
-        [["Вигнати учасника*", MENU.option[13]]],
+        [["Вигнати учасника*", MENU.option[12]]],
+        ...keyboard
+      ];
+    }
+    if(await isMasterInspector("profile:chosenLand")(state)) {
+      keyboard = [
+        [["Запити", MENU.option[40]]],
         ...keyboard
       ];
     }

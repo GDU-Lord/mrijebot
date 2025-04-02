@@ -12,6 +12,7 @@ import { Bot } from "../core/index";
 import { $main } from "./profile/index";
 import * as api from "../api";
 import { CONTROL, MENU } from "./mapping";
+import { getAllRoles } from "../api/role";
 
 export const startButtons = createButtons<StateType>(async state => {
   const buttons: keyboard = [
@@ -38,6 +39,7 @@ $start.make()
   .func(initState())
   .func(addCrum($start))
   .func<StateType>(async state => {
+    state.data.storage.roles = await getAllRoles() ?? [];
     let user = state.data.storage.user = await api.getUserByTelegram(state.core.userId);
     const telegramUser = state.lastInput.from;
     const username = telegramUser?.username ? `@${telegramUser.username}` : telegramUser?.first_name ?? null;
