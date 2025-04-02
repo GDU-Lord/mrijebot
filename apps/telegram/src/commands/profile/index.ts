@@ -7,6 +7,7 @@ import { StateType } from "../../custom/hooks/state";
 import { CONTROL, MENU } from "../mapping";
 import { optionsField } from "../presets/options";
 import { isGlobalAdmin } from "./admin/hooks";
+import { parseRoles } from "./roles";
 import { profileRoutes } from "./routes";
 
 afterInit.push(profileRoutes);
@@ -20,7 +21,7 @@ export const $main = optionsField<StateType>(
     if(participant !== "") participant = "\n<b>Членство</b>: " + participant;
     if(guest !== "") guest = "\n<b>Гість</b>: " + guest;
     // const status = "\n<b>Статус</b>: Координатор Ініціативи (Koordinator)";
-    const status = "\n<b>Статус</b>: <i>в розробці</i>";
+    const status = `\n<b>Статус</b>: <i>${(await parseRoles(state, ["name", "publicName"], "all", "position", true))[0]}</i>`;
     // Координатор Ініціативи (Koordinator*in)
     // Куратор Заснування Осередку (Gründungskurator*in der Ortsgruppe)
     // Заступник Координатора Ініціативи (Stellertretende*r Koordinator*in)

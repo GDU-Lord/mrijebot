@@ -8,6 +8,7 @@ import { StateType } from "../../../custom/hooks/state";
 import { CONTROL, MENU } from "../../mapping";
 import { optionsField } from "../../presets/options";
 import { isGlobalAdmin, isLocalAdmin, isSupervisor } from "../admin/hooks";
+import { parseRoles } from "../roles";
 
 export const $myLandsList = optionsField<StateType>(
   async state => {
@@ -44,12 +45,12 @@ export const $landPanel = optionsField<StateType>(
     if(!user) return "ПОМИЛКА!";
     const landId = state.data.options["profile:landId"];
     const land = state.data.options["profile:chosenLand"] = state.data.options["profile:landsById"][landId] as Land;
-    const roles = `\n<b>Твої ролі</b>: <i>в розробці</i>`;
+    const roles = `\n\n<b>Твої ролі</b>:\n<i>${(await parseRoles(state, ["name", "publicName"], "local", "any", false, landId)).join("\n")}</i>`;
     const isMember = !!user.memberships.find(m => m.landId === landId && m.status === "participant");
     const isGuest = !!user.memberships.find(m => m.landId === landId && m.status === "guest");
     const text = isMember ? `Ти зареєстрований(на/ні) як УЧАСНИК в цьому Осередку.` : isGuest ? "Ти ГІСТЬ у цьому Осередку." : "Ти НЕ НАЛЕЖИШ до цього Осередку!";
     // display roles here
-    return `<b><u>📍Панель Осередку "${land.name}"</u></b>\n\n${text}\n${roles}`;
+    return `<b><u>📍Панель Осередку "${land.name}"</u></b>\n\n${text}${roles}`;
   },
   async state => {
     const user = state.data.storage.user;

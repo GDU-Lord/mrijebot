@@ -3,6 +3,7 @@ import { getUserMemberships } from "../../../api";
 import { StateType } from "../../../custom/hooks/state";
 import { CONTROL, MENU } from "../../mapping";
 import { optionsField } from "../../presets/options";
+import { parseRoles } from "../roles";
 import { landAdminRoutes } from "./landadmin/routes";
 
 afterInit.push(landAdminRoutes);
@@ -15,7 +16,8 @@ export const $myLands = optionsField<StateType>(
     let guest = memberships.guest.map(m => m.land.name).join(", ");
     if(participant !== "") participant = "\n<b>Учасник</b>: " + participant;
     if(guest !== "") guest = "\n<b>Гість</b>: " + guest;
-    return `<b><u>👤Профіль: Мої осередки</u></b>\n${participant}${guest}`;
+    const roles = (await parseRoles(state, ["name"], "all")).join("\n");
+    return `<b><u>👤Профіль: Мої осередки</u></b>\n${participant}${guest}\n\n<b>Всі твої ролі:</b>\n<i>${roles}</i>`;
   },
   async state => {
     return [
