@@ -19,12 +19,14 @@ export async function getUserNames() {
 
 export async function createUser(
   telegramId: number,
+  username: string,
   email: string,
   discoverySource: UserDiscoverySource,
   city: string,
   playerGamesPlayed: number,
   masterGamesPlayed: number,
 ) {
+  console.log(username);
   const data: CreateUserDto = {
     email,
     city,
@@ -32,6 +34,7 @@ export async function createUser(
     playerGamesPlayed,
     masterGamesPlayed,
     telegramId,
+    username
   };
   const res = await api.post("/users", data);
   if(!res) return null;

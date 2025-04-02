@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsInt, IsString, MaxLength, Min, MinLength } from "class-validator";
+import { IsEmail, IsEnum, IsInt, IsOptional, IsString, MaxLength, Min, MinLength } from "class-validator";
 import { UserDiscoverySource } from "../../../entities";
 
 export class CreateUserDto {
@@ -7,6 +7,12 @@ export class CreateUserDto {
   
   @IsEmail()
   email!: string;
+
+  @IsOptional()
+  @IsString()
+  @MinLength(3)
+  @MaxLength(255)
+  username!: string | null;
 
   @IsString()
   @MinLength(3)

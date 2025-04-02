@@ -38,7 +38,7 @@ export class UserController {
       order: { id: 'ASC' },
       select: {
         id: true,
-        name: true,
+        username: true,
       }
     });
   }

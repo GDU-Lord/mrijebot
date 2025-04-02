@@ -7,6 +7,14 @@ export function email() {
 
 export function text(max: number = 255, min: number = 3) {
   return (text: string) => {
-    return text.length >= min && text.length <= 255;
+    return text.length >= min && text.length <= max;
+  }
+}
+
+export function number(max: number = Infinity, min: number = -Infinity) {
+  return (text: string) => {
+    const n = +text;
+    if(isNaN(n)) return false;
+    return n >= min && n <= max;
   }
 }

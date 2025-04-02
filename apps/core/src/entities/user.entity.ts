@@ -15,10 +15,10 @@ export class User {
   telegramId!: number;
 
   @Column('varchar')
-  name!: string;
-
-  @Column('varchar')
   email!: string;
+
+  @Column('varchar', { nullable: true })
+  username!: string | null;
 
   @Column('boolean')
   isGlobalAdmin!: boolean;

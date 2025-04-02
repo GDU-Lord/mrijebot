@@ -32,7 +32,7 @@ $editRoleChosen.make()
       state.call($editRole);
       return ["...", CHAIN.NEXT_LISTENER];
     };
-    return `<u><b>Адмінська Панель</b></u>\n\nВідправ значення полів рядками у вказаному порядку:\n\nтег <i>(alphanumeric)</i>*\nтип <i>(local/global/hybrid)</i>*\ncтатус <i>(role/position)</i>*\nвнутрішня назва <i>(text)</i>\nзовнішня назва <i>(text)</i>)\nкоротка внутрішня назва <i>(text)</i>\nкоротка зовнішня назва <i>[text]</i>\nранг <i>(number)</i>\nпосилання <i>(text)</i>\n\n"*" - зберігає поточне значення, "-" - щоб стерти поточне значення\n\n<b>Поточні значення:</b>\n\n<pre>${role.tag}\n${role.type}\n${role.status}\n${role.name ?? "-"}\n${role.publicName ?? "-"}\n${role.shortName ?? "-"}\n${role.shortPublicName ?? "-"}\n${role.rank ?? "-"}\n${role.link ?? "-"}</pre>`;
+    return `<u><b>Адмінська Панель</b></u>\n\nВідправ значення полів рядками у вказаному порядку:\n\nтег   <i>(alphanumeric)</i>*\nтип   <i>(local/global/hybrid)</i>*\ncтатус <i>(role/position)</i>*\nвнутрішня назва   <i>(text)</i>\nзовнішня назва   <i>(text)</i>)\nкоротка внутрішня назва <i>(text)</i>\nкоротка зовнішня назва   <i>(text)</i>\nранг <i>(number)</i>\nпосилання <i>(text)</i>\n\n"*" - зберігає поточне значення, "-" - щоб стерти поточне значення\n\n<b>Поточні значення: (скопіюй та зміни їх у своєму повідомленні)</b>\n\n<pre>${role.tag}\n${role.type}\n${role.status}\n${role.name ?? "-"}\n${role.publicName ?? "-"}\n${role.shortName ?? "-"}\n${role.shortPublicName ?? "-"}\n${role.rank ?? "-"}\n${role.link ?? "-"}</pre>`;
   }, backButtons.get, editLast())
   .input("admin:editRoleContent", true)
   .send<StateType>(async state => {
@@ -66,7 +66,7 @@ $editRole.make()
   .send<StateType>(async state => {
     const list = state.data.options["admin:allRoles"] as Role[];
     if(!list) return ["Помилка!", CHAIN.NEXT_LISTENER];
-    return "<u><b>Адмінська Панель</b></u>\n\nВведи тег ролі, яку хочеш редагувати.\n\n<b>Список ролей:</b> " + list.map(r => r.tag).join("; ");
+    return "<u><b>Адмінська Панель</b></u>\n\nВведи тег ролі, яку хочеш редагувати.\n\n<b>Список ролей:</b>\n" + list.map(r => r.tag).join("; ");
   }, backButtons.get, editLast())
   .input("admin:editRoleTag", true)
   .func(call($editRoleChosen));

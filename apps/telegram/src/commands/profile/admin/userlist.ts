@@ -22,7 +22,7 @@ $userList.make()
     const path = `cache/userlist-${state.data.storage.user?.id ?? ""}.csv`;
     const list = await getUserNames();
     if(!list) return ["Помилка!", CHAIN.NEXT_LISTENER];
-    const data = "sep =,\nID,username\n" + list.map(u => `${u.id},${u.name}`).join("\n");
+    const data = "sep =,\nID,username\n" + list.map(u => `${u.id},${u.username}`).join("\n");
     try {
       await new Promise((res) => {
         fs.writeFile(path, data, "utf-8", res);

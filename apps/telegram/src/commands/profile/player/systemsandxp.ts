@@ -3,7 +3,7 @@ import { keyboard } from "../../../custom/hooks/buttons";
 import { getInputOptionsList } from "../../../custom/hooks/inputs";
 import { saveValue, toggleButtons, toggleValue, toggleValueInput } from "../../../custom/hooks/options";
 import { StateType } from "../../../custom/hooks/state";
-import { text } from "../../form/validators";
+import { text } from "../../presets/validators";
 import { CONTROL, MENU } from "../../mapping";
 import { optionsField } from "../../presets/options";
 import { optionsOtherField } from "../../presets/optionsOther";

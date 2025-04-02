@@ -12,7 +12,7 @@ export interface textField {
   chain: on;
 }
 
-export function textField<LocalData = any, UserData = any>(key: string, text: (state: LocalState<LocalData, UserData>) => Promise<string>, validate: (value: string, message: TelegramBot.Message) => Promise<boolean> | boolean = () => true): textField {
+export function textField<LocalData = any, UserData = any>(key: string, text: (state: LocalState<LocalData, UserData>) => Promise<string | [string, CHAIN]>, validate: (value: string, message: TelegramBot.Message, state: LocalState<LocalData, UserData>) => Promise<boolean> | boolean = () => true): textField {
   const fieldProcedure = procedure();
   const fieldChain = fieldProcedure.make()
     .func(noRepeatCrum(fieldProcedure))
@@ -23,7 +23,7 @@ export function textField<LocalData = any, UserData = any>(key: string, text: (s
     .func(async state => {
       const inp = state.core.inputs[key]!;
       const text = inp.text ?? "";
-      if(await validate(text, inp))
+      if(await validate(text, inp, state))
         return CHAIN.NEXT_ACTION;
       state.call(fieldProcedure);
       return CHAIN.NEXT_LISTENER;

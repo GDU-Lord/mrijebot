@@ -39,8 +39,13 @@ $start.make()
   .func(addCrum($start))
   .func<StateType>(async state => {
     let user = state.data.storage.user = await api.getUserByTelegram(state.core.userId);
+    const telegramUser = state.lastInput.from;
+    const username = telegramUser?.username ? `@${telegramUser.username}` : telegramUser?.first_name ?? null;
     console.log(user);
-    // if(!user) return CHAIN.EXIT;
+    if(!user) return;
+    if(username !== user.username) {
+      // update username here (with contact data)
+    }
   })
   .send<StateType>(async state => {
     let mention = "Тебе";

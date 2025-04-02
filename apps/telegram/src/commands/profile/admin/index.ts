@@ -13,9 +13,8 @@ export const $admin = optionsField(
     return [
       [["Список учасників", MENU.option[0]]],
       [["Змінити роль", MENU.option[1]]],
-      [["Назначити роль", MENU.option[2]]],
-      [["Забрати роль", MENU.option[3]]],
-      [["Архівувати роль", MENU.option[4]]],
+      [["Ролі користувачів", MENU.option[2]]],
+      [["Архівувати роль*", MENU.option[3]]],
       [["⬅️Назад", CONTROL.back]],
     ];
   });

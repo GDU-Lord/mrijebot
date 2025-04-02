@@ -4,7 +4,7 @@ import { getInputOptionsList } from "../../../custom/hooks/inputs";
 import { toggleButtons, toggleValue, toggleValueInput } from "../../../custom/hooks/options";
 import { StateType } from "../../../custom/hooks/state";
 import { GAME_TYPES } from "../../form/register/mapping";
-import { text } from "../../form/validators";
+import { text } from "../../presets/validators";
 import { CONTROL } from "../../mapping";
 import { optionsField } from "../../presets/options";
 import { optionsOtherField } from "../../presets/optionsOther";

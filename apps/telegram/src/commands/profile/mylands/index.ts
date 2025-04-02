@@ -1,7 +1,4 @@
 import { getUserMemberships } from "../../../api";
-import { Land } from "../../../app/entities/land.entity";
-import { keyboard } from "../../../custom/hooks/buttons";
-import { saveValue } from "../../../custom/hooks/options";
 import { StateType } from "../../../custom/hooks/state";
 import { CONTROL, MENU } from "../../mapping";
 import { optionsField } from "../../presets/options";

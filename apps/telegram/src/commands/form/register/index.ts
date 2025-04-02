@@ -1,7 +1,7 @@
+import { UserDurationPreference } from "../../../../../core/src/entities/user.entity";
 import { afterInit } from "../../../afterInit";
 import { createUser, getSystems, getUser, joinLand, setMasterPreferences, setPlayerPreferences } from "../../../api";
 import { getLands } from "../../../api/land";
-import { UserDurationPreference } from "../../../app/entities";
 import { getLastCallback, keyboard } from "../../../custom/hooks/buttons";
 import { saveValue, toggleButtons, toggleValue, toggleValueInput } from "../../../custom/hooks/options";
 import { StateType } from "../../../custom/hooks/state";
@@ -9,7 +9,7 @@ import { CONTROL } from "../../mapping";
 import { optionsField } from "../../presets/options";
 import { optionsOtherField } from "../../presets/optionsOther";
 import { textField } from "../../presets/textfield";
-import { email, text } from "../validators";
+import { email, text } from "../../presets/validators";
 import { GAME_TYPES, MASTERED, PLAYED, SOURCE } from "./mapping";
 import { registerRoutes } from "./routes";
 
@@ -25,6 +25,8 @@ export const $email = textField(
 
 export const $land = optionsField<StateType>(
   async state => {
+    const telegramUser = state.lastInput.from;
+    state.data.options["form:username"] = telegramUser?.username ? `@${telegramUser.username}` : telegramUser?.first_name ?? null;
     const lands = state.data.storage.lands = await getLands();
     if(!lands) return "ПОМИЛКА!";
     const list = lands.map(land => `📍<b>"${land.name}"</b>:\n${land.region.split(",").map(t => t.trim()).join(", ")}`);
@@ -269,6 +271,7 @@ export const $formDone = optionsField<StateType>(
 
     let user = await createUser(
       state.core.userId,
+      state.data.options["form:username"],
       state.core.inputs["form:email"]?.text!,
       state.data.options["form:source"],
       state.core.inputs["form:city"]?.text!,

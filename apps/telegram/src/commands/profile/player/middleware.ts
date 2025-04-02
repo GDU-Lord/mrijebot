@@ -4,7 +4,7 @@ import { forAllFields } from "../../../api/convert-fields";
 import { LocalState } from "../../../core/state";
 import { clearOptions, setInputOptionsList } from "../../../custom/hooks/inputs";
 import { StateType } from "../../../custom/hooks/state";
-import { text } from "../../form/validators";
+import { text } from "../../presets/validators";
 
 export async function savePrefs(state: LocalState<StateType>, prefs: {
   systemsPreferred?: number[];
