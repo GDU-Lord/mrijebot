@@ -26,6 +26,13 @@ export class RoleController {
     });
   }
 
+  @Get('local')
+  async getLocalRoles() {
+    return await this.roleRepository.find({
+      where: { type: In(["local", "hybrid"]) }
+    });
+  }
+
   @Get('all')
   async getAllRoles() {
     return await this.roleRepository.find();
@@ -83,8 +90,7 @@ export class RoleController {
     @Param('memberId') memberId: number,
   ) {
     const role = await this.roleRepository.findOne({ 
-      where: { id: roleId },
-      relations: ['members']
+      where: { id: roleId }
     });
 
     if(!role) throw new NotFoundException(`Role with id ${roleId} not found!`);

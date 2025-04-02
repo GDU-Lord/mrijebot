@@ -1,22 +1,34 @@
+import { userInfo } from "os";
 import { Land } from "../../../../../core/src/entities/land.entity";
-import { getUserMemberships, leaveLand } from "../../../api";
+import { getLands, getUserMemberships, leaveLand } from "../../../api";
 import { CHAIN } from "../../../core/actions";
 import { keyboard } from "../../../custom/hooks/buttons";
 import { saveValue } from "../../../custom/hooks/options";
 import { StateType } from "../../../custom/hooks/state";
 import { CONTROL, MENU } from "../../mapping";
 import { optionsField } from "../../presets/options";
+import { isGlobalAdmin, isLocalAdmin, isSupervisor } from "../admin/hooks";
 
 export const $myLandsList = optionsField<StateType>(
   async state => {
     return `<b><u>📍Панель Осередків: Мої осередки</u></b>\n\nОбери осередок, панель якого хочеш відкрити!`;
   },
   async state => {
-    if(!state.data.storage.user) return [];
-    const memberships = await getUserMemberships(state.data.storage.user);
+    const user = state.data.storage.user;
+    if(!user) return [];
+    const memberships = await getUserMemberships(user);
     state.data.options["profile:landsById"] = {};
+    if(user.globalRoles.find(r => r.tag === "supervisor")) {
+      const list = await getLands();
+      const lands = list.map(land => {
+        const member = land.members.find(m => m.userId === user.id);
+        const mark = !member ? "⚙️ " : member.status === "participant" ? "✨ " : "";
+        return [[mark + land.name, land.id]];
+      });
+      list.forEach(land => state.data.options["profile:landsById"][land.id] = land)
+      return [...lands, [["⬅️Назад", CONTROL.back]]] as keyboard;
+    }
     const lands = memberships.all.map(m => {
-      // const mark = l.members.
       const mark = m.member.status === "participant" ? "✨ " : "";
       return [[mark + m.land.name, m.land.id]];
     });
@@ -28,26 +40,51 @@ export const $myLandsList = optionsField<StateType>(
 
 export const $landPanel = optionsField<StateType>(
   async state => {
-    if(!state.data.storage.user) return "ПОМИЛКА!";
+    const user = state.data.storage.user;
+    if(!user) return "ПОМИЛКА!";
     const landId = state.data.options["profile:landId"];
     const land = state.data.options["profile:chosenLand"] = state.data.options["profile:landsById"][landId] as Land;
     const roles = `\n<b>Твої ролі</b>: <i>в розробці</i>`;
-    const isMember = !!state.data.storage.user.memberships.find(m => m.landId === landId && m.status === "participant");
-    const text = isMember ? `Ти зареєстрований(на/ні) як УЧАСНИК в цьому Осередку.` : "Ти ГІСТЬ у цьому осередку.";
+    const isMember = !!user.memberships.find(m => m.landId === landId && m.status === "participant");
+    const isGuest = !!user.memberships.find(m => m.landId === landId && m.status === "guest");
+    const text = isMember ? `Ти зареєстрований(на/ні) як УЧАСНИК в цьому Осередку.` : isGuest ? "Ти ГІСТЬ у цьому Осередку." : "Ти НЕ НАЛЕЖИШ до цього Осередку!";
     // display roles here
-    return `<b><u>📍Панель Осередків: ${land.name}</u></b>\n\n${text}\n${roles}`;
+    return `<b><u>📍Панель Осередку "${land.name}"</u></b>\n\n${text}\n${roles}`;
   },
   async state => {
-    // add admin options
-    if(!state.data.storage.user) return [];
+    const user = state.data.storage.user;
+    if(!user) return [];
     const land = state.data.options["profile:chosenLand"] as Land;
-    const isMember = !!state.data.storage.user.memberships.find(m => m.landId === land.id && m.status === "participant");
+    const member = user.memberships.find(m => m.landId === land.id);
+    const isGuest = !!user.memberships.find(m => m.landId === land.id && m.status === "guest");
     let keyboard: keyboard = [[["⬅️Назад", CONTROL.back]]];
-    if(!isMember) {
+    if(isGuest) {
       keyboard = [[["👋Покинути осередок", MENU.option[0]]], ...keyboard];
     }
     else {
       keyboard = [[["🔁Змінити осередок*", MENU.option[1]]], ...keyboard];
+    }
+    if(await isGlobalAdmin(state)) {
+      keyboard = [
+        [["Архівувати осередок*", MENU.option[30]]],
+        ...keyboard
+      ];
+    }
+    if(await isSupervisor(state)) {
+      keyboard = [
+        [["Змінити назву*", MENU.option[20]]],
+        [["Змінити регіони*", MENU.option[21]]],
+        ...keyboard
+      ];
+    }
+    if(await isSupervisor(state) || (member && await isLocalAdmin("profile:chosenLand")(state))) {
+      keyboard = [
+        [["Список учасників", MENU.option[10]]],
+        [["Ролі учасників", MENU.option[11]]],
+        [["Запити*", MENU.option[12]]],
+        [["Вигнати учасника*", MENU.option[13]]],
+        ...keyboard
+      ];
     }
     return keyboard;
   }
@@ -56,7 +93,7 @@ export const $landPanel = optionsField<StateType>(
 export const $leaveLand = optionsField<StateType>(
   async state => {
     const land = state.data.options["profile:chosenLand"] as Land;
-    return `<b><u>📍Панель Осередків: ${land.name}</u></b>\n\n❗Ти дійсно хочеш покинути осередок "${land.name}"?\n\n❗Тебе буде видалено з чатів осередку, ти не зможеш отримувати їхні оголошення та твої місцеві ролі будуть незворотньо стерті!`;
+    return `<b><u>📍Панель Осередків "${land.name}"</u></b>\n\n❗Ти дійсно хочеш покинути осередок "${land.name}"?\n\n❗Тебе буде видалено з чатів осередку, ти не зможеш отримувати їхні оголошення та твої місцеві ролі будуть незворотньо стерті!`;
   },
   [
     [["👋Так, покинути", CONTROL.next]],
@@ -72,7 +109,7 @@ export const $leaveLand = optionsField<StateType>(
 export const $landLeft = optionsField<StateType>(
   async state => {
     const land = state.data.options["profile:chosenLand"] as Land;
-    return `<b><u>📍Панель Осередків: ${land.name}</u></b>\n\n❗Ти покинув(ла/ли) осередок "${land.name}".\n\nℹ️ Повернути доступ до чатів та оголошень ти можеш приєднавшись знову як гість!`;
+    return `<b><u>📍Панель Осередків "${land.name}"</u></b>\n\n❗Ти покинув(ла/ли) осередок "${land.name}".\n\nℹ️ Повернути доступ до чатів та оголошень ти можеш приєднавшись знову як гість!`;
   },
   [
     [["⬅️На головну", CONTROL.back]],

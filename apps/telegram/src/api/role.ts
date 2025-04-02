@@ -11,6 +11,10 @@ export async function getGlobalRoles() {
   return await api.get<Role[]>(`/roles/global`, {}, err => console.log(err));
 }
 
+export async function getLocalRoles() {
+  return await api.get<Role[]>(`/roles/local`, {}, err => console.log(err));
+}
+
 export async function getAllRoles() {
   return await api.get<Role[]>(`/roles/all`, {}, err => console.log(err));
 }

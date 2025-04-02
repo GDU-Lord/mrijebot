@@ -27,10 +27,40 @@ export class LandController {
     });
   }
 
+  @Get(':landId')
+  async getLand(@Param('landId', ParseIntPipe) id: number) {
+    return await this.landRepository.findOne({
+      where: { id },
+      relations: ["members"],
+    });
+  }
+
+  @Get('member/:memberId')
+  async getMember(@Param('memberId', ParseIntPipe) id: number) {
+    return await this.memberRepository.findOne({
+      where: { id },
+      relations: ["localRoles"],
+    });
+  }
+
   @Post()
   async createLand(@Body() body: CreateLandDto) {
-    console.log('Received data:', body);
     this.landRepository.save(body);
+  }
+
+  @Get(':landId/names')
+  async getMemberNames(@Param('landId', ParseIntPipe) id: number) {
+    const land = await this.landRepository.findOne({
+      where: { id },
+      order: {
+        id: 'ASC'
+      },
+      select: {
+        members: true
+      },
+      relations: ["members"]
+    });
+    return land?.members;
   }
  
 }

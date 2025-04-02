@@ -141,9 +141,9 @@ export function getAspectButtons(aspect: "aspectFight" | "aspectSocial" | "aspec
     const asp = state.data.options[`playerPanel:${aspect}`] as number | null;
     const list = new Array(3).fill("").map((v, i) => (i+1) === asp ? " ✅" : "");
     return [
-      [["🟢 Висока" + list[0], 3]],
+      [["🟢 Висока" + list[0], 1]],
       [["🟡 Середня" + list[1], 2]],
-      [["🔴 Низька" + list[2], 1]],
+      [["🔴 Низька" + list[2], 3]],
       [["⬅️Назад", CONTROL.back]],
     ] as keyboard;
   };

@@ -10,7 +10,7 @@ import { optionsField } from "../../presets/options";
 import { textField } from "../../presets/textfield";
 import { number } from "../../presets/validators";
 import { $start } from "../../start";
-import { isGlobalAdmin } from "./hooks";
+import { isGlobalAdmin, isSupervisor } from "./hooks";
 import { removeCrum, updateGlobalRoles } from "./middleware";
 
 export const $assignRole = textField<StateType>(
@@ -51,20 +51,16 @@ export const $assignRoleUserChosen = textField<StateType>(
     }
     const roles = state.data.options["admin:globalRoles"] as Role[];
     const role = roles.find(r => r.tag === tag) as Role;
-    console.log("role", role);
+
     if(!role) return false;
     const user = state.data.options["admin:assignRoleUser"] as User;
 
     const assign = !user.globalRoles.map(r => r.id).includes(role.id);
-    
-    console.log(user.globalRoles.map(r => r.id), role.id);
 
     if(assign)
       await assignGlobalRole(role.id, user.id);
     else
       await removeGlobalRole(role.id, user.id);
-
-    console.log(assign);
 
     await updateGlobalRoles(state);
     state.data.storage.user = await getUser(state.data.storage.user!.id);
@@ -74,15 +70,4 @@ export const $assignRoleUserChosen = textField<StateType>(
   }
 );
 
-// export const $roleAssigned = optionsField<StateType>(
-//   async state => {
-//     return "<u><b>Адмінська Панель: Глобальні Ролі</b></u>\n\nРоль видано!"
-//   },
-//   [
-//     [["Редагувати далі", CONTROL.next]],
-//     [["Адмінська Панель", CONTROL.back]]
-//   ]
-// );
-
 $assignRole.chain.func(call($assignRoleUserChosen.proc));
-// $assignRoleUserChosen.chain.func(removeCrum).func(call($assignRoleUserChosen.proc));

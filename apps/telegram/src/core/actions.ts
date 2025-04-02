@@ -26,12 +26,17 @@ export class Send<LocalData = any, UserData = any> extends Action<On | UserInput
       let rawText: string;
       let chain: CHAIN = CHAIN.NEXT_ACTION;
       if(typeof text === "function") {
-        const rawTextRes = await text(state);
-        if(typeof rawTextRes === "string")
-          rawText = rawTextRes;
-        else {
-          rawText = rawTextRes[0];
-          chain = rawTextRes[1] ?? chain;
+        try {
+          const rawTextRes = await text(state);
+          if(typeof rawTextRes === "string")
+            rawText = rawTextRes;
+          else {
+            rawText = rawTextRes[0];
+            chain = rawTextRes[1] ?? chain;
+          }
+        } catch (err) {
+          console.log(err);
+          return CHAIN.NEXT_LISTENER;
         }
       }
       else
@@ -60,8 +65,12 @@ export class Send<LocalData = any, UserData = any> extends Action<On | UserInput
 export class Func<LocalData = any, UserData = any> extends Action<On | UserInput> {
   constructor(callback: (state: LocalState<LocalData, UserData>) => Promise<CHAIN | void>, parent: On | UserInput) {
     super(parent, async (p, state) => {
-      let res = await callback(state) ?? CHAIN.NEXT_ACTION;
-      return res;
+      try {
+        return await callback(state) ?? CHAIN.NEXT_ACTION;
+      } catch (err) {
+        console.log(err);
+        return CHAIN.NEXT_LISTENER;
+      }
     });
   }
 }
@@ -79,8 +88,13 @@ export class UserInput extends Action<On | UserInput> {
       }
       state.core.inputs[key] = res;
       for(const action of this.actions) {
-        const actionRes = await action.callback(this, state);
-        if(actionRes !== CHAIN.NEXT_ACTION) break;
+        try {
+          const actionRes = await action.callback(this, state);
+          if(actionRes !== CHAIN.NEXT_ACTION) break;
+        } catch (err) {
+          console.log(err);
+          break;
+        }
       }
       return CHAIN.NEXT_ACTION;
     });

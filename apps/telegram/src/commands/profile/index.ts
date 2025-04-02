@@ -38,7 +38,7 @@ export const $main = optionsField<StateType>(
       [["⚙️Налаштування оголошень*", MENU.option[4]]],
       [["💳Ідентифікаційна Картка", MENU.option[5]]],
     ];
-    if(isGlobalAdmin(state)) buttons.push([["®️Адмінська Панель", MENU.option[6]]]);
+    if(await isGlobalAdmin(state)) buttons.push([["®️Адмінська Панель", MENU.option[6]]]);
     buttons.push([["⬅️Назад", CONTROL.back]]);
     return buttons;
   }

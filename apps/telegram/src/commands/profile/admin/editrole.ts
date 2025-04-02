@@ -28,9 +28,7 @@ $editRoleChosen.make()
     const roles = state.data.options["admin:allRoles"] as Role[] | null;
     const role = state.data.options["admin:editRole"] = roles?.find(r => r.tag === tag);
     if(!role) {
-      state.data.crums.pop();
-      state.call($editRole);
-      return ["...", CHAIN.NEXT_LISTENER];
+      return ["Недійсний тег ролі, можливо його було змінено!", CHAIN.NEXT_LISTENER];
     };
     return `<u><b>Адмінська Панель</b></u>\n\nВідправ значення полів рядками у вказаному порядку:\n\nтег   <i>(alphanumeric)</i>*\nтип   <i>(local/global/hybrid)</i>*\ncтатус <i>(role/position)</i>*\nвнутрішня назва   <i>(text)</i>\nзовнішня назва   <i>(text)</i>)\nкоротка внутрішня назва <i>(text)</i>\nкоротка зовнішня назва   <i>(text)</i>\nранг <i>(number)</i>\nпосилання <i>(text)</i>\n\n"*" - зберігає поточне значення, "-" - щоб стерти поточне значення\n\n<b>Поточні значення: (скопіюй та зміни їх у своєму повідомленні)</b>\n\n<pre>${role.tag}\n${role.type}\n${role.status}\n${role.name ?? "-"}\n${role.publicName ?? "-"}\n${role.shortName ?? "-"}\n${role.shortPublicName ?? "-"}\n${role.rank ?? "-"}\n${role.link ?? "-"}</pre>`;
   }, backButtons.get, editLast())

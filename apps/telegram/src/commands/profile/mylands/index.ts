@@ -1,7 +1,11 @@
+import { afterInit } from "../../../afterInit";
 import { getUserMemberships } from "../../../api";
 import { StateType } from "../../../custom/hooks/state";
 import { CONTROL, MENU } from "../../mapping";
 import { optionsField } from "../../presets/options";
+import { landAdminRoutes } from "./landadmin/routes";
+
+afterInit.push(landAdminRoutes);
 
 export const $myLands = optionsField<StateType>(
   async state => {

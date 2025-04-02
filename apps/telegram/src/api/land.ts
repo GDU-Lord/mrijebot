@@ -1,6 +1,6 @@
 import { api } from ".";
 import { CreateLandDto } from "../../../core/src/controllers/land/dtos/create-land.dto";
-import { Land, User } from "../../../core/src/entities";
+import { Land, Member, User } from "../../../core/src/entities";
 
 export async function createLand(
   name: string,
@@ -11,6 +11,14 @@ export async function createLand(
 
 export async function getLands() {
   return await api.get<Land[]>("/lands") ?? [];
+}
+
+export async function getLand(id: number) {
+  return await api.get<Land>(`/lands/${id}`);
+}
+
+export async function getMember(id: number) {
+  return await api.get<Member>(`/lands/member/${id}`);
 }
 
 export async function getLandsById() {
@@ -43,4 +51,8 @@ export async function getUserMemberships(user: User) {
     guest,
     all: [...participant, ...guest]
   }
+}
+
+export async function getMemberNames(land: Land) {
+  return await api.get<Member[]>(`/lands/${land.id}/names`);
 }
