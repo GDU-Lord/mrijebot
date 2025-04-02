@@ -18,7 +18,7 @@ export async function getUserNames() {
 }
 
 export async function createUser(
-  telegramId: number,
+  telegramId: string,
   username: string,
   email: string,
   discoverySource: UserDiscoverySource,
@@ -38,7 +38,7 @@ export async function createUser(
   };
   const res = await api.post("/users", data);
   if(!res) return null;
-  return await getUserByTelegram(telegramId);
+  return await getUserByTelegram(+telegramId);
 }
 
 export async function setPlayerPreferences(

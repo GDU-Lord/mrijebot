@@ -1,9 +1,10 @@
-import { IsInt, IsOptional } from "class-validator";
+import { IsInt, IsOptional, IsString, Matches } from "class-validator";
 
 export class FindUserQuery {
   @IsOptional()
-  @IsInt()
-  telegramId?: number;
+  @IsString()
+  @Matches(/^-?\d+$/)
+  telegramId?: string;
 
   @IsInt()
   pageIndex: number = 0;

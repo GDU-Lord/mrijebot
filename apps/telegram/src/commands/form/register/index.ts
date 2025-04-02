@@ -270,7 +270,7 @@ export const $formDone = optionsField<StateType>(
     console.log("data", customSystemsPlayed, customSystemsMastered);
 
     let user = await createUser(
-      state.core.userId,
+      String(state.core.userId),
       state.data.options["form:username"],
       state.core.inputs["form:email"]?.text!,
       state.data.options["form:source"],

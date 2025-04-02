@@ -54,7 +54,7 @@ $start.make()
       "⭐️Зв'язатися з організаторами",
     ];
     if(state.data.storage.user) {
-      const chatMember = await Bot.getChatMember(state.core.chatId, state.data.storage.user.telegramId);
+      const chatMember = await Bot.getChatMember(state.core.chatId, +state.data.storage.user.telegramId);
       mention = `<a href="tg://user?id={data.storage.user.telegramId}">@${chatMember.user.username ?? chatMember.user.first_name}</a>, тебе`;
       options.push("⭐️Змінити свої дані");
     }

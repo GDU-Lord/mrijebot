@@ -11,8 +11,8 @@ export class User {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column('int')
-  telegramId!: number;
+  @Column('bigint')
+  telegramId!: string;
 
   @Column('varchar')
   email!: string;

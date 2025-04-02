@@ -1,9 +1,10 @@
-import { IsEmail, IsEnum, IsInt, IsOptional, IsString, MaxLength, Min, MinLength } from "class-validator";
+import { IsEmail, IsEnum, IsInt, IsOptional, IsString, Matches, MaxLength, Min, MinLength } from "class-validator";
 import { UserDiscoverySource } from "../../../entities";
 
 export class CreateUserDto {
-  @IsInt()
-  telegramId!: number;
+  @IsString()
+  @Matches(/^-?\d+$/)
+  telegramId!: string;
   
   @IsEmail()
   email!: string;

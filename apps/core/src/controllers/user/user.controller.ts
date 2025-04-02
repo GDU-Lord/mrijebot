@@ -44,7 +44,7 @@ export class UserController {
   }
 
   @Get('byTelegramId/:telegramId')
-  async findOneByTelegram (@Param('telegramId', ParseIntPipe) telegramId: number): Promise<User> {
+  async findOneByTelegram (@Param('telegramId') telegramId: string): Promise<User> {
     const user = await this.userRepository.findOne({ 
       where: { telegramId }, 
       relations: ['globalRoles', 'playerPreferredGameSystems', 'playerPlayedGameSystems', 'masterPreferredGameSystems', 'masterPlayedGameSystems', 'memberships'],

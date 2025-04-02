@@ -28,7 +28,7 @@ export const $main = optionsField<StateType>(
     // Організатор Осередку (Organisator*in)
     // Учасник Осередку (Teilnehmer*in)
     // Гість Осередку (Gast)
-    const chatMember = await Bot.getChatMember(state.core.chatId, state.data.storage.user.telegramId);
+    const chatMember = await Bot.getChatMember(state.core.chatId, +state.data.storage.user.telegramId);
     return `<b><u>👤Профіль</u></b>\n\n<b>Ім'я</b>: ${chatMember.user.first_name}\n<b>Займенники</b>: <i>в розробці</i>\n<b>Email</b>: {data.storage.user.email}${status}${participant}${guest}`;
   },
   async state => {
