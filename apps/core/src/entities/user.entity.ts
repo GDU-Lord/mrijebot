@@ -2,6 +2,7 @@ import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColum
 import { Member } from "./member.entity";
 import { GameSystem } from "./game-system.entity";
 import { Role } from "./role.entity";
+import { Announcement } from "./announcement.entity";
 
 export type UserDiscoverySource = 'instagram' | 'linked_in' | "friends" | "chat_bot" | "community" | "none";
 export type UserDurationPreference = 'one_shot' | 'short_campaign' | 'long_campaign';
@@ -90,5 +91,8 @@ export class User {
   @ManyToMany(() => Role)
   @JoinTable()
   globalRoles!: Role[];
+
+  @OneToMany(() => Announcement, announcement => announcement.owner)
+  announcements!: Announcement[];
 
 }

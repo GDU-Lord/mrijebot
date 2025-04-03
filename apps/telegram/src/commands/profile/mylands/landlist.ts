@@ -7,7 +7,7 @@ import { saveValue } from "../../../custom/hooks/options";
 import { StateType } from "../../../custom/hooks/state";
 import { CONTROL, MENU } from "../../mapping";
 import { optionsField } from "../../presets/options";
-import { isGlobalAdmin, isLocalAdmin, isMasterInspector, isSupervisor } from "../roles";
+import { canAnnounceLocal, isGlobalAdmin, isLocalAdmin, isMasterInspector, isSupervisor } from "../roles";
 import { parseRoles } from "../roles";
 
 export const $myLandsList = optionsField<StateType>(
@@ -64,6 +64,12 @@ export const $landPanel = optionsField<StateType>(
     }
     else {
       keyboard = [[["🔁Змінити осередок*", MENU.option[1]]], ...keyboard];
+    }
+    if(await canAnnounceLocal("profile:chosenLand")(state)) {
+      keyboard = [
+        [["Нове Оголошення", MENU.option[50]]],
+        ...keyboard
+      ];
     }
     if(await isGlobalAdmin(state)) {
       keyboard = [

@@ -65,6 +65,12 @@ export function isMasterInspector(currentLandField: string) {
   };
 }
 
+export function canAnnounceLocal(currentLandField: string) {
+  return async function (state: LocalState<StateType>) {
+    return await hasLocalRole(state, "local_announce", currentLandField);
+  };
+}
+
 export type roleField = "tag" | "name" | "publicName" | "shortName" | "shortPublicName";
 
 function sortRoles(a: Role, b: Role) {

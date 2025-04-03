@@ -11,7 +11,7 @@ export interface optionsField {
   chain: on;
 };
 
-export function optionsField<LocalData = any, UserData = any>(text: (state: LocalState<LocalData, UserData>) => Promise<string>, buttons: keyboard | ((state: LocalState<LocalData, UserData>) => Promise<keyboard>), process: (state: LocalState<LocalData, UserData>, buttons: buttonsGenerator) => Promise<CHAIN | void> = async () => {}): optionsField {
+export function optionsField<LocalData = any, UserData = any>(text: (state: LocalState<LocalData, UserData>) => Promise<string | [string, CHAIN]>, buttons: keyboard | ((state: LocalState<LocalData, UserData>) => Promise<keyboard>), process: (state: LocalState<LocalData, UserData>, buttons: buttonsGenerator) => Promise<CHAIN | void> = async () => {}): optionsField {
   const fieldButtons = createButtons(buttons);
   const fieldProcedure = procedure();
   const fieldChain = fieldProcedure.make()
