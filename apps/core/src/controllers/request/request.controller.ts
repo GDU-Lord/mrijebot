@@ -2,10 +2,11 @@ import { BadRequestException, Body, Controller, Delete, Get, InternalServerError
 import { InjectRepository } from "@nestjs/typeorm";
 import { Land, Member, User } from "../../entities";
 import { Role } from "../../entities/role.entity";
-import { In, Repository } from "typeorm";
+import { In, IsNull, Repository } from "typeorm";
 import { GetRequestsQuery } from "./queries/get-requests.query";
 import { Request, requestStatus } from "../../entities/request.entity";
 import { CreateRequestDto } from "./dtos/create-request.dto";
+import { SetRequestContentDto } from "./dtos/set-request-content.dto";
 
 @Controller('requests')
 export class RequestController {
@@ -64,8 +65,12 @@ export class RequestController {
     if(query.tag)
       data.tag = query.tag;
 
-    if(query.content)
-      data.content = query.content;
+    if(query.content) {
+      if(query.content === "[null]")
+        data.content = IsNull() as any;
+      else
+        data.content = query.content;
+    }
 
     console.log("rec", data);
 
@@ -128,12 +133,26 @@ export class RequestController {
     @Param('status') status: requestStatus,
   ) {
     const request = await this.requestRepository.findOne({
-      where: { id },
-      relations: ["signatures"],
+      where: { id }
     });
     if(!request) throw new NotFoundException(`Request with id ${id} not found!`);
     if(request.status === status) throw new BadRequestException(`Request with id ${id} already has the status ${status}!`);
     request.status = status;
+    return await this.requestRepository.save(request);
+  }
+
+  @Put(':requestId/content')
+  async setContent(
+    @Param('requestId', ParseIntPipe) id: number,
+    @Body() { content }: SetRequestContentDto,
+  ) {
+    // doesn't work
+    const request = await this.requestRepository.findOne({
+      where: { id }
+    });
+    if(!request) throw new NotFoundException(`Request with id ${id} not found!`);
+    request.content = content ?? null;
+    console.log(content);
     return await this.requestRepository.save(request);
   }
 

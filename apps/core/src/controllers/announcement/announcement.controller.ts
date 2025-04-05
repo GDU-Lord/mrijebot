@@ -1,6 +1,6 @@
 import { Body, Controller, Get, NotFoundException, Param, Post, Put, Query } from "@nestjs/common";
 import { CreateAnnouncementDto } from "./dtos/create-announcement.dto";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { Announcement } from "../../entities/announcement.entity";
 import { User } from "../../entities";
 import { GetAnnouncementsQuery } from "./queries/get-announcements.query";
@@ -16,6 +16,15 @@ export class AnnouncementController {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
+
+  @Get("updates")
+  async getUpdates () {
+    return await this.announcementRepository.find({
+      where: {
+        status: In(["pending", "edit", "archive"])
+      },
+    });
+  }
 
   @Get()
   async getAnnouncements (

@@ -3,7 +3,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./user.entity";
 
 export type announcementType = "local" | "global" | "game" | "private";
-export type announcementStatus = "pending" | "edit" | "sent" | "archived";
+export type announcementStatus = "pending" | "edit" | "sent" | "archived" | "archive";
 
 @Entity()
 export class Announcement {
@@ -18,10 +18,10 @@ export class Announcement {
   owner!: User | null;
 
   @Column('timestamp')
-  date: Date;
+  date!: Date;
 
   @Column('varchar')
-  status: announcementStatus;
+  status!: announcementStatus;
 
 
   @Column("int", { array: true})
@@ -45,10 +45,10 @@ export class Announcement {
 
 
   @Column("bigint", { array: true })
-  recepientIds: string[];
+  recepientIds!: string[];
 
   @Column("bigint", { array: true })
-  instanceIds: string[];
+  instanceIds!: string[];
 
 }
 

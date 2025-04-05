@@ -10,6 +10,15 @@
   "monorepo": true,
   "root": "apps/core",
   "projects": {
+    "announcer": {
+      "type": "application",
+      "root": "apps/announcer",
+      "entryFile": "main",
+      "sourceRoot": "apps/announcer/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/announcer/tsconfig.app.json"
+      }
+    },
     "core": {
       "type": "application",
       "root": "apps/core",

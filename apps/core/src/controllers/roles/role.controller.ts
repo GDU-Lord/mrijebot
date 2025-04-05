@@ -38,6 +38,21 @@ export class RoleController {
     return await this.roleRepository.find();
   }
 
+  @Get(':roleId/assignees')
+  async getRoleMembers(
+    @Param('roleId') id: number, 
+  ) {
+    const members = await this.memberRepository.find({
+      where: { localRoles: { id } },
+      relations: []
+    });
+    const users = await this.userRepository.find({
+      where: { globalRoles: { id } },
+      relations: []
+    });
+    return { members, users };
+  }
+
   @Get('member/:memberId')
   async getMemberRoles(
     @Param('memberId') id: number
@@ -101,7 +116,7 @@ export class RoleController {
       relations: ['localRoles']
     });
     if(!member) throw new NotFoundException(`Member with id ${memberId} not found!`);
-
+6
     const memberRoleIds = member.localRoles.map(r => r.id);
 
     if(memberRoleIds.includes(role.id)) throw new BadRequestException(`Member with id ${memberId} already has the role with id ${roleId}`);

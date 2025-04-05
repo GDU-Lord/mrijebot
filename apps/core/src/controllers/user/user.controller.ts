@@ -32,6 +32,17 @@ export class UserController {
     });
   }
 
+  @Get('telegramIds')
+  async findTelegramIds(): Promise<User[]> {
+    return this.userRepository.find({
+      order: { id: 'ASC' },
+      select: {
+        id: true,
+        telegramId: true,
+      }
+    });
+  }
+
   @Get('names')
   async findNames(): Promise<User[]> {
     return this.userRepository.find({
