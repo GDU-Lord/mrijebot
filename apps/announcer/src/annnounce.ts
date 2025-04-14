@@ -4,8 +4,7 @@ import { Announcement } from "../../core/src/entities/announcement.entity";
 import { api } from "./api";
 import { Bot, defeaultMessageOptions } from "./init";
 import { UpdateAnnouncementDto } from "../../core/src/controllers/announcement/dtos/update-announcement.dto";
-import { Request } from "../../core/src/entities/request.entity";
-import { In } from "typeorm";
+import { awaitTimeout } from "./files";
 
 export let cache: {
   userTelegramIds: Record<number, number>;
@@ -39,47 +38,6 @@ export async function pollPendingMessages() {
     await processUpdate(upd);
   }
 
-}
-
-export async function pollPendingRequests() {
-
-  const requests = await api.get<Request[]>("/requests/", {
-    status: "open"
-  }) ?? [];
-
-  for(const req of requests) {
-    try {
-      const data = JSON.parse(req.content ?? "{}");
-      if(data.sent) continue;
-      await processReuqest(req, data);
-    } catch {}
-  }
-
-}
-
-export async function processReuqest(request: Request, data: Record<string, any>) {
-
-  const usersUpdated: number[] = [];
-
-  const list: ([number, number] | null)[] = [];
-
-  if(request.toLand)
-    list.push(...await forwardToLand(request.toLand.id, request, usersUpdated));
-  if(request.toMember)
-    list.push(await forwardToMember(request.toMember.id, request, usersUpdated));
-  if(request.toUser)
-    list.push(await forwardToTelegram(cache.userTelegramIds[request.toUser.id], request, usersUpdated));
-  if(request.toRole)
-    list.push(...await forwardToRole(request.toRole.id, request, usersUpdated));
-
-  await api.put("/requests/" + request.id + "/content", {
-    content: JSON.stringify({ ...data, sent: true })
-  });
-
-}
-
-export async function getRequestText(request: Request) {
-  return "NEW REQUEST!";
 }
  
 export async function processUpdate(update: Announcement) {
@@ -135,7 +93,7 @@ export async function processUpdate(update: Announcement) {
 
 }
 
-export async function forwardToLand(id: number, update: Announcement | Request, usersUpdated: number[]): Promise<([number, number] | null)[]> {
+export async function forwardToLand(id: number, update: Announcement, usersUpdated: number[]): Promise<([number, number] | null)[]> {
 
   const land = await api.get<Land>("/lands/" + id);
 
@@ -151,14 +109,12 @@ export async function forwardToLand(id: number, update: Announcement | Request, 
 
 }
 
-export async function forwardToRole(id: number, update: Announcement | Request, usersUpdated: number[]): Promise<([number, number] | null)[]> {
+export async function forwardToRole(id: number, update: Announcement, usersUpdated: number[]): Promise<([number, number] | null)[]> {
 
   const { members, users } = await api.get<{
     members: Member[],
     users: User[],
   }>("/roles/" + id + "/assignees") ?? { members: [], users: [] };
-
-  console.log("ROLE", members);
 
   if(!members && !users) return [];
    
@@ -173,7 +129,7 @@ export async function forwardToRole(id: number, update: Announcement | Request, 
 
 }
 
-export async function forwardToMember(id: number, update: Announcement | Request, usersUpdated: number[], member?: Member | null): Promise<[number, number] | null> {
+export async function forwardToMember(id: number, update: Announcement, usersUpdated: number[], member?: Member | null): Promise<[number, number] | null> {
 
   if(!member) member = await api.get<Member>("/lands/member/" + id);
 
@@ -183,11 +139,17 @@ export async function forwardToMember(id: number, update: Announcement | Request
 
 }
 
-export async function forwardToTelegram(telegramId: number, update: Announcement | Request, usersUpdated: number[]): Promise<[number, number] | null> {
+export async function forwardToTelegram(telegramId: number, update: Announcement, usersUpdated: number[]): Promise<[number, number] | null> {
 
   if(usersUpdated.includes(telegramId)) return null;
 
-  const msgId = await sendMessage(telegramId, (update as Announcement).text ?? getRequestText(update as Request));
+  let msgId: number | null;
+
+  if(update.data?.photo) {
+    msgId = await sendPhoto(telegramId, update.text, update.data.photo.id);
+  }
+  else
+    msgId = await sendMessage(telegramId, update.text);
 
   if(!msgId) return null;
 
@@ -197,11 +159,11 @@ export async function forwardToTelegram(telegramId: number, update: Announcement
 
 }
 
-export async function updateToTelegram(telegramId: number, messageId: number, update: Announcement | Request, usersUpdated: number[]): Promise<boolean> {
+export async function updateToTelegram(telegramId: number, messageId: number, update: Announcement, usersUpdated: number[]): Promise<boolean> {
 
   if(usersUpdated.includes(telegramId)) return false;
 
-  const res = await editMessage(telegramId, messageId, (update as Announcement).text ?? getRequestText(update as Request));
+  const res = await editMessage(telegramId, messageId, update.text);
 
   if(!res) return false;
 
@@ -212,8 +174,6 @@ export async function updateToTelegram(telegramId: number, messageId: number, up
 }
 
 export async function removeFromTelegram(telegramId: number, messageId: number, usersUpdated: number[]): Promise<boolean> {
-
-  console.log("REMOVE");
 
   if(usersUpdated.includes(telegramId)) return false;
 
@@ -228,10 +188,20 @@ export async function removeFromTelegram(telegramId: number, messageId: number, 
 }
 
 export async function sendMessage(chatId: number, text: string, options: TelegramBot.SendMessageOptions = {}) {
-  try {
+  try { 
     const msg = await Bot.sendMessage(chatId, text, {...defeaultMessageOptions, ...options});
     return msg.message_id;
   } catch {
+    return null;
+  }
+}
+
+export async function sendPhoto(chatId: number, text: string, photo: string, options: TelegramBot.SendMessageOptions = {}) {
+  try {
+    const msg = await Bot.sendPhoto(chatId, photo, {...defeaultMessageOptions, ...options, caption: text });
+    return msg?.message_id ?? null;
+  } catch (err) {
+    console.log(err);
     return null;
   }
 }
@@ -245,8 +215,18 @@ export async function editMessage(chat_id: number, message_id: number, text: str
       ...(options as EditMessageTextOptions)
     });
     return !!msg;
-  } catch {
-    return false;
+  } catch(err) {
+    try {
+      const cpt = await Bot.editMessageCaption(text, {
+        message_id,
+        chat_id,
+        ...(defeaultMessageOptions as EditMessageTextOptions), 
+        ...(options as EditMessageTextOptions)
+      });
+      return !!cpt;
+    } catch {
+      return false;
+    }
   }
 }
 

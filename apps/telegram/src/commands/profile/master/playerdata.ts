@@ -17,7 +17,6 @@ function getUserId(msg: TelegramBot.Message): number | null {
 export const $playerData = optionsOtherField<StateType>(
   "lastInput",
   async state => {
-    console.log("?");
     return `<b><u>👤Панель Майстра: Дані гравця</u></b>\n\nℹ️ Попроси гравця переслати тобі свою Ідентифікаційну Картку.\n\nℹ️ Її можна знайти у <b>Профіль</b> > <b>Ідентифікаційна Картка</b>\n\nℹ️ Перешли цю картку сюди в чат замість тега гравця (у вигляді повідомлення)!`;
   },
   [
@@ -30,9 +29,7 @@ export const $playerData = optionsOtherField<StateType>(
   async () => {},
   async state => {
     const userId = getUserId(state.lastInput as TelegramBot.Message)!;
-    console.log(userId);
     const user = await getUser(userId);
-    console.log(user);
     if(!user) {
       state.data.options["masterPanel:userData"] = "Помилка! Користувача не знайдено!";
       state.call($displayPlayerData.proc);
@@ -51,7 +48,6 @@ export const $playerData = optionsOtherField<StateType>(
 
 export const $displayPlayerData = optionsField<StateType>(
   async state => {
-    console.log("OPTION");
     return `<b><u>👤Панель Майстра: Дані гравця</u></b>\n\n${state.data.options["masterPanel:userData"]}`;
   },
   [

@@ -72,8 +72,6 @@ export class RequestController {
         data.content = query.content;
     }
 
-    console.log("rec", data);
-
     return await this.requestRepository.find({ 
       where: data,
       relations: ["fromRole", "fromUser", "fromMember", "fromLand", "toRole", "toUser", "toMember", "toLand", "signatures"],
@@ -152,7 +150,6 @@ export class RequestController {
     });
     if(!request) throw new NotFoundException(`Request with id ${id} not found!`);
     request.content = content ?? null;
-    console.log(content);
     return await this.requestRepository.save(request);
   }
 

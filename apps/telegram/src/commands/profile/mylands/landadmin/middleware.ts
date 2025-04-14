@@ -2,6 +2,7 @@ import { Request, requestStatus } from "../../../../../../core/src/entities/requ
 import { getUser } from "../../../../api";
 import { fulfillRequest, getRequests, rejectRequest, requestSubject } from "../../../../api/request";
 import { assignGlobalRole, getLocalRoles, removeGlobalRole } from "../../../../api/role";
+import { Bot } from "../../../../core";
 import { CHAIN } from "../../../../core/actions";
 import { LocalState } from "../../../../core/state";
 import { StateType } from "../../../../custom/hooks/state";
@@ -12,7 +13,6 @@ export async function updateLocalRoles(state: LocalState<StateType>) {
 }
 
 export async function queryRequests(tag: string, to: requestSubject = {}, from: requestSubject = {}, status: requestStatus | undefined = undefined) {
-  console.log("qeury", to);
   return await getRequests({
     to,
     from,
@@ -33,7 +33,6 @@ export async function processRequestAction(state: LocalState<StateType>) {
       if(!await fulfillRequest(request.id, user)) return CHAIN.NEXT_LISTENER;
       break;
   }
-  console.log("DO");  
   await processBecomeMaster(state);
 }
 
@@ -41,7 +40,6 @@ export async function processBecomeMaster(state: LocalState<StateType>) {
   const request = state.data.options["admin:requestChosen"] as Request;
   const action = state.data.options["admin:requestAction"];
   if(request.tag !== "become_master") return;
-  console.log("REQ");
   const user = await getUser(request.fromMember!.userId);
   const masterRequestRole = state.data.storage.roles.find(r => r.tag === "master_request");
   const masterRole = state.data.storage.roles.find(r => r.tag === "master");

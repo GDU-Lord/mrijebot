@@ -39,11 +39,11 @@ $start.make()
   .func(initState())
   .func(addCrum($start))
   .func<StateType>(async state => {
-    state.data.storage.roles = await getAllRoles() ?? [];
+    state.data.storage.roles = await api.getAllRoles() ?? [];
+    state.data.storage.lands = await api.getLands() ?? [];
     let user = state.data.storage.user = await api.getUserByTelegram(state.core.userId);
     const telegramUser = state.lastInput.from;
     const username = telegramUser?.username ? `@${telegramUser.username}` : telegramUser?.first_name ?? null;
-    console.log(user);
     if(!user) return;
     if(username !== user.username) {
       // update username here (with contact data)

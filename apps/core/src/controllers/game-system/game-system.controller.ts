@@ -32,7 +32,6 @@ export class GameSystemController {
 
   @Post()
   async createSystem(@Body() body: CreateGameSystemDto) {
-    console.log('Received data:', body);
     this.gameSystemRepository.save(body);
   }
  

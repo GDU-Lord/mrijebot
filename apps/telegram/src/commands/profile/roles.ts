@@ -32,13 +32,17 @@ export async function hasGlobalRole(state: LocalState<StateType>, tag: string) {
   return state.data.storage.user?.globalRoles.map(r => r.tag).includes(tag) ?? false;
 }
 
-export async function hasLocalRole(state: LocalState<StateType>, tag: string, currentLandField: string) {
+export async function hasLocalRole(state: LocalState<StateType>, tag: string, currentLandField?: string) {
   const user = state.data.storage.user;
-  const landId = state.data.options[currentLandField]?.id;
-  const memberId = user?.memberships.find(m => m.landId === landId)?.id;
-  if(!memberId) return false;
-  const member = await getMember(memberId);
-  return member?.localRoles.map(r => r.tag).includes(tag) ?? false;
+  const memberIds = user?.memberships.filter(m => {
+    if(!currentLandField) return true;
+    return m.landId === state.data.options[currentLandField]?.id
+  }).map(m => m.id) ?? [];
+  for(const memberId of memberIds) {
+    const member = await getMember(memberId);
+    if(member?.localRoles.map(r => r.tag).includes(tag)) return true;
+  }
+  return false;
 }
 
 export async function isGlobalAdmin(state: LocalState<StateType>) {

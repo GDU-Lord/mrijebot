@@ -1,6 +1,7 @@
 import TelegramBot from "node-telegram-bot-api";
 import { Bot } from "./init";
-import { pollPendingMessages, pollPendingRequests } from "./annnounce";
+import { pollPendingMessages } from "./annnounce";
+import { getChatId, pollFileUpdates } from "./files";
 
 export function initCommands() {
 
@@ -9,11 +10,15 @@ export function initCommands() {
   Bot.addListener("message", async (msg) => {
 
     try {
-      if(msg.chat.type !== "private") return;
+      if(msg.chat.type !== "private") {
+        if(msg.text?.startsWith("/getchatid"))
+          return await getChatId(msg);
+        return;
+      };
       if(msg.text?.startsWith("/start"))
         return await startCommand(msg);
       if(msg.text?.startsWith("/poll"))
-        return await pollPendingRequests();
+        return await pollFileUpdates();
     } catch (err) {
       console.log(err);
     }

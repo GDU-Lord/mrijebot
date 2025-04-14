@@ -1,6 +1,7 @@
 import { api } from ".";
 import { CreateRoleDto } from "../../../core/src/controllers/roles/dtos/create-role.dto";
 import { EditRoleDto } from "../../../core/src/controllers/roles/dtos/edit-role.dto";
+import { Member, User } from "../../../core/src/entities";
 import { Role, roleStatus, roleType } from "../../../core/src/entities/role.entity";
 
 export async function createRole(tag: string, type: roleType, status: roleStatus) {
@@ -45,4 +46,11 @@ export async function removeLocalRole(roleId: number, memberId: number) {
 
 export async function removeGlobalRole(roleId: number, userId: number) {
   return await api.delete(`/roles/${roleId}/user/${userId}`, {}, err => console.log(err));
+}
+
+export async function getRoleAssignees(roleId: number) {
+  return await api.get<{
+    users: User[];
+    members: Member[];
+  }>(`/roles/${roleId}/assignees`, {}, err => console.log(err));
 }

@@ -1,5 +1,6 @@
 import { pollPendingMessages } from "./annnounce";
 import { initCommands } from "./commands";
+import { pollFileUpdates } from "./files";
 import { init } from "./init";
 
 async function bootstrap() {
@@ -9,8 +10,9 @@ async function bootstrap() {
   
   console.log("connected");
 
-  setInterval(() => {
-    // pollPendingMessages();
+  setInterval(async () => {
+    await pollFileUpdates();
+    await pollPendingMessages();
   }, 2000);
 
 }

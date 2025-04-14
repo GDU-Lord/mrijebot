@@ -122,5 +122,4 @@ export async function loadPlayerPrefs(state: LocalState<StateType>) {
   state.data.options["playerPanel:aspectExplore"] = user.playerAspectExplore;
   state.data.options["playerPanel:textForMaster"] = user.playerMasterMessage;
   state.data.options["playerPanel:triggers"] = user.playerTriggers;
-  console.log(state.data.options);
 }

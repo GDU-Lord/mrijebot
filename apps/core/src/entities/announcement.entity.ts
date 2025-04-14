@@ -3,7 +3,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./user.entity";
 
 export type announcementType = "local" | "global" | "game" | "private";
-export type announcementStatus = "pending" | "edit" | "sent" | "archived" | "archive";
+export type announcementStatus = "loading" | "pending" | "edit" | "sent" | "archived" | "archive";
 
 @Entity()
 export class Announcement {

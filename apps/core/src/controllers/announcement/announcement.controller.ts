@@ -35,18 +35,16 @@ export class AnnouncementController {
     const data: Record<string, any> = {};
 
     if(query.landId)
-      data["landIds"] = query.landId;
+      data["landIds"] = [query.landId];
     if(query.memberId)
-      data["memberIds"] = query.memberId;
+      data["memberIds"] = [query.memberId];
     if(query.userId)
-      data["userIds"] = query.userId;
+      data["userIds"] = [query.userId];
     if(query.roleId)
-      data["roleIds"] = query.roleId;
+      data["roleIds"] = [query.roleId];
 
     if(query.ownerId) {
-      const owner = await this.userRepository.findOneBy({ id: query.ownerId });
-      if(!owner) throw new NotFoundException(`User with id ${query.ownerId} not found!`);
-      data["owner"] = owner;
+      data["owner"] = { id: query.ownerId };
     }
 
     return await this.announcementRepository.find({
@@ -55,7 +53,11 @@ export class AnnouncementController {
         tag,
         id,
         status,
-      }
+      },
+      order: {
+        date: "ASC"
+      },
+      relations: ["owner"]
     });
 
   }
@@ -73,7 +75,7 @@ export class AnnouncementController {
     
     return await this.announcementRepository.save({
       tag: body.tag,
-      status: "pending",
+      status: "loading",
       text: body.text,
       date: new Date(),
       data: body.data,
@@ -97,8 +99,8 @@ export class AnnouncementController {
     const announcement = await this.announcementRepository.findOneBy({ id });
     if(!announcement) throw new NotFoundException(`Announcement with id ${id} not found!`);
 
-    announcement.instanceIds.push(...body.instanceIds);
-    announcement.recepientIds.push(...body.recepientIds);
+    announcement.instanceIds.push(...body.instanceIds ?? []);
+    announcement.recepientIds.push(...body.recepientIds ?? []);
 
     announcement.text = body.text ?? announcement.text;
     announcement.data = body.data ?? announcement.data;

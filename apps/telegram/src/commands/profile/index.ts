@@ -6,7 +6,7 @@ import { key, keyboard } from "../../custom/hooks/buttons";
 import { StateType } from "../../custom/hooks/state";
 import { CONTROL, MENU } from "../mapping";
 import { optionsField } from "../presets/options";
-import { isGlobalAdmin, isMaster, parseRoles } from "./roles";
+import { hasGlobalRole, hasLocalRole, isGlobalAdmin, isMaster, parseRoles } from "./roles";
 import { profileRoutes } from "./routes";
 
 afterInit.push(profileRoutes);
@@ -33,14 +33,22 @@ export const $main = optionsField<StateType>(
   },
   async state => {
     const masterButton: key = await isMaster(state) ? ["💛Панель майстра", MENU.option[3]] : ["✨Стати майстром", MENU.option[7]]; 
+    
     const buttons: keyboard = [
       [["📍Мої осередки", MENU.option[0]], ["📧 Контактні дані*", MENU.option[1]]],
       [["💙Панель гравця", MENU.option[2]], masterButton],
-      [["⚙️Налаштування оголошень*", MENU.option[4]]],
-      [["💳Ідентифікаційна Картка", MENU.option[5]]],
     ];
-    if(await isGlobalAdmin(state)) buttons.push([["®️Адмінська Панель", MENU.option[6]]]);
+
+    if(await hasLocalRole(state, "local_announce") || await hasGlobalRole(state, "global_announce") || await hasGlobalRole(state, "master"))
+      buttons.push([["⚙️Мої оголошення", MENU.option[4]]]);
+
+    buttons.push([["💳Ідентифікаційна Картка", MENU.option[5]]]);
+
+    if(await isGlobalAdmin(state))
+      buttons.push([["®️Адмінська Панель", MENU.option[6]]]);
+
     buttons.push([["⬅️Назад", CONTROL.back]]);
+    
     return buttons;
   }
 );

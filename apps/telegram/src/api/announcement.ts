@@ -1,7 +1,9 @@
 import { api } from ".";
 import { CreateAnnouncementDto } from "../../../core/src/controllers/announcement/dtos/create-announcement.dto";
+import { UpdateAnnouncementDto } from "../../../core/src/controllers/announcement/dtos/update-announcement.dto";
+import { GetAnnouncementsQuery } from "../../../core/src/controllers/announcement/queries/get-announcements.query";
 import { User } from "../../../core/src/entities";
-import { announcementType } from "../../../core/src/entities/announcement.entity";
+import { Announcement, announcementStatus, announcementType } from "../../../core/src/entities/announcement.entity";
 
 export async function createAnnouncement(
   tag: announcementType,
@@ -21,9 +23,32 @@ export async function createAnnouncement(
     tag,
     text,
     roleIds: to.roleIds,
-    memberIds: to.roleIds,
+    memberIds: to.memberIds,
     userIds: to.userIds,
     landIds: to.landIds,
   };
-  return await api.post("/announcements", body, {}, (err) => console.log(err));
+  return await api.post<Announcement>("/announcements", body, {}, (err) => console.log(err));
 }
+
+export async function setAnnouncementStatus(id: number, status: announcementStatus) {
+  const data: UpdateAnnouncementDto = { status };
+  return await api.put("/announcements/" + id, data, {}, err => console.log(err));
+}
+
+export async function setAnnouncementText(id: number, text: string) {
+  const data: UpdateAnnouncementDto = { text, status: "edit" };
+  return await api.put("/announcements/" + id, data, {}, err => console.log(err));
+}
+
+export async function getUserAnnouncements(ownerId: number) {
+  return await api.get<Announcement[]>("/announcements", {
+    ownerId,
+    status: "sent",
+  } as GetAnnouncementsQuery, (err) => console.log(err));
+}
+
+// export async function getAnnouncement(id: number) {
+//   return await api.get("/announcements", {
+//     id
+//   } as GetAnnouncementsQuery, (err) => console.log(err));
+// }

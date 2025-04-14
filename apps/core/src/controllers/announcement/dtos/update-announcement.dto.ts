@@ -18,10 +18,10 @@ export class UpdateAnnouncementDto {
 
   @IsOptional()
   @Matches(/^\d+$/, { each: true })
-  instanceIds: string[] = [];
+  instanceIds?: string[] = [];
 
   @IsOptional()
   @Matches(/^\d+$/, { each: true })
-  recepientIds: string[] = [];
+  recepientIds?: string[] = [];
 
 }

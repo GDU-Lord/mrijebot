@@ -3,6 +3,9 @@ import axios from 'axios';
 export * from './user';
 export * from './land';
 export * from './game-system';
+export * from './role';
+export * from './request';
+export * from './announcement';
 
 export class API {
   
@@ -20,16 +23,16 @@ export class API {
     }
   }
 
-  async post(path: string, body: any, params: { [key: string]: any } = {}, errorHandler: (err: any) => void = () => {}): Promise<boolean> {
+  async post<type = unknown>(path: string, body: any, params: { [key: string]: any } = {}, errorHandler: (err: any) => void = () => {}): Promise<type | null> {
     try {
-      const res = await axios.post(this.host + path, body, {
+      const res = await axios.post<type>(this.host + path, body, {
         headers: { 'Content-Type': "application/json" },
         params
       });
-      return true;
+      return res.data;
     } catch (err) {
       errorHandler(err);
-      return false;
+      return null;
     }
   }
 

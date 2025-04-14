@@ -24,6 +24,8 @@ export class OnBot extends On {
   async init() {
     await initPromise;
     Bot.addListener(this.type, async (inp: inputType) => {
+      const asMsg = inp as TelegramBot.Message;
+      if(asMsg.caption) asMsg.text = asMsg.caption;
       if(!this.filter(inp)) return;
       const [userState, localState] = getState(this.type, inp);
       if(localState != null) localState.lastInput = inp;

@@ -1,6 +1,6 @@
 import { IsEnum, IsOptional, IsInt, IsPositive, IsDateString } from "class-validator";
 import { announcementStatus, announcementType } from "../../../entities/announcement.entity";
-import { Type } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 
 export class GetAnnouncementsQuery {
   
@@ -12,12 +12,14 @@ export class GetAnnouncementsQuery {
   @IsEnum(["pending", "edit", "sent", "archived"] as announcementStatus[])
   status?: announcementStatus;
 
+  // @Transform(({ value }) => (value === undefined || value === '' ? undefined : value))
   @IsOptional()
   @Type(() => Number)
   @IsInt()
   @IsPositive()
   id?: number;
 
+  // @Transform(({ value }) => (value === undefined || value === '' ? undefined : value))
   @IsOptional()
   @Type(() => Number)
   @IsInt()
@@ -25,24 +27,28 @@ export class GetAnnouncementsQuery {
   ownerId?: number;
 
 
+  // @Transform(({ value }) => (value === undefined || value === '' ? undefined : value))
   @IsOptional()
   @Type(() => Number)
   @IsInt()
   @IsPositive()
-  landId?: number[] = [];
+  landId?: number;
 
+  // @Transform(({ value }) => (value === undefined || value === '' ? undefined : value))
   @IsOptional()
   @Type(() => Number)
   @IsInt()
   @IsPositive()
-  roleId?: number[] = [];
+  roleId?: number;
 
+  // @Transform(({ value }) => (value === undefined || value === '' ? undefined : value))
   @IsOptional()
   @Type(() => Number)
   @IsInt()
   @IsPositive()
   userId!: number;
 
+  // @Transform(({ value }) => (value === undefined || value === '' ? undefined : value))
   @IsOptional()
   @Type(() => Number)
   @IsInt()

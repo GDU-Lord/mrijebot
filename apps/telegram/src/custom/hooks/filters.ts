@@ -7,5 +7,5 @@ export function match(text: string) {
 }
 
 export function command(com: string) {
-  return (inp: TelegramBot.Message) => inp.text!.startsWith(com);
+  return (inp: TelegramBot.Message) => !!inp.text?.startsWith(com);
 }

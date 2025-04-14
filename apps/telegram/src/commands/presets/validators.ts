@@ -7,7 +7,6 @@ export function email() {
 
 export function text(max: number = 255, min: number = 3) {
   return (text: string) => {
-    console.log(text.length);
     return text.length >= min && text.length <= max;
   }
 }
