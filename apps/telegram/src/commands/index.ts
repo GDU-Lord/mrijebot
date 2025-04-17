@@ -13,6 +13,7 @@ import { $createRole, $getRole } from "./wizard/roles";
 import { initState } from "../custom/hooks/state";
 import { $setchat } from "./chat/addchat";
 import { indexUsers } from "./chat/indexusers";
+import { processChatRequest } from "./chat/chatrequest";
 
 afterInit.push(initDefault);
 
@@ -26,12 +27,22 @@ export async function initCommands() {
   //   [["RESTART", "RESTART"]]
   // ]);
 
+  Bot.addListener("chat_join_request", async (req) => {
+    const chatId = req.chat.id;
+    const userId = req.from.id;
+    await processChatRequest(chatId, userId);
+  });
+
+  Bot.addListener("left_chat_member", async () => {
+    await indexUsers();
+  });
+
   on("message", command("/setchat")).func(call($setchat));
 
   on("message", command("/start")).func(call($setup));
 
   on("message", command("/index")).func(async () => {
-    indexUsers();
+    await indexUsers();
   });
 
   // wizard commands

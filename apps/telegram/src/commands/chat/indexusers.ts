@@ -35,12 +35,32 @@ export async function indexUser(user: User, chats: Chat[]) {
         await removeUserFromChat(chat, user);
         continue;
       }
+      console.log(!chat.users.find(u => u.id === user.id), !!chat.land, !user.memberships.find(m => m.landId === chat.land?.id));
       if(!chat.users.find(u => u.id === user.id))
         await addChatUser(chat.id, user.id);
+      else if(chat.land && !user.memberships.find(m => m.landId === chat.land?.id)) {
+        console.log("BAN");
+        try {
+          console.log("BAN TG");
+          await Bot.banChatMember(chat.chatId, +user.telegramId);
+          await Bot.unbanChatMember(chat.chatId, +user.telegramId);
+          console.log("BAN TG DONE");
+        } catch (err) { console.log(1, err) }
+        try {
+          console.log("REM")
+          await removeUserFromChat(chat, user);
+          console.log("REM DONE");
+        } catch (err) { console.log(2, err) }
+        continue;
+      }
       await setUserRoles(user, chat);
     } catch {
       console.log("not in chat", user, chat);
-      await removeUserFromChat(chat, user);
+      try {
+        await removeUserFromChat(chat, user);
+      } catch (err) {
+        console.log(3, err);
+      }
     }
 
   }
@@ -58,7 +78,7 @@ export async function setUserRoles(user: User, chat: Chat) {
   const member = user.memberships.find(m => m.landId === chat.land?.id);
   const roles: string[] = [];
 
-  for(const role of user.globalRoles) {
+  for(const role of user.globalRoles ?? []) {
     const name = role.shortName ?? role.name?.[0] ?? role.tag[0];
     if(!roles.includes(name))
       roles.push(name);

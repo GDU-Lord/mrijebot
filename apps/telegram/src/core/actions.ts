@@ -47,6 +47,7 @@ export class Send<LocalData = any, UserData = any> extends Action<On | UserInput
         try {
           await Bot.editMessageText(stateText, {
             chat_id: state.core.chatId,
+            disable_web_page_preview: true,
             message_id: +(typeof message_id === "function" ? await message_id(state) : message_id),
             ...(_options as EditMessageTextOptions)
           });
@@ -55,6 +56,7 @@ export class Send<LocalData = any, UserData = any> extends Action<On | UserInput
       }
       state.lastMessageSent = await Bot.sendMessage(state.core.chatId, stateText, {
         message_thread_id: state.core.threadId,
+        disable_web_page_preview: true,
         ..._options
       });
       return chain;

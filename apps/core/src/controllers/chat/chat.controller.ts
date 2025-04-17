@@ -20,7 +20,7 @@ export class ChatController {
   @Get()
   async getAllChats() {
     return await this.chatRepository.find({
-      relations: ["users"]
+      relations: ["users", "land"]
     });
   }
 

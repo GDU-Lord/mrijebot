@@ -90,7 +90,7 @@ export class User {
 
   @ManyToMany(() => Role)
   @JoinTable()
-  globalRoles!: Role[];
+  globalRoles!: Role[] | null;
 
   @OneToMany(() => Announcement, announcement => announcement.owner)
   announcements!: Announcement[];

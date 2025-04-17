@@ -2,13 +2,15 @@ import { userInfo } from "os";
 import { Land } from "../../../../../core/src/entities/land.entity";
 import { getLands, getUserMemberships, leaveLand } from "../../../api";
 import { CHAIN } from "../../../core/actions";
-import { keyboard } from "../../../custom/hooks/buttons";
+import { getLastCallback, keyboard } from "../../../custom/hooks/buttons";
 import { saveValue } from "../../../custom/hooks/options";
 import { StateType } from "../../../custom/hooks/state";
 import { CONTROL, MENU } from "../../mapping";
 import { optionsField } from "../../presets/options";
 import { canAnnounceLocal, isGlobalAdmin, isLocalAdmin, isMasterInspector, isSupervisor } from "../roles";
 import { parseRoles } from "../roles";
+import { getLandChats } from "../../../api/chat";
+import { indexUsers } from "../../chat/indexusers";
 
 export const $myLandsList = optionsField<StateType>(
   async state => {
@@ -19,7 +21,7 @@ export const $myLandsList = optionsField<StateType>(
     if(!user) return [];
     const memberships = await getUserMemberships(user);
     state.data.options["profile:landsById"] = {};
-    if(user.globalRoles.find(r => r.tag === "supervisor")) {
+    if(user.globalRoles?.find(r => r.tag === "supervisor")) {
       const list = await getLands();
       const lands = list.map(land => {
         const member = land.members.find(m => m.userId === user.id);
@@ -48,10 +50,15 @@ export const $landPanel = optionsField<StateType>(
     const roles = `\n\n<b>Твої ролі</b>:\n<i>${(await parseRoles(state, ["name", "publicName"], "local", "any", false, landId)).join("\n")}</i>`;
     const member = user.memberships.find(m => m.landId === landId && m.status === "participant");
     const guest = user.memberships.find(m => m.landId === landId && m.status === "guest");
-    const adminRole = user.globalRoles.find(r => r.tag === "supervisor") ?? member?.localRoles.find(r => r.tag === "local_admin");
+    const adminRole = user.globalRoles?.find(r => r.tag === "supervisor") ?? member?.localRoles?.find(r => r.tag === "local_admin");
     const text = !!guest ? `Ти зареєстрований(на/ні) як УЧАСНИК в цьому Осередку.` : !!member ? "Ти ГІСТЬ у цьому Осередку." : "Ти НЕ НАЛЕЖИШ до цього Осередку!";
-    // const chats = 
-    return `<b><u>📍Панель Осередку "${land.name}"${!!adminRole ? ` (ID: ${land.id})` : ""}</u></b>\n\n${text}${roles}`;
+    const chatList = await getLandChats(landId) ?? [];
+    const chatsParsed = chatList.map(chat => {
+      const marker = chat.users.find(u => u.id === user.id) ? "✅ " : "➡️ ";
+      return `${marker}<a href="${chat.invite}">${chat.title}</a>`;
+    });
+    const chats = chatsParsed.length === 0 ? "\n\n<b>Чатів немає :(</b>" : `\n\n<b>Чати:</b>\n${chatsParsed.join("\n")}`;
+    return `<b><u>📍Панель Осередку "${land.name}"${!!adminRole ? ` (ID: ${land.id})` : ""}</u></b>\n\n${text}${roles}${chats}`;
   },
   async state => {
     const user = state.data.storage.user;
@@ -113,9 +120,12 @@ export const $leaveLand = optionsField<StateType>(
     [["⬅️Повернутися", CONTROL.back]],
   ],
   async state => {
-    if(!state.data.storage.user) return CHAIN.EXIT;
+    const data = getLastCallback(state, $leaveLand.btn);
+    if(data !== CONTROL.next) return CHAIN.NEXT_LISTENER;
+    if(!state.data.storage.user) return CHAIN.NEXT_LISTENER;
     const res = await leaveLand(state.data.storage.user.id, state.data.options["profile:chosenLand"].id);
-    if(!res) return CHAIN.EXIT;
+    if(!res) return CHAIN.NEXT_LISTENER;
+    await indexUsers();
   }
 );
 

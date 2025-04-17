@@ -18,6 +18,10 @@ export async function getAllChats() {
   return api.get<Chat[]>('/chats', {}, (err) => console.log(err));
 }
 
+export async function getLandChats(landId: number) {
+  return api.get<Chat[]>('/chats/land/' + landId, {}, (err) => console.log(err));
+}
+
 export async function addChatUser(chatId: number, userId: number) {
   return api.put(`/chats/${chatId}/add/${userId}`, {}, {}, (err) => console.log(err));
 }

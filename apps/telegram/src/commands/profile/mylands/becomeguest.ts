@@ -1,5 +1,6 @@
 import { Land } from "../../../../../core/src/entities";
 import { getLands, getLandsById, getUser, joinLand } from "../../../api";
+import { getLandChats } from "../../../api/chat";
 import { CHAIN } from "../../../core/actions";
 import { getLastCallback, keyboard } from "../../../custom/hooks/buttons";
 import { saveValue } from "../../../custom/hooks/options";
@@ -37,7 +38,13 @@ export const $becomeGuestDone = optionsField(
   async state => {
     const land = state.data.options["profile:becomeGuestLand"] as Land;
     if(!land) return "ПОМИЛКА!";
-    return `<b><u>👤Профіль: Стати гостем осередку</u></b>\n\nТепер ти гість осередку <b>${land.name}</b> (${land.region.split(",").map(t => t.trim()).join(", ")})! \nОсь посилання на чати: <i>в розробці</i>`;
+    const chatList = await getLandChats(land.id) ?? [];
+    const chatsParsed = chatList.map(chat => {
+      const marker = chat.users.find(u => u.id === state.data.storage.user?.id) ? "✅ " : "➡️ ";
+      return `${marker}<a href="${chat.invite}">${chat.title}</a>`;
+    });
+    const chats = chatsParsed.length === 0 ? "\n\n<b>Чатів немає :(</b>" : `\n\n<b>Чати:</b>\n${chatsParsed.join("\n")}`;
+    return `<b><u>👤Профіль: Стати гостем осередку</u></b>\n\nТепер ти гість осередку <b>${land.name}</b> (${land.region.split(",").map(t => t.trim()).join(", ")})!${chats}`;
   },
   async state => {
     return [

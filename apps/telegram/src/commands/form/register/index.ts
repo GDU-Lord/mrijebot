@@ -1,6 +1,7 @@
 import { UserDurationPreference } from "../../../../../core/src/entities/user.entity";
 import { afterInit } from "../../../afterInit";
 import { createUser, getSystems, getUser, joinLand, setMasterPreferences, setPlayerPreferences } from "../../../api";
+import { getLandChats } from "../../../api/chat";
 import { getLands } from "../../../api/land";
 import { getLastCallback, keyboard } from "../../../custom/hooks/buttons";
 import { saveValue, toggleButtons, toggleValue, toggleValueInput } from "../../../custom/hooks/options";
@@ -333,9 +334,15 @@ export const $formDone = optionsField<StateType>(
   }
 );
 
-export const $formSent = optionsField(
+export const $formSent = optionsField<StateType>(
   async state => {
-    return "<b><u>✅ Реєстрацію завершено</u></b>\n\nℹ️ Приєднуйся до чатів свого Осередку Мрієтворців!\n\n👉Чат 1\n👉Чат 2\n👉Чат 3";
+    const chatList = await getLandChats(state.data.options["form:land"]) ?? [];
+    const chatsParsed = chatList.map(chat => {
+      const marker = chat.users.find(u => u.id === state.data.storage.user?.id) ? "✅ " : "➡️ ";
+      return `${marker}<a href="${chat.invite}">${chat.title}</a>`;
+    });
+    const chats = chatsParsed.length === 0 ? "\n\n<b>Чатів немає :(</b>" : `\n\n<b>Чати:</b>\n${chatsParsed.join("\n")}`;
+    return `<b><u>✅ Реєстрацію завершено</u></b>\n\nℹ️ Приєднуйся до чатів свого Осередку Мрієтворців!${chats}`;
   },
   [
     [["Головне меню", CONTROL.back]],

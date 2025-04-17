@@ -29,7 +29,7 @@ export function verifyEitherRole(...roles: ((state: LocalState<StateType>) => Pr
 }
 
 export async function hasGlobalRole(state: LocalState<StateType>, tag: string) {
-  return state.data.storage.user?.globalRoles.map(r => r.tag).includes(tag) ?? false;
+  return state.data.storage.user?.globalRoles?.map(r => r.tag).includes(tag) ?? false;
 }
 
 export async function hasLocalRole(state: LocalState<StateType>, tag: string, currentLandField?: string) {
@@ -40,7 +40,7 @@ export async function hasLocalRole(state: LocalState<StateType>, tag: string, cu
   }).map(m => m.id) ?? [];
   for(const memberId of memberIds) {
     const member = await getMember(memberId);
-    if(member?.localRoles.map(r => r.tag).includes(tag)) return true;
+    if(member?.localRoles?.map(r => r.tag).includes(tag)) return true;
   }
   return false;
 }
@@ -84,12 +84,12 @@ function sortRoles(a: Role, b: Role) {
 export async function parseRoles(state: LocalState<StateType>, fields: [roleField, roleField?, roleField?, roleField?], types: "all" | "global" | "local" = "all", status: "role" | "position" | "any" = "any", onlyTop: boolean = false, landId: number | null = null) {
   const user = state.data.storage.user;
   if(!user) return ["(помилка)"];
-  const roles = (types === "all" || types === "global") ? [...user.globalRoles] : [];
+  const roles = (types === "all" || types === "global") ? [...(user.globalRoles ?? [])] : [];
   if(types === "local" || types === "all") {
     for(const m of user.memberships) {
       if(landId && m.landId !== landId) continue;
       const member = await getMember(m.id);
-      roles.push(...(member?.localRoles.filter(a => !roles.find(b => a.id === b.id)) ?? []));
+      roles.push(...(member?.localRoles?.filter(a => !roles.find(b => a.id === b.id)) ?? []));
     }
   }
   let text = roles.sort(sortRoles)

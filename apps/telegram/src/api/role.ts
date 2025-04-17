@@ -3,6 +3,7 @@ import { CreateRoleDto } from "../../../core/src/controllers/roles/dtos/create-r
 import { EditRoleDto } from "../../../core/src/controllers/roles/dtos/edit-role.dto";
 import { Member, User } from "../../../core/src/entities";
 import { Role, roleStatus, roleType } from "../../../core/src/entities/role.entity";
+import { indexUsers } from "../commands/chat/indexusers";
 
 export async function createRole(tag: string, type: roleType, status: roleStatus) {
   return await api.post(`/roles/${type}/${status}`, { tag } as CreateRoleDto, {}, err => console.log(err));
@@ -21,11 +22,15 @@ export async function getAllRoles() {
 }
 
 export async function editRole(id: number, body: EditRoleDto) {
-  return await api.put(`/roles/${id}`, body, {}, err => console.log(err));
+  const res = await api.put(`/roles/${id}`, body, {}, err => console.log(err));
+  await indexUsers();
+  return res;
 }
 
 export async function deleteRole(id: number) {
-  return await api.delete(`/roles/${id}`, {}, err => console.log(err));
+  const res = await api.delete(`/roles/${id}`, {}, err => console.log(err));
+  await indexUsers();
+  return res;
 }
 
 export async function getMemberRoles(id: number) {
@@ -33,19 +38,27 @@ export async function getMemberRoles(id: number) {
 }
 
 export async function assignLocalRole(roleId: number, memberId: number) {
-  return await api.put(`/roles/${roleId}/member/${memberId}`, {}, {}, err => console.log(err));
+  const res = await api.put(`/roles/${roleId}/member/${memberId}`, {}, {}, err => console.log(err));
+  await indexUsers();
+  return res;
 }
 
 export async function assignGlobalRole(roleId: number, userId: number) {
-  return await api.put(`/roles/${roleId}/user/${userId}`, {}, {}, err => console.log(err));
+  const res = await api.put(`/roles/${roleId}/user/${userId}`, {}, {}, err => console.log(err));
+  await indexUsers();
+  return res;
 }
 
 export async function removeLocalRole(roleId: number, memberId: number) {
-  return await api.delete(`/roles/${roleId}/member/${memberId}`, {}, err => console.log(err));
+  const res = await api.delete(`/roles/${roleId}/member/${memberId}`, {}, err => console.log(err));
+  await indexUsers();
+  return res;
 }
 
 export async function removeGlobalRole(roleId: number, userId: number) {
-  return await api.delete(`/roles/${roleId}/user/${userId}`, {}, err => console.log(err));
+  const res = await api.delete(`/roles/${roleId}/user/${userId}`, {}, err => console.log(err));
+  await indexUsers();
+  return res;
 }
 
 export async function getRoleAssignees(roleId: number) {

@@ -6,6 +6,7 @@ import { CHAIN } from "../../core/actions";
 import { procedure } from "../../core/chain";
 import { addChat, editChat, getChatByChatId } from "../../api/chat";
 import { editLast } from "../../custom/hooks/messageOptions";
+import { indexUsers } from "./indexusers";
 
 export const $setchat = procedure();
 $setchat.make()
@@ -29,7 +30,7 @@ $setchat.make()
     if(idQuery.startsWith("/cancel"))
       return ["Команду скасовано!", CHAIN.NEXT_LISTENER];
     if(idQuery.startsWith("/common")) {
-      if(!user.globalRoles.find(r => r.tag === "supervisor"))
+      if(!user.globalRoles?.find(r => r.tag === "supervisor"))
         return ["Відмовлено в доступі!\n\n/setchat - щоб спробувати знову", CHAIN.NEXT_LISTENER];
     }
     else {
@@ -37,10 +38,10 @@ $setchat.make()
       const land = state.data.land = await getLand(id);
       if(!land)
         return ["Землю не знайдено!\n\n/setchat - щоб спробувати знову", CHAIN.NEXT_LISTENER];
-      if(!user.globalRoles.find(r => r.tag === "supervisor")) {
+      if(!user.globalRoles?.find(r => r.tag === "supervisor")) {
         const { participant } = await getUserMemberships(user);
         const membership = participant.find(p => p.land.id === land.id);
-        if(!membership || membership.member.localRoles.find(r => r.tag === "local_admin"))
+        if(!membership || membership.member.localRoles?.find(r => r.tag === "local_admin"))
           return ["Відмовлено в доступі!\n\n/setchat - щоб спробувати знову", CHAIN.NEXT_LISTENER];
       }
     }
@@ -70,5 +71,6 @@ $setchat.make()
     const status = !land ? "чат не прив'язаний Осередку" : `чат Осередку "${land?.name}"`;
     if(!res)
       return ["Помилка!\n\n/setchat - щоб спробувати знову", CHAIN.NEXT_LISTENER];
+    await indexUsers();
     return [`Групу додано до системи як ${status}!\n\nЩоб від'єднати чат, виключіть цього бота з групи.`, CHAIN.NEXT_ACTION];
   }, {}, editLast());

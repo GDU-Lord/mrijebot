@@ -30,5 +30,5 @@ export class Member {
 
   @ManyToMany(() => Role)
   @JoinTable()
-  localRoles!: Role[];
+  localRoles!: Role[] | null;
 }
