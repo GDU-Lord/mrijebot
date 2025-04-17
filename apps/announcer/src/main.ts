@@ -11,8 +11,8 @@ async function bootstrap() {
   console.log("connected");
 
   setInterval(async () => {
-    await pollFileUpdates();
-    await pollPendingMessages();
+    // await pollFileUpdates();
+    // await pollPendingMessages();
   }, 2000);
 
 }

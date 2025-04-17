@@ -1,7 +1,7 @@
 import TelegramBot from "node-telegram-bot-api";
 import { Action, CHAIN, UserInput } from "./actions";
 import { inputType } from "./chain";
-import { Bot, initPromise, procedureListener } from "./index";
+import { Bot, initPromise, inputListener, procedureListener } from "./index";
 import { LocalState, UserState } from "./state";
 import getId from "./id";
 import { availableEventTypes, getState } from "../custom/listeners";
@@ -26,6 +26,7 @@ export class OnBot extends On {
     Bot.addListener(this.type, async (inp: inputType) => {
       const asMsg = inp as TelegramBot.Message;
       if(asMsg.caption) asMsg.text = asMsg.caption;
+      if(inputListener.processed.includes(asMsg.message_id)) return;
       if(!this.filter(inp)) return;
       const [userState, localState] = getState(this.type, inp);
       if(localState != null) localState.lastInput = inp;

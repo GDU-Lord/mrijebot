@@ -11,6 +11,8 @@ import { $createLand, $createSystem, $auth, $wizard } from "./wizard";
 import { createButtons } from "../custom/hooks/buttons";
 import { $createRole, $getRole } from "./wizard/roles";
 import { initState } from "../custom/hooks/state";
+import { $setchat } from "./chat/addchat";
+import { indexUsers } from "./chat/indexusers";
 
 afterInit.push(initDefault);
 
@@ -24,7 +26,13 @@ export async function initCommands() {
   //   [["RESTART", "RESTART"]]
   // ]);
 
+  on("message", command("/setchat")).func(call($setchat));
+
   on("message", command("/start")).func(call($setup));
+
+  on("message", command("/index")).func(async () => {
+    indexUsers();
+  });
 
   // wizard commands
   on("message", command("/auth")).func(initState()).func(call($auth));
@@ -38,6 +46,7 @@ export async function initCommands() {
   on("message", () => true).func(async state => {
     const msg = state.lastInput as TelegramBot.Message;
     setTimeout(async () => {
+      if(msg.chat.type !== "private") return;
       try {
         await Bot.deleteMessage(msg.chat.id, msg.message_id);
       } catch {}

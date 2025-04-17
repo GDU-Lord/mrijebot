@@ -13,6 +13,10 @@ export async function getUser(userId: number) {
   return await api.get<User>(`/users/${userId}`);
 }
 
+export async function getUsersGroups() {
+  return await api.get<User[]>(`/users/groups`);
+}
+
 export async function getUserNames() {
   return await api.get<User[]>(`/users/names`);
 }

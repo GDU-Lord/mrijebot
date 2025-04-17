@@ -46,11 +46,12 @@ export const $landPanel = optionsField<StateType>(
     const landId = state.data.options["profile:landId"];
     const land = state.data.options["profile:chosenLand"] = state.data.options["profile:landsById"][landId] as Land;
     const roles = `\n\n<b>Твої ролі</b>:\n<i>${(await parseRoles(state, ["name", "publicName"], "local", "any", false, landId)).join("\n")}</i>`;
-    const isMember = !!user.memberships.find(m => m.landId === landId && m.status === "participant");
-    const isGuest = !!user.memberships.find(m => m.landId === landId && m.status === "guest");
-    const text = isMember ? `Ти зареєстрований(на/ні) як УЧАСНИК в цьому Осередку.` : isGuest ? "Ти ГІСТЬ у цьому Осередку." : "Ти НЕ НАЛЕЖИШ до цього Осередку!";
-    // display roles here
-    return `<b><u>📍Панель Осередку "${land.name}"</u></b>\n\n${text}${roles}`;
+    const member = user.memberships.find(m => m.landId === landId && m.status === "participant");
+    const guest = user.memberships.find(m => m.landId === landId && m.status === "guest");
+    const adminRole = user.globalRoles.find(r => r.tag === "supervisor") ?? member?.localRoles.find(r => r.tag === "local_admin");
+    const text = !!guest ? `Ти зареєстрований(на/ні) як УЧАСНИК в цьому Осередку.` : !!member ? "Ти ГІСТЬ у цьому Осередку." : "Ти НЕ НАЛЕЖИШ до цього Осередку!";
+    // const chats = 
+    return `<b><u>📍Панель Осередку "${land.name}"${!!adminRole ? ` (ID: ${land.id})` : ""}</u></b>\n\n${text}${roles}`;
   },
   async state => {
     const user = state.data.storage.user;

@@ -11,6 +11,8 @@ import { RequestController } from './controllers/request/request.controller';
 import { Request } from './entities/request.entity';
 import { Announcement } from './entities/announcement.entity';
 import { AnnouncementController } from './controllers/announcement/announcement.controller';
+import { Chat } from './entities/chat.entity';
+import { ChatController } from './controllers/chat/chat.controller';
 
 @Module({
   imports: [
@@ -29,9 +31,9 @@ import { AnnouncementController } from './controllers/announcement/announcement.
         logging: true
       }),
     }),
-    TypeOrmModule.forFeature([GameSystem, Land, User, Member, Role, Request, Announcement]),
+    TypeOrmModule.forFeature([GameSystem, Land, User, Member, Role, Request, Announcement, Chat]),
   ],
-  controllers: [UserController, LandController, GameSystemController, RoleController, RequestController, AnnouncementController],
+  controllers: [UserController, LandController, GameSystemController, RoleController, RequestController, AnnouncementController, ChatController],
   providers: [
     {
       provide: APP_PIPE,
