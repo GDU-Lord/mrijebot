@@ -103,7 +103,8 @@ export async function forwardToLand(id: number, update: Announcement, usersUpdat
   const list: ([number, number] | null)[] = [];
 
   for(const member of land.members) {
-    list.push(await forwardToTelegram(cache.userTelegramIds[member.userId], update, usersUpdated));
+    if(member.status !== "suspended")
+      list.push(await forwardToTelegram(cache.userTelegramIds[member.userId], update, usersUpdated));
   }
 
   return list;

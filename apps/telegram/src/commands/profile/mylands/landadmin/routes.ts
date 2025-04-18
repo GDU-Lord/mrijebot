@@ -7,7 +7,7 @@ import { $annouceText, $announcementDone } from "./announce";
 import { $localAnnouceEditInput, $localAnnouncement, $localAnnouncementArchive, $localAnnouncementArchived, $localAnnouncementEdit, $localAnnouncementMeta, $localAnnouncements } from "./announcements";
 import { $assignRole } from "./assignrole";
 import { $memberList, memberListButtons } from "./memberlist";
-import { getAnnouncement, nextPage, prevPage, processRequestAction, updateLocalRoles } from "./middleware";
+import { getAnnouncement, announcementsNextPage, announcementsPprevPage, processRequestAction, updateLocalRoles, requestsPrevPage, requestsNextPage } from "./middleware";
 import { $localRequest, $localRequests } from "./requests";
 
 export function landAdminRoutes() {
@@ -19,7 +19,9 @@ export function landAdminRoutes() {
   routeCallback($landPanel.btn, MENU.option[60], $localAnnouncements.proc);
 
   backOption($localRequests.btn);
-  routeCallbackExceptArray($localRequests.btn, [CONTROL.back], $localRequest.proc);
+  routeCallbackExceptArray($localRequests.btn, [CONTROL.back, MENU.option[0], MENU.option[1]], $localRequest.proc);
+  routeCallback($localRequests.btn, MENU.option[0], $localRequests.proc, requestsPrevPage);
+  routeCallback($localRequests.btn, MENU.option[1], $localRequests.proc, requestsNextPage);
 
   backOption($localRequest.btn);
   backOption($localRequest.btn, CONTROL.clear, processRequestAction);
@@ -30,8 +32,8 @@ export function landAdminRoutes() {
   backOption($announcementDone.btn, CONTROL.back, removeCrum);
 
   backOption($localAnnouncements.btn);
-    routeCallback($localAnnouncements.btn, MENU.option[0], $localAnnouncements.proc, prevPage);
-    routeCallback($localAnnouncements.btn, MENU.option[1], $localAnnouncements.proc, nextPage);
+    routeCallback($localAnnouncements.btn, MENU.option[0], $localAnnouncements.proc, announcementsPprevPage);
+    routeCallback($localAnnouncements.btn, MENU.option[1], $localAnnouncements.proc, announcementsNextPage);
     routeCallbackExceptArray($localAnnouncements.btn, [MENU.option[0], MENU.option[1], CONTROL.back], $localAnnouncement.proc, getAnnouncement);
   
     backOption($localAnnouncement.btn);

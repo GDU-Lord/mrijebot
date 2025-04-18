@@ -33,7 +33,7 @@ export async function indexUser(user: User, chats: Chat[]) {
       }
       if(!chat.users.find(u => u.id === user.id))
         await addChatUser(chat.id, user.id);
-      else if(chat.land && !user.memberships.find(m => m.landId === chat.land?.id)) {
+      else if(chat.land && !user.memberships.find(m => m.landId === chat.land?.id && m.status !== "suspended")) {
         try {
           await Bot.banChatMember(chat.chatId, +user.telegramId);
           await Bot.unbanChatMember(chat.chatId, +user.telegramId);
@@ -47,9 +47,7 @@ export async function indexUser(user: User, chats: Chat[]) {
     } catch {
       try {
         await removeUserFromChat(chat, user);
-      } catch (err) {
-        
-      }
+      } catch (err) {}
     }
 
   }
@@ -79,13 +77,31 @@ export async function setUserRoles(user: User, chat: Chat) {
       roles.push(name);
   }
 
+  const isAdmin = !!member?.localRoles?.find(r => r.tag === "local_mod" || r.tag === "local_admin");
+
   const status = member?.status === "guest" ? "Гість" : member?.status === "participant" ? "Учасник" : "*";
   const title = roles.length === 0 ? status : roles.sort().join(",");
 
   try {
-    await Bot.promoteChatMember(chat.chatId, +user.telegramId, {
-      can_pin_messages: true,
-    });
+    if(!isAdmin)
+      await Bot.promoteChatMember(chat.chatId, +user.telegramId, {
+        can_pin_messages: true,
+      });
+    else
+      await Bot.promoteChatMember(chat.chatId, +user.telegramId, {
+        can_change_info: true,
+        can_delete_messages: true,
+        can_edit_messages: true,
+        can_invite_users: true,
+        can_manage_chat: true,
+        can_manage_topics: true,
+        can_manage_video_chats: true,
+        can_pin_messages: true,
+        can_post_messages: true,
+        can_promote_members: false,
+        can_restrict_members: false,
+        is_anonymous: false,
+      });
     await Bot.setChatAdministratorCustomTitle(chat.chatId, +user.telegramId, title);
     console.log(title);
   } catch(err) {}

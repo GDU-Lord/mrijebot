@@ -3,7 +3,7 @@ import { User } from "./user.entity";
 import { Land } from "./land.entity";
 import { Role } from "./role.entity";
 
-export type MemberStatus = 'guest' | 'participant';
+export type MemberStatus = 'guest' | 'participant' | 'suspended';
 
 @Entity()
 export class Member {

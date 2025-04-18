@@ -17,10 +17,17 @@ import { optionsField } from "./presets/options";
 import "dotenv/config";
 import { backOption } from "./back";
 import { loadUser } from "./loaduser";
+import { hasGlobalRole } from "./profile/roles";
 
 export const startButtons = createButtons<StateType>(async state => {
   const buttons: keyboard = [
     [["ℹ️ Інформація", MENU.option[0]]]
+  ];
+  const isSuspended = await hasGlobalRole(state, "suspended");
+  if(isSuspended) return [
+    ...buttons,
+    [["🔄 Оновити", MENU.option[4]]],
+    [["🔔Повідомлення", `https://t.me/${process.env.ANNOUNCER_TAG}`]]
   ];
   if(!state.data.storage.user) buttons.push([["👤Реєстрація", MENU.option[1]]]);
   else if(state.data.storage.user.isVerified) {
@@ -63,7 +70,8 @@ $start.make()
     else {
       options.push("⭐️Подати заявку на вступ");
     }
-    return `<b><u>Головне меню</u></b>\n\n${mention} вітає українська ініціатива настільних рольових ігор у Німеччині "Мрієтворці | The DreamForgers"!\n\n<b>Через нашого телеграм бота ти можеш:</b>\n\n${options.join("\n")}`;
+    const msg = await hasGlobalRole(state, "suspended") ? "\n\n❗Дію твого акаунту призупинено на час обробки твого запиту зміни Осередку!\n\n❗ОЧІКУЙ ПОВІДОМЛЕННЯ!" : "";
+    return `<b><u>Головне меню</u></b>\n\n${mention} вітає українська ініціатива настільних рольових ігор у Німеччині "Мрієтворці | The DreamForgers"!\n\n<b>Через нашого телеграм бота ти можеш:</b>\n\n${options.join("\n")}${msg}`;
   }, startButtons.get, editLast());
 
 export const $turnOnAnnouncements = optionsField<StateType>(
@@ -77,6 +85,7 @@ export const $turnOnAnnouncements = optionsField<StateType>(
 
 backOption($turnOnAnnouncements.btn);
 routeCallback(startButtons, MENU.option[3], $turnOnAnnouncements.proc);
+routeCallback(startButtons, MENU.option[4], $start);
 
   // OLD CODE for GoogleAPI:
   // const username = state.lastInput.from?.username;

@@ -9,6 +9,7 @@ import { LandNotFoundException } from "../land/exceptions";
 import { SetPlayerAspectsDto } from "./dtos/set-player-aspects.dto";
 import { SetPlayerMessagesDto } from "./dtos/set-player-messages.dto";
 import { SetUserContactsDto } from "./dtos/set-user-contacts.dto";
+import { Role } from "../../entities/role.entity";
 
 @Controller('users')
 export class UserController {
@@ -21,6 +22,8 @@ export class UserController {
     private readonly gameSystemRepository: Repository<GameSystem>,
     @InjectRepository(Land)
     private readonly landRepository: Repository<Land>,
+    @InjectRepository(Role)
+    private readonly roleRepository: Repository<Role>,
   ) {}
 
   @Get()
@@ -200,7 +203,10 @@ export class UserController {
     if (!land) throw new LandNotFoundException(body.landId);
 
     const existingMember = await this.memberRepository.findOneBy({ userId: id, landId: body.landId });
-    if (existingMember) throw new BadRequestException('User is already a member of this land');
+    if(existingMember) {
+      existingMember.status = body.status;
+      return this.memberRepository.save(existingMember);
+    }
 
     return this.memberRepository.save({
       user,
@@ -216,9 +222,17 @@ export class UserController {
     @Param('landId', ParseIntPipe) landId: number,
   ): Promise<void> {
     const member = await this.memberRepository.findOneBy({ userId, landId });
-    if (!member) throw new BadRequestException('User is not a member of this land');
-    this.memberRepository.delete({
-      id: member.id
+    if (!member) throw new BadRequestException(`User ${userId} is not a member of this land`);
+    member.status = "suspended";
+    member.localRoles = null;
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ["memberships"]
     });
+    if (!user) throw new BadRequestException(`User ${userId} not found`);
+    const index = user?.memberships.findIndex(m => m.id === member.id);
+    user?.memberships.splice(index, 1);
+    this.memberRepository.save(member);
   }
+
 }

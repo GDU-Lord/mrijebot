@@ -116,6 +116,8 @@ export class RoleController {
       relations: ['localRoles']
     });
     if(!member) throw new NotFoundException(`Member with id ${memberId} not found!`);
+
+    if(member.status === "suspended") throw new BadRequestException(`Member with id ${memberId} is suspended!`);
 6
     const memberRoleIds = member.localRoles?.map(r => r.id);
 

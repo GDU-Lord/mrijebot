@@ -54,5 +54,5 @@ export async function getUserMemberships(user: User) {
 }
 
 export async function getMemberNames(land: Land) {
-  return await api.get<Member[]>(`/lands/${land.id}/names`);
+  return await api.get<Member[]>(`/lands/${land.id}/names`, {}, (err) => console.log(err));
 }

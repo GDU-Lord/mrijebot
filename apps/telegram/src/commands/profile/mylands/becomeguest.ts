@@ -10,7 +10,12 @@ import { optionsField } from "../../presets/options";
 
 export const $becomeGuest = optionsField<StateType>(
   async state => {
-    const lands = state.data.options["profile:becomeGuestLands"] = (await getLands()).filter(l => !l.members.map(m => m.userId).includes(state.data.storage.user!.id));
+    const lands = state.data.options["profile:becomeGuestLands"] = (await getLands())
+      .filter(l => 
+        l.members.filter(m => 
+          m.userId === state.data.storage.user!.id && m.status !== "suspended"
+        ).length === 0
+      );
     if(!lands || !state.data.storage.user) return "ПОМИЛКА!";
     const list = lands.map(land => `📍<b>"${land.name}"</b>:\n${land.region.split(",").map(t => t.trim()).join(", ")}`);
     return `<b><u>👤Профіль: Стати гостем осередку</u></b>\n\nОбери осередок, гостем якого ти хочеш стати:\n\n${list.join("\n\n")}`;

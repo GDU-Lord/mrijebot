@@ -23,7 +23,6 @@ $setup.make()
       ]
     }
   })
-  // .func(async state => console.log(state.lastMessageSent))
   .func(call($start));
 
 export async function initDefault() {

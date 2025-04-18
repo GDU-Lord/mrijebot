@@ -3,6 +3,7 @@ import * as fs from "fs";
 import axios from "axios";
 import "dotenv/config";
 import { Bot } from "../../../../core";
+import { User } from "../../../../../../core/src/entities/user.entity";
 
 export async function downloadFile(fileId: string, announcementId: number, destFolder: string) {
   const file = await Bot.getFile(fileId);
@@ -26,4 +27,8 @@ export async function downloadFile(fileId: string, announcementId: number, destF
     writer.on('finish', () => resolve(destPath));
     writer.on('error', reject);
   });
+}
+
+export function mentionUser(user: User | null) {
+  return `<a href="tg://user?id=${user?.telegramId}">${user?.username}</a>`;
 }

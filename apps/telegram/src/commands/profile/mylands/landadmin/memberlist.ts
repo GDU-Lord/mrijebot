@@ -22,7 +22,8 @@ $memberList.make()
   .send<StateType>(async state => {
     const path = `cache/memberList-${state.data.storage.user?.id ?? ""}.csv`;
     const land = state.data.options["profile:chosenLand"] as Land;
-    const members = await getMemberNames(land) ?? [];
+    console.log("data", await getMemberNames(land));
+    const members = (await getMemberNames(land) ?? []).filter(m => m.status !== "suspended");
     const users = await getUserNames() ?? [];
     const usernameTable: {
       [key: string]: string | null;

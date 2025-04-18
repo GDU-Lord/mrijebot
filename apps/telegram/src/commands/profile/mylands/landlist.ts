@@ -51,7 +51,7 @@ export const $landPanel = optionsField<StateType>(
     const member = user.memberships.find(m => m.landId === landId && m.status === "participant");
     const guest = user.memberships.find(m => m.landId === landId && m.status === "guest");
     const adminRole = user.globalRoles?.find(r => r.tag === "supervisor") ?? member?.localRoles?.find(r => r.tag === "local_admin");
-    const text = !guest ? `Ти зареєстрований(на/ні) як УЧАСНИК в цьому Осередку.` : !!member ? "Ти ГІСТЬ у цьому Осередку." : "Ти НЕ НАЛЕЖИШ до цього Осередку!";
+    const text = !!member ? `Ти зареєстрований(на/ні) як УЧАСНИК в цьому Осередку.` : !!guest ? "Ти ГІСТЬ у цьому Осередку." : "Ти НЕ НАЛЕЖИШ до цього Осередку!";
     const chatList = await getLandChats(landId) ?? [];
     const chatsParsed = chatList.map(chat => {
       const marker = chat.users.find(u => u.id === user.id) ? "✅ " : "➡️ ";
@@ -71,44 +71,42 @@ export const $landPanel = optionsField<StateType>(
       keyboard = [[["👋Покинути осередок", MENU.option[0]]], ...keyboard];
     }
     else {
-      keyboard = [[["🔁Змінити осередок*", MENU.option[1]]], ...keyboard];
+      keyboard = [[["🔁Змінити осередок", MENU.option[1]]], ...keyboard];
     }
     if(await canAnnounceLocal("profile:chosenLand")(state)) {
       keyboard = [
-        [["Нове Оголошення", MENU.option[50]]],
+        [["📢Нове Оголошення", MENU.option[50]]],
         ...keyboard
       ];
     }
     if(await isLocalMod("profile:chosenLand")(state)) {
       keyboard = [
-        [["Оголошення Осередку", MENU.option[60]]],
+        [["📃Оголошення Осередку", MENU.option[60]]],
         ...keyboard
       ];
     }
     if(await isGlobalAdmin(state)) {
       keyboard = [
-        [["Архівувати осередок*", MENU.option[30]]],
+        [["🔒Архівувати осередок*", MENU.option[30]]],
         ...keyboard
       ];
     }
     if(await isSupervisor(state)) {
       keyboard = [
-        [["Змінити назву*", MENU.option[20]]],
-        [["Змінити регіони*", MENU.option[21]]],
+        [["✍️Змінити назву*", MENU.option[20]], ["📍Змінити регіони*", MENU.option[21]]],
         ...keyboard
       ];
     }
     if(await isSupervisor(state) || (member && await isLocalAdmin("profile:chosenLand")(state))) {
       keyboard = [
-        [["Список учасників", MENU.option[10]]],
-        [["Ролі учасників", MENU.option[11]]],
-        [["Вигнати учасника*", MENU.option[12]]],
+        [["👥Список учасників", MENU.option[10]], ["🎗️Ролі учасників", MENU.option[11]]],
+        [["☠️Вигнати учасника*", MENU.option[12]]],
         ...keyboard
       ];
     }
-    if(await isMasterInspector("profile:chosenLand")(state)) {
+    if(await isMasterInspector("profile:chosenLand")(state) || await isLocalAdmin("profile:chosenLand")(state)) {
       keyboard = [
-        [["Запити", MENU.option[40]]],
+        [["✉️ Запити", MENU.option[40]]],
         ...keyboard
       ];
     }

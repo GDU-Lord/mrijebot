@@ -26,24 +26,26 @@ export const $myLands = optionsField<StateType>(
     if(!user) return [];
     const memberships = await getUserMemberships(user);
     state.data.options["profile:landsById"] = {};
+    let lands: keyboard = [];
     if(user.globalRoles?.find(r => r.tag === "supervisor")) {
       const list = await getLands();
-      const lands = list.map(land => {
-        const member = land.members.find(m => m.userId === user.id);
+      lands = list.map(land => {
+        const member = land.members.find(m => m.userId === user.id && m.status !== "suspended");
         const mark = !member ? "⚙️ " : member.status === "participant" ? "✨ " : "";
         return [[mark + land.name, land.id]];
       });
-      list.forEach(land => state.data.options["profile:landsById"][land.id] = land)
-      return [...lands, [["⬅️Назад", CONTROL.back]]] as keyboard;
+      list.forEach(land => state.data.options["profile:landsById"][land.id] = land);
     }
-    const lands = memberships.all.map(m => {
-      const mark = m.member.status === "participant" ? "✨ " : "";
-      return [[mark + m.land.name, m.land.id]];
-    });
-    memberships.all.forEach(m => state.data.options["profile:landsById"][m.land.id] = m.land);
+    else {
+      lands = memberships.all.map(m => {
+        const mark = m.member.status === "participant" ? "✨ " : "";
+        return [[mark + m.land.name, m.land.id]];
+      });
+      memberships.all.forEach(m => state.data.options["profile:landsById"][m.land.id] = m.land);
+    }
     return [
       ...lands,
-      [["🔁Змінити осередок*", MENU.option[1]], ["👋Стати гостем", MENU.option[2]]],
+      [["🔁Змінити осередок", MENU.option[1]], ["👋Стати гостем", MENU.option[2]]],
       [["⬅️Назад", CONTROL.back]]
     ] as keyboard;
   },
