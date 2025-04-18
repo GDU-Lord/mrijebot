@@ -38,10 +38,10 @@ export const $assignRoleUserChosen = textField<StateType>(
     }
     const roles = state.data.options["admin:localRoles"] as Role[];
     const member = state.data.options["admin:assignRoleMember"] as Member;
-    const memberRoleIds = member.localRoles.map(r => r.id);
-    const memberRoleTags = member.localRoles.map(r => r.tag);
+    const memberRoleIds = member.localRoles?.map(r => r.id) ?? [];
+    const memberRoleTags = member.localRoles?.map(r => r.tag) ?? [];
     const rolesToAdd = roles.filter(r => !memberRoleIds.includes(r.id)).map(r => r.tag);
-    return `<u><b>Адмінська Панель: Глобальні Ролі</b></u>\n\nВведи глобальної ТЕГ ролі, щоб видати/забрати її!\n\n<b>Ролі користувача:</b>\n${memberRoleTags.join("; ")}\n\n<b>Список доступних ролей:</b>\n${rolesToAdd.join("; ")}`;
+    return `<u><b>Адмінська Панель: Локальні Ролі</b></u>\n\nВведи ТЕГ локальної ролі, щоб видати/забрати її!\n\n<b>Ролі користувача:</b>\n${memberRoleTags.join("; ")}\n\n<b>Список доступних ролей:</b>\n${rolesToAdd.join("; ")}`;
   },
   async (tag, inp, state) => {
     if(!await isLocalAdmin("profile:chosenLand")(state) && !await isSupervisor(state)) {
@@ -54,7 +54,7 @@ export const $assignRoleUserChosen = textField<StateType>(
     if(!role) return false;
     const member = state.data.options["admin:assignRoleMember"] as Member;
 
-    const assign = !member.localRoles.map(r => r.id).includes(role.id);
+    const assign = !member.localRoles?.map(r => r.id).includes(role.id);
 
     if(assign)
       await assignLocalRole(role.id, member.id);

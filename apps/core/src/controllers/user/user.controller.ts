@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, NotFoundException, Param, ParseIntPipe, Post, Put, Query } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { GameSystem, Land, Member, User } from "../../entities";
 import { In, Repository } from "typeorm";
@@ -8,6 +8,7 @@ import { UserNotFoundException } from "./exceptions";
 import { LandNotFoundException } from "../land/exceptions";
 import { SetPlayerAspectsDto } from "./dtos/set-player-aspects.dto";
 import { SetPlayerMessagesDto } from "./dtos/set-player-messages.dto";
+import { SetUserContactsDto } from "./dtos/set-user-contacts.dto";
 
 @Controller('users')
 export class UserController {
@@ -100,6 +101,16 @@ export class UserController {
     });
   }
 
+  @Put('verify/:telegramId')
+  async verifyUser(@Param('telegramId') telegramId: string): Promise<User> {
+    const user = await this.userRepository.findOneBy({ telegramId });
+    if (!user) throw new UserNotFoundException(telegramId, "telegram");
+    
+    user.isVerified = true;
+
+    return await this.userRepository.save(user);
+  }
+
   @Put(':userId/aspects')
   async setPlayerAspects(@Param('userId', ParseIntPipe) id: number, @Body() body: SetPlayerAspectsDto): Promise<User> {
     const user = await this.userRepository.findOneBy({ id });
@@ -108,6 +119,21 @@ export class UserController {
     user.playerAspectFight = body.playerAspectFight;
     user.playerAspectSocial = body.playerAspectSocial;
     user.playerAspectExplore = body.playerAspectExplore;
+
+    return await this.userRepository.save(user);
+  }
+
+  @Put(':userId/contacts')
+  async setUserContacts(@Param('userId', ParseIntPipe) id: number, @Body() body: SetUserContactsDto): Promise<User> {
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) throw new UserNotFoundException(id);
+    
+    if(body.city)
+      user.city = body.city;
+    if(body.email)
+      user.email = body.email;
+    if(body.username)
+      user.username = body.username;
 
     return await this.userRepository.save(user);
   }

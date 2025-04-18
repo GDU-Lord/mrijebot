@@ -15,16 +15,22 @@ export interface buttonsGenerator {
 
 export function createButtons<LocalData = any, UserData = any>(keys: keyboard | ((state: LocalState<LocalData, UserData>) => Promise<keyboard>)): buttonsGenerator {
   const tagId = getId();
+  const urlRegex = /^https?:\/\/[^\s]+$/g;
   return {
     get: async function (state) {
       if(state == null) return {};
       const keyboard = (typeof keys === "function" ? await keys(state) : keys).map(row => row.map(key => {
         const cache = new InputInfoCache(state, key[1]);
         const text = key[0];
+        if(!String(key[1]).match(urlRegex))
+          return {
+            text,
+            callback_data: [tagId, cache.id].join(":")
+          };
         return {
           text,
-          callback_data: [tagId, cache.id].join(":")
-        }
+          url: key[1]
+        };
       }));
       return {
         reply_markup: {

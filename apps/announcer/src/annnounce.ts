@@ -5,6 +5,7 @@ import { api } from "./api";
 import { Bot, defeaultMessageOptions } from "./init";
 import { UpdateAnnouncementDto } from "../../core/src/controllers/announcement/dtos/update-announcement.dto";
 import { awaitTimeout } from "./files";
+import "dotenv/config";
 
 export let cache: {
   userTelegramIds: Record<number, number>;
@@ -146,10 +147,32 @@ export async function forwardToTelegram(telegramId: number, update: Announcement
   let msgId: number | null;
 
   if(update.data?.photo) {
-    msgId = await sendPhoto(telegramId, update.text, update.data.photo.id);
+    msgId = await sendPhoto(telegramId, update.text, update.data.photo.id, {
+      reply_markup: {
+        inline_keyboard: [
+          [
+            {
+              text: "💟 MrijeBot",
+              url: `https://t.me/${process.env.MRIJEBOT_TAG}`
+            }
+          ]
+        ]
+      }
+    });
   }
   else
-    msgId = await sendMessage(telegramId, update.text);
+    msgId = await sendMessage(telegramId, update.text, {
+      reply_markup: {
+        inline_keyboard: [
+          [
+            {
+              text: "💟 MrijeBot",
+              url: `https://t.me/${process.env.MRIJEBOT_TAG}`
+            }
+          ]
+        ]
+      }
+    });
 
   if(!msgId) return null;
 
@@ -163,7 +186,18 @@ export async function updateToTelegram(telegramId: number, messageId: number, up
 
   if(usersUpdated.includes(telegramId)) return false;
 
-  const res = await editMessage(telegramId, messageId, update.text);
+  const res = await editMessage(telegramId, messageId, update.text, {
+    reply_markup: {
+      inline_keyboard: [
+        [
+          {
+            text: "💟 MrijeBot",
+            url: `https://t.me/${process.env.MRIJEBOT_TAG}`
+          }
+        ]
+      ]
+    }
+  });
 
   if(!res) return false;
 

@@ -19,6 +19,7 @@ export async function createRequest(tag: string, entry: {
   signatures?: User[],
   content?: string,
 }) {
+  console.log(entry.content);
   return await api.post("/requests", {
     tag,
     content: entry.content,

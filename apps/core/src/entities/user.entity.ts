@@ -95,4 +95,7 @@ export class User {
   @OneToMany(() => Announcement, announcement => announcement.owner)
   announcements!: Announcement[];
 
+  @Column("boolean", { nullable: true })
+  isVerified!: boolean;
+
 }

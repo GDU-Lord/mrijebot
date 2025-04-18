@@ -13,13 +13,23 @@ import { $main } from "./profile/index";
 import * as api from "../api";
 import { CONTROL, MENU } from "./mapping";
 import { getAllRoles } from "../api/role";
+import { optionsField } from "./presets/options";
+import "dotenv/config";
+import { backOption } from "./back";
+import { loadUser } from "./loaduser";
 
 export const startButtons = createButtons<StateType>(async state => {
   const buttons: keyboard = [
     [["ℹ️ Інформація", MENU.option[0]]]
   ];
-  if(state.data.storage.user) buttons.push([["👤Мій профіль", MENU.option[2]]]);
-  else buttons.push([["👤Реєстрація", MENU.option[1]]]);
+  if(!state.data.storage.user) buttons.push([["👤Реєстрація", MENU.option[1]]]);
+  else if(state.data.storage.user.isVerified) {
+    buttons.push(
+      [["👤Мій профіль", MENU.option[2]]],
+      [["📢Оголошення", `https://t.me/${process.env.ANNOUNCER_TAG}`]]
+    );
+  }
+  else buttons.push([["📢Активувати оголошення", MENU.option[3]]]);
   return buttons;
 });
 
@@ -38,17 +48,7 @@ $start.make()
   })
   .func(initState())
   .func(addCrum($start))
-  .func<StateType>(async state => {
-    state.data.storage.roles = await api.getAllRoles() ?? [];
-    state.data.storage.lands = await api.getLands() ?? [];
-    let user = state.data.storage.user = await api.getUserByTelegram(state.core.userId);
-    const telegramUser = state.lastInput.from;
-    const username = telegramUser?.username ? `@${telegramUser.username}` : telegramUser?.first_name ?? null;
-    if(!user) return;
-    if(username !== user.username) {
-      // update username here (with contact data)
-    }
-  })
+  .func<StateType>(loadUser)
   .send<StateType>(async state => {
     let mention = "Тебе";
     let options = [
@@ -66,6 +66,17 @@ $start.make()
     return `<b><u>Головне меню</u></b>\n\n${mention} вітає українська ініціатива настільних рольових ігор у Німеччині "Мрієтворці | The DreamForgers"!\n\n<b>Через нашого телеграм бота ти можеш:</b>\n\n${options.join("\n")}`;
   }, startButtons.get, editLast());
 
+export const $turnOnAnnouncements = optionsField<StateType>(
+  async state => {
+    return `<b><u>📢Активація оголошень</u></b>\n\nЩоб отримувати оголошення про події та системні сповіщення, почни чат із нашим Оголошень:\n\n👉 <a href="https://t.me/${process.env.ANNOUNCER_TAG!}?start=verify">ПІДКЛЮЧИТИ</a>`;
+  },
+  [
+    [["✅ ГОТОВО!", CONTROL.back]]
+  ]
+);
+
+backOption($turnOnAnnouncements.btn);
+routeCallback(startButtons, MENU.option[3], $turnOnAnnouncements.proc);
 
   // OLD CODE for GoogleAPI:
   // const username = state.lastInput.from?.username;

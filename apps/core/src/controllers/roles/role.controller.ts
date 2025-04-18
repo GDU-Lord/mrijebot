@@ -117,11 +117,11 @@ export class RoleController {
     });
     if(!member) throw new NotFoundException(`Member with id ${memberId} not found!`);
 6
-    const memberRoleIds = member.localRoles.map(r => r.id);
+    const memberRoleIds = member.localRoles?.map(r => r.id);
 
-    if(memberRoleIds.includes(role.id)) throw new BadRequestException(`Member with id ${memberId} already has the role with id ${roleId}`);
+    if(memberRoleIds?.includes(role.id)) throw new BadRequestException(`Member with id ${memberId} already has the role with id ${roleId}`);
 
-    member.localRoles.push(role);
+    member.localRoles?.push(role);
 
     return await this.memberRepository.save(member);
   }
@@ -144,12 +144,12 @@ export class RoleController {
     });
     if(!member) throw new NotFoundException(`Member with id ${memberId} not found!`);
 
-    const memberRoleIds = member.localRoles.map(r => r.id);
+    const memberRoleIds = member.localRoles?.map(r => r.id);
 
-    if(!memberRoleIds.includes(role.id)) throw new BadRequestException(`Member with id ${memberId} doesn't have the role with id ${roleId}`);
+    if(!memberRoleIds?.includes(role.id)) throw new BadRequestException(`Member with id ${memberId} doesn't have the role with id ${roleId}`);
 
-    const index = memberRoleIds.findIndex(id => id === role.id);
-    member.localRoles.splice(index, 1);
+    const index = memberRoleIds?.findIndex(id => id === role.id);
+    member.localRoles?.splice(index, 1);
 
     return await this.memberRepository.save(member);
   }
@@ -172,11 +172,11 @@ export class RoleController {
     });
     if(!user) throw new NotFoundException(`User with id ${userId} not found!`);
 
-    const userRoleIds = user.globalRoles.map(r => r.id);
+    const userRoleIds = user.globalRoles?.map(r => r.id);
 
-    if(userRoleIds.includes(role.id)) throw new BadRequestException(`User with id ${userId} already has the role with id ${roleId}`);
+    if(userRoleIds?.includes(role.id)) throw new BadRequestException(`User with id ${userId} already has the role with id ${roleId}`);
 
-    user.globalRoles.push(role);
+    user.globalRoles?.push(role);
 
     await this.userRepository.save(user);
   }
@@ -200,12 +200,12 @@ export class RoleController {
 
     if(!user) throw new NotFoundException(`User with id ${userId} not found!`);
 
-    const userRoleIds = user.globalRoles.map(r => r.id);
+    const userRoleIds = user.globalRoles?.map(r => r.id);
 
-    if(!userRoleIds.includes(role.id)) throw new BadRequestException(`User with id ${userId} doesn't have the role with id ${roleId}`);
+    if(!userRoleIds?.includes(role.id)) throw new BadRequestException(`User with id ${userId} doesn't have the role with id ${roleId}`);
 
     const index = userRoleIds.findIndex(id => id === role.id);
-    user.globalRoles.splice(index, 1);
+    user.globalRoles?.splice(index, 1);
 
     return await this.userRepository.save(user);
   }

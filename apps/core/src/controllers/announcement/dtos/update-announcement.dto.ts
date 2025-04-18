@@ -4,7 +4,7 @@ import { announcementStatus, announcementType } from "../../../entities/announce
 export class UpdateAnnouncementDto {
 
   @IsOptional()
-  @IsEnum(["pending", "edit", "sent", "archived"] as announcementStatus[])
+  @IsEnum(["pending", "edit", "sent", "archived", "archive"] as announcementStatus[])
   status?: announcementStatus;
 
   @IsOptional()

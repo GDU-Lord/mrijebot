@@ -30,7 +30,6 @@ export async function createUser(
   playerGamesPlayed: number,
   masterGamesPlayed: number,
 ) {
-  console.log(username);
   const data: CreateUserDto = {
     email,
     city,

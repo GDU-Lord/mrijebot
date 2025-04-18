@@ -92,10 +92,12 @@ export class RequestController {
     signatures,
     tag,
     status,
+    content,
   }: CreateRequestDto) {
     return await this.requestRepository.save({
       tag,
       status,
+      content: content ?? null,
       fromLand: fromLand ? await this.landRepository.findOneBy({ id: fromLand }) : null,
       fromMember: fromMember ? await this.memberRepository.findOneBy({ id: fromMember }) : null,
       fromRole: fromRole ? await this.roleRepository.findOneBy({ id: fromRole }) : null,

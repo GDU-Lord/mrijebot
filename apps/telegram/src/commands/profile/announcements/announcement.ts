@@ -6,7 +6,7 @@ import { optionsOtherField } from "../../presets/optionsOther";
 import TelegramBot from "node-telegram-bot-api";
 import { textField } from "../../presets/textfield";
 import { text } from "../../presets/validators";
-import { createAnnouncement, setAnnouncementText } from "../../../api/announcement";
+import { createAnnouncement, getAnnouncement, setAnnouncementStatus, setAnnouncementText } from "../../../api/announcement";
 import { downloadFile } from "../mylands/landadmin/utils";
 import { CHAIN } from "../../../core/actions";
 import { Announcement } from "../../../../../core/src/entities/announcement.entity";
@@ -14,6 +14,7 @@ import { call } from "../../../custom/hooks/menu";
 import { getAllRoles } from "../../../api/role";
 import { getUser } from "../../../api";
 import { getDate } from "../../../custom/hooks/date";
+import { getLastCallback } from "../../../custom/hooks/buttons";
 
 // add photo display (through a separate array in 'content' that keeps the old ids)
 export const $announcement = optionsField<StateType>(
@@ -52,12 +53,18 @@ export const $announcementEdit = optionsField<StateType>(
     const res = await setAnnouncementText(announcement.id, html);
     
     if(!res) return ["<u><b>⚙️Профіль: Панель Оголошень</b></u>\n\nПомилка оновлення оголошення!", CHAIN.NEXT_LISTENER];
+    
+    const { id } = state.data.options["announcements:current"] as Announcement;
+    state.data.options["announcements:current"] = await getAnnouncement(id);
 
     return `<u><b>⚙️Профіль: Панель Оголошень</b></u>\n\nТекст оголошення оновлено!`;
   },
   [
     [["⬅️Назад", CONTROL.back]]
-  ]
+  ],
+  async state => {
+    state.data.crums.pop();
+  }
 );
 
 export const $announcementMeta = optionsField<StateType>(
@@ -74,8 +81,40 @@ export const $announcementMeta = optionsField<StateType>(
     return `<u><b>⚙️Профіль: Панель Оголошень</b></u>\n${date}\n${owner}\n${forLands}${forRoles}${forMembers}${forUsers}`;
   },
   [
+    [["❌Видалити", CONTROL.clear]],
     [["⬅️Назад", CONTROL.back]]
   ]
+);
+
+export const $announcementArchive = optionsField<StateType>(
+  async state => {
+    return "<u><b>⚙️Профіль: Панель Оголошень</b></u>\n\nТи справді хочеш видалити оголошення?\n\nВідновити його зможе лише технічна адміністрація цього бота!";
+  },
+  [
+    [["❌Так, видалити!", CONTROL.next]],
+    [["⬅️Назад", CONTROL.back]]
+  ],
+  async state => {
+    const data = getLastCallback(state, $announcementArchive.btn);
+    if(data !== CONTROL.next) return;
+    const announcement = state.data.options["announcements:current"] as Announcement;
+    const res = await setAnnouncementStatus(announcement.id, "archive");
+    console.log(res);
+  }
+);
+
+export const $announcementArchived = optionsField<StateType>(
+  async state => {
+    return "<u><b>⚙️Профіль: Панель Оголошень</b></u>\n\nОголошення видалено!";
+  },
+  [
+    [["⬅️Меню оголошень", CONTROL.back]]
+  ],
+  async state => {
+    state.data.crums.pop();
+    state.data.crums.pop();
+    state.data.crums.pop();
+  }
 );
 
 $annouceEditInput.chain.func(call($announcementEdit.proc));

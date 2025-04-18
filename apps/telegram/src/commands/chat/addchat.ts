@@ -14,7 +14,6 @@ $setchat.make()
     state.data = {};
     const chatId = String(state.core.chatId);
     state.data.currentChat = await getChatByChatId(chatId);
-    console.log(state.data.currentChat);
     const chat = await Bot.getChat(chatId);
     if(chat?.type !== "group" && chat?.type !== "supergroup")
       return ["Це не груповий чат!", CHAIN.NEXT_LISTENER];

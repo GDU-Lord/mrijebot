@@ -29,7 +29,7 @@ $memberList.make()
     } = {};
     users.forEach(u => usernameTable[u.id] = u.username);
     if(!members || !users) return ["Помилка!", CHAIN.NEXT_LISTENER];
-    const data = "sep =,\nUserID,MemberID,Username,Status\n" + members.map(m => `${m.userId},${m.id},${usernameTable[m.userId]},${m.status}`).join("\n");
+    const data = "sep =,\nUserID,MemberID,Username,Status,City\n" + members.map(m => `${m.userId},${m.id},${usernameTable[m.userId]},${m.status},${m.user.city}`).join("\n");
     try {
       await new Promise((res) => {
         fs.writeFile(path, data, "utf8", res);

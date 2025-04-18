@@ -59,6 +59,12 @@ export function isLocalAdmin(currentLandField: string) {
   };
 }
 
+export function isLocalMod(currentLandField: string) {
+  return async function (state: LocalState<StateType>) {
+    return await hasLocalRole(state, "local_mod", currentLandField);
+  };
+}
+
 export async function isMaster(state: LocalState<StateType>) {
   return await hasGlobalRole(state, "master");
 }

@@ -47,6 +47,19 @@ export async function getUserAnnouncements(ownerId: number) {
   } as GetAnnouncementsQuery, (err) => console.log(err));
 }
 
+export async function getLocalAnnouncements(landId: number) {
+  return await api.get<Announcement[]>("/announcements", {
+    landId,
+    status: "sent",
+  } as GetAnnouncementsQuery, (err) => console.log(err));
+}
+
+export async function getAnnouncement(id: number): Promise<Announcement | null> {
+  return (await api.get<Announcement[]>("/announcements", {
+    id
+  } as GetAnnouncementsQuery, (err) => console.log(err)) ?? [])[0];
+}
+
 // export async function getAnnouncement(id: number) {
 //   return await api.get("/announcements", {
 //     id

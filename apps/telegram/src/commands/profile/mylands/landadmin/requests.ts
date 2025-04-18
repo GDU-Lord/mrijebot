@@ -15,12 +15,16 @@ export const $localRequests = optionsField<StateType>(
   async state => {
     return "<u><b>Адмінська Панель: Локальні Запити</b></u>\n\nОбери запит, який хочеш обробити!";
   },
-  async state => {const requests: Request[] = [];
+  async state => {
+    let requests: Request[] = [];
     if(await isMasterInspector("profile:chosenLand")(state)) {
       requests.push(
-        ...await queryRequests("become_master", {
+        ...(await queryRequests("become_master", {
           role: await getRoleByTag(state, "master_inspector")
-        }, {}, "open")
+        }, {}, "open")).filter(r => {
+          console.log(r, state.data.options["profile:chosenLand"]);
+          return r.fromMember?.landId === state.data.options["profile:chosenLand"]?.id
+        })
       );
     }
     const pageSize = 5;
@@ -53,7 +57,7 @@ export const $localRequest = optionsField<StateType>(
       const user = await getUser(request.fromMember!.userId);
       text = text.replaceAll("[MENTION_USER]", `<a href="tg://user?id=${user?.telegramId}">${user?.username}</a>`);
       const masterRole = state.data.storage.roles.find(r => r.tag === "master");
-      text = text.replaceAll("[MASTER_STATUS]", masterRole?.name ?? masterRole?.tag ?? "");
+      text = text.replaceAll("[STATUS]", masterRole?.name ?? masterRole?.tag ?? "");
     }
     return `<u><b>Адмінська Панель: Локальні Запити</b></u>\n\n${text}`;
   },

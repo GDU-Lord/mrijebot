@@ -26,10 +26,10 @@ export class OnBot extends On {
     Bot.addListener(this.type, async (inp: inputType) => {
       const asMsg = inp as TelegramBot.Message;
       if(asMsg.caption) asMsg.text = asMsg.caption;
-      if(inputListener.processed.includes(asMsg.message_id)) return;
       if(!this.filter(inp)) return;
       const [userState, localState] = getState(this.type, inp);
       if(localState != null) localState.lastInput = inp;
+      if(inputListener.processed.includes(asMsg.message_id)) return;
       for(const action of this.actions) {
         const res = await action.callback(action.parent, localState!);
         if(res !== CHAIN.NEXT_ACTION) break;

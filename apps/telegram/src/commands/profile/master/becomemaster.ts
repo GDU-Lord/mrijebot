@@ -1,4 +1,4 @@
-import { createAnnouncement } from "../../../api/announcement";
+import { createAnnouncement, setAnnouncementStatus } from "../../../api/announcement";
 import { createRequest } from "../../../api/request";
 import { assignGlobalRole, getRoleAssignees } from "../../../api/role";
 import { keyboard } from "../../../custom/hooks/buttons";
@@ -33,16 +33,20 @@ export const $masterRequestSent = optionsField<StateType>(
       to: {
         role: await getRoleByTag(state, "master_inspector")
       },
+      content: `Користувач [MENTION_USER] хоче отримати стаус "[STATUS]"!`
     });
     if(!req) return "<b><u>👤Профіль: Стати Майстром</u></b>\n\nПомилка відправлення заявки!";
     const masterRole = await getRoleByTag(state, "master_request");
     const masterInspectorRole = await getRoleByTag(state, "master_inspector");
+    console.log("role", masterInspectorRole);
     if(masterInspectorRole) {
       let { members } = await getRoleAssignees(masterInspectorRole?.id) ?? {};
+      console.log(members, member);
       members = members?.filter(m => m.landId === member.landId);
-      await createAnnouncement("private", `#система\n\nТебе очікує нова заявка на статус Майстра!\n\nПерейди у <b>МРІЄБОТ > Профіль > Мої Осередки > Панель Осередків > [ТВІЙ ОСЕРЕДОК] > Запити</b>`, {
+      const notification = await createAnnouncement("private", `#система\n\nТебе очікує нова заявка на статус Майстра!\n\nПерейди у <b>МРІЄБОТ > Профіль > Мої Осередки > [ТВІЙ ОСЕРЕДОК] > Запити</b>`, {
         memberIds: members?.map(m => m.id)
       });
+      if(notification) await setAnnouncementStatus(notification.id, "pending");
     }
     const res = await assignGlobalRole(masterRole!.id, state.data.storage.user!.id);
     if(!res) return "<b><u>👤Профіль: Стати Майстром</u></b>\n\nПомилка відправлення заявки!";

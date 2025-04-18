@@ -39,10 +39,10 @@ export const $assignRoleUserChosen = textField<StateType>(
     }
     const roles = state.data.options["admin:globalRoles"] as Role[];
     const user = state.data.options["admin:assignRoleUser"] as User;
-    const userRoleIds = user.globalRoles.map(r => r.id);
-    const userRoleTags = user.globalRoles.map(r => r.tag);
-    const rolesToAdd = roles.filter(r => !userRoleIds.includes(r.id)).map(r => r.tag);
-    return `<u><b>Адмінська Панель: Глобальні Ролі</b></u>\n\nВведи глобальної ТЕГ ролі, щоб видати/забрати її!\n\n<b>Ролі користувача:</b>\n${userRoleTags.join("; ")}\n\n<b>Список доступних ролей:</b>\n${rolesToAdd.join("; ")}`;
+    const userRoleIds = user.globalRoles?.map(r => r.id) ?? [];
+    const userRoleTags = user.globalRoles?.map(r => r.tag) ?? [];
+    const rolesToAdd = roles.filter(r => !userRoleIds?.includes(r.id)).map(r => r.tag);
+    return `<u><b>Адмінська Панель: Глобальні Ролі</b></u>\n\nВведи ТЕГ глобальної ролі, щоб видати/забрати її!\n\n<b>Ролі користувача:</b>\n${userRoleTags.join("; ")}\n\n<b>Список доступних ролей:</b>\n${rolesToAdd.join("; ")}`;
   },
   async (tag, inp, state) => {
     if(!isGlobalAdmin(state)) {
@@ -55,7 +55,7 @@ export const $assignRoleUserChosen = textField<StateType>(
     if(!role) return false;
     const user = state.data.options["admin:assignRoleUser"] as User;
 
-    const assign = !user.globalRoles.map(r => r.id).includes(role.id);
+    const assign = !user.globalRoles?.map(r => r.id).includes(role.id);
 
     if(assign)
       await assignGlobalRole(role.id, user.id);

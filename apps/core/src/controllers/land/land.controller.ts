@@ -58,7 +58,7 @@ export class LandController {
       select: {
         members: true
       },
-      relations: ["members"]
+      relations: ["members", "members.user"]
     });
     return land?.members;
   }

@@ -7,39 +7,39 @@ import { saveValue } from "../../../custom/hooks/options";
 import { StateType } from "../../../custom/hooks/state";
 import { CONTROL, MENU } from "../../mapping";
 import { optionsField } from "../../presets/options";
-import { canAnnounceLocal, isGlobalAdmin, isLocalAdmin, isMasterInspector, isSupervisor } from "../roles";
+import { canAnnounceLocal, isGlobalAdmin, isLocalAdmin, isLocalMod, isMasterInspector, isSupervisor } from "../roles";
 import { parseRoles } from "../roles";
 import { getLandChats } from "../../../api/chat";
 import { indexUsers } from "../../chat/indexusers";
 
-export const $myLandsList = optionsField<StateType>(
-  async state => {
-    return `<b><u>📍Панель Осередків: Мої осередки</u></b>\n\nОбери осередок, панель якого хочеш відкрити!`;
-  },
-  async state => {
-    const user = state.data.storage.user;
-    if(!user) return [];
-    const memberships = await getUserMemberships(user);
-    state.data.options["profile:landsById"] = {};
-    if(user.globalRoles?.find(r => r.tag === "supervisor")) {
-      const list = await getLands();
-      const lands = list.map(land => {
-        const member = land.members.find(m => m.userId === user.id);
-        const mark = !member ? "⚙️ " : member.status === "participant" ? "✨ " : "";
-        return [[mark + land.name, land.id]];
-      });
-      list.forEach(land => state.data.options["profile:landsById"][land.id] = land)
-      return [...lands, [["⬅️Назад", CONTROL.back]]] as keyboard;
-    }
-    const lands = memberships.all.map(m => {
-      const mark = m.member.status === "participant" ? "✨ " : "";
-      return [[mark + m.land.name, m.land.id]];
-    });
-    memberships.all.forEach(m => state.data.options["profile:landsById"][m.land.id] = m.land);
-    return [...lands, [["⬅️Назад", CONTROL.back]]] as keyboard;
-  },
-  saveValue("profile:landId", CONTROL.back)
-);
+// export const $myLandsList = optionsField<StateType>(
+//   async state => {
+//     return `<b><u>📍Панель Осередків: Мої осередки</u></b>\n\nОбери осередок, панель якого хочеш відкрити!`;
+//   },
+//   async state => {
+//     const user = state.data.storage.user;
+//     if(!user) return [];
+//     const memberships = await getUserMemberships(user);
+//     state.data.options["profile:landsById"] = {};
+//     if(user.globalRoles?.find(r => r.tag === "supervisor")) {
+//       const list = await getLands();
+//       const lands = list.map(land => {
+//         const member = land.members.find(m => m.userId === user.id);
+//         const mark = !member ? "⚙️ " : member.status === "participant" ? "✨ " : "";
+//         return [[mark + land.name, land.id]];
+//       });
+//       list.forEach(land => state.data.options["profile:landsById"][land.id] = land)
+//       return [...lands, [["⬅️Назад", CONTROL.back]]] as keyboard;
+//     }
+//     const lands = memberships.all.map(m => {
+//       const mark = m.member.status === "participant" ? "✨ " : "";
+//       return [[mark + m.land.name, m.land.id]];
+//     });
+//     memberships.all.forEach(m => state.data.options["profile:landsById"][m.land.id] = m.land);
+//     return [...lands, [["⬅️Назад", CONTROL.back]]] as keyboard;
+//   },
+//   saveValue("profile:landId", CONTROL.back)
+// );
 
 export const $landPanel = optionsField<StateType>(
   async state => {
@@ -51,7 +51,7 @@ export const $landPanel = optionsField<StateType>(
     const member = user.memberships.find(m => m.landId === landId && m.status === "participant");
     const guest = user.memberships.find(m => m.landId === landId && m.status === "guest");
     const adminRole = user.globalRoles?.find(r => r.tag === "supervisor") ?? member?.localRoles?.find(r => r.tag === "local_admin");
-    const text = !!guest ? `Ти зареєстрований(на/ні) як УЧАСНИК в цьому Осередку.` : !!member ? "Ти ГІСТЬ у цьому Осередку." : "Ти НЕ НАЛЕЖИШ до цього Осередку!";
+    const text = !guest ? `Ти зареєстрований(на/ні) як УЧАСНИК в цьому Осередку.` : !!member ? "Ти ГІСТЬ у цьому Осередку." : "Ти НЕ НАЛЕЖИШ до цього Осередку!";
     const chatList = await getLandChats(landId) ?? [];
     const chatsParsed = chatList.map(chat => {
       const marker = chat.users.find(u => u.id === user.id) ? "✅ " : "➡️ ";
@@ -76,6 +76,12 @@ export const $landPanel = optionsField<StateType>(
     if(await canAnnounceLocal("profile:chosenLand")(state)) {
       keyboard = [
         [["Нове Оголошення", MENU.option[50]]],
+        ...keyboard
+      ];
+    }
+    if(await isLocalMod("profile:chosenLand")(state)) {
+      keyboard = [
+        [["Оголошення Осередку", MENU.option[60]]],
         ...keyboard
       ];
     }

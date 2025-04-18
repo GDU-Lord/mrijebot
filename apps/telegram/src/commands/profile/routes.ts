@@ -4,23 +4,25 @@ import { CONTROL, MENU } from "../mapping";
 import { $start } from "../start";
 import { $admin } from "./admin";
 import { $myAnnouncements } from "./announcements";
-import { $annouceEditInput, $announcement, $announcementEdit, $announcementMeta } from "./announcements/announcement";
+import { $annouceEditInput, $announcement, $announcementArchive, $announcementArchived, $announcementEdit, $announcementMeta } from "./announcements/announcement";
 import { getAnnouncement, nextPage, prevPage } from "./announcements/middleware";
 import { $idCard } from "./idcard";
 import { $main } from "./index";
 import { $becomeMaster } from "./master/becomemaster";
 import { $masterPanel } from "./master/index";
+import { $editData, $myData } from "./mydata";
 import { $becomeGuest, $becomeGuestDone } from "./mylands/becomeguest";
 import { $changeMembership, $landChangeProceed, $landChanged } from "./mylands/changemembership";
 import { $myLands } from "./mylands/index";
 import { $announcementDone } from "./mylands/landadmin/announce";
-import { $myLandsList, $landPanel, $leaveLand, $landLeft } from "./mylands/landlist";
+import { $landPanel, $leaveLand, $landLeft } from "./mylands/landlist";
 import { $playerPanel } from "./player/index";
 
 export function profileRoutes () {
 
   backOption($main.btn);
   routeCallback($main.btn, MENU.option[0], $myLands.proc);
+  routeCallback($main.btn, MENU.option[1], $myData.proc);
   routeCallback($main.btn, MENU.option[2], $playerPanel.proc);
   routeCallback($main.btn, MENU.option[3], $masterPanel.proc);
   routeCallback($main.btn, MENU.option[4], $myAnnouncements.proc);
@@ -31,12 +33,13 @@ export function profileRoutes () {
   backOption($idCard.btn);
 
   backOption($myLands.btn);
-  routeCallback($myLands.btn, MENU.option[0], $myLandsList.proc);
+  // routeCallback($myLands.btn, MENU.option[0], $myLandsList.proc);
   routeCallback($myLands.btn, MENU.option[1], $changeMembership.proc);
   routeCallback($myLands.btn, MENU.option[2], $becomeGuest.proc);
+  routeCallbackExceptArray($myLands.btn, [CONTROL.back, MENU.option[1], MENU.option[2]], $landPanel.proc);
 
-  backOption($myLandsList.btn);
-  routeCallbackExcept($myLandsList.btn, CONTROL.back, $landPanel.proc);
+  // backOption($myLandsList.btn);
+  // routeCallbackExcept($myLandsList.btn, CONTROL.back, $landPanel.proc);
 
   backOption($landPanel.btn);
   routeCallback($landPanel.btn, MENU.option[0], $leaveLand.proc);
@@ -60,6 +63,9 @@ export function profileRoutes () {
 
   routeCallback($becomeGuestDone.btn, CONTROL.back, $start);
 
+  backOption($myData.btn);
+  routeCallbackExcept($myData.btn, CONTROL.back, $editData.proc);
+
   backOption($myAnnouncements.btn);
   routeCallback($myAnnouncements.btn, MENU.option[0], $myAnnouncements.proc, prevPage);
   routeCallback($myAnnouncements.btn, MENU.option[1], $myAnnouncements.proc, nextPage);
@@ -70,6 +76,14 @@ export function profileRoutes () {
   routeCallback($announcement.btn, MENU.option[1], $annouceEditInput.proc);
 
   backOption($announcementMeta.btn);
+  routeCallback($announcementMeta.btn, CONTROL.clear, $announcementArchive.proc);
+
+  backOption($announcementArchive.btn);
+  routeCallback($announcementArchive.btn, CONTROL.next, $announcementArchived.proc);
+
+  backOption($announcementArchived.btn);
+  backOption($announcementArchived.btn, CONTROL.next);
+
   backOption($announcementEdit.btn);
 
 }
