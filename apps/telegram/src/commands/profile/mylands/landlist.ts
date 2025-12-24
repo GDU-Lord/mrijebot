@@ -1,6 +1,6 @@
 import { userInfo } from "os";
 import { Land } from "../../../../../core/src/entities/land.entity";
-import { getLands, getUserMemberships, leaveLand } from "../../../api";
+import { getLands, getMember, getUserMemberships, leaveLand } from "../../../api";
 import { CHAIN } from "../../../core/actions";
 import { getLastCallback, keyboard } from "../../../custom/hooks/buttons";
 import { saveValue } from "../../../custom/hooks/options";
@@ -48,8 +48,9 @@ export const $landPanel = optionsField<StateType>(
     const landId = state.data.options["profile:landId"];
     const land = state.data.options["profile:chosenLand"] = state.data.options["profile:landsById"][landId] as Land;
     const roles = `\n\n<b>Твої ролі</b>:\n<i>${(await parseRoles(state, ["name", "publicName"], "local", "any", false, landId)).join("\n")}</i>`;
-    const member = user.memberships.find(m => m.landId === landId && m.status === "participant");
+    let member = user.memberships.find(m => m.landId === landId && m.status === "participant") ?? null;
     const guest = user.memberships.find(m => m.landId === landId && m.status === "guest");
+    if(member) member = await getMember(member.id);
     const adminRole = user.globalRoles?.find(r => r.tag === "supervisor") ?? member?.localRoles?.find(r => r.tag === "local_admin");
     const text = !!member ? `Ти зареєстрований(на/ні) як УЧАСНИК в цьому Осередку.` : !!guest ? "Ти ГІСТЬ у цьому Осередку." : "Ти НЕ НАЛЕЖИШ до цього Осередку!";
     const chatList = await getLandChats(landId) ?? [];

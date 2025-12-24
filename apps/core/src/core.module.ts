@@ -17,7 +17,10 @@ import { ChatController } from './controllers/chat/chat.controller';
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
+      imports: [ConfigModule.forRoot({
+        isGlobal: true,
+        envFilePath: ".env"
+      })],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
@@ -25,7 +28,7 @@ import { ChatController } from './controllers/chat/chat.controller';
         port: configService.get('DB_PORT', 5432),
         username: configService.get('DB_USERNAME', 'postgres'),
         password: configService.get('DB_PASSWORD', 'sanitar203'),
-        database: configService.get('DB_NAME', 'mrijebot'),
+        database: configService.get('DB_NAME', 'mrijebot_test'),
         autoLoadEntities: true,
         synchronize: configService.get('DB_SYNC', 'true') === 'true',
         logging: true

@@ -9,7 +9,6 @@ import { CHAIN } from "../../../core/actions";
 
 function getUserId(msg: TelegramBot.Message): number | null {
   const text = msg.text;
-  console.log(msg);
   if(!text) return null;
   const userId = text.match(/(?<=UserId:\s*)\d+/g)?.[0] ?? "";
   return +userId;
@@ -31,7 +30,6 @@ export const $playerData = optionsOtherField<StateType>(
   async state => {
     const userId = getUserId(state.lastInput as TelegramBot.Message)!;
     const user = await getUser(userId);
-    console.log("last", userId, state, state.lastInput);
     if(!user) {
       state.data.options["masterPanel:userData"] = "Помилка! Користувача не знайдено!";
       state.call($displayPlayerData.proc);

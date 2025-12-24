@@ -155,7 +155,6 @@ export const $localAnnouncementArchive = optionsField<StateType>(
     if(data !== CONTROL.next) return;
     const announcement = state.data.options["localAnnouncements:current"] as Announcement;
     const res = await setAnnouncementStatus(announcement.id, "archive");
-    console.log(res);
   }
 );
 

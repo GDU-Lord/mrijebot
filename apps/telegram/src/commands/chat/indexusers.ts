@@ -3,6 +3,7 @@ import { User } from "../../../../core/src/entities/user.entity";
 import { getUsersGroups } from "../../api";
 import { addChatUser, getAllChats, removeChatUser } from "../../api/chat";
 import { Bot } from "../../core";
+import { queueFunction } from "../../core/cooldown";
 
 export async function indexUsers() {
   
@@ -22,9 +23,9 @@ export async function indexUser(user: User, chats: Chat[]) {
   for(const chat of chats) {
 
     try {
-      const chatMember = await Bot.getChatMember(chat.chatId, +user.telegramId);
+      const chatMember = await queueFunction(async () => await Bot.getChatMember(chat.chatId, +user.telegramId));
       if(chatMember.status === "kicked") {
-        await Bot.unbanChatMember(chat.chatId, +user.telegramId);
+        await queueFunction(async () => await Bot.unbanChatMember(chat.chatId, +user.telegramId));
         continue;
       }
       if(chatMember.status === "left") {
@@ -35,8 +36,8 @@ export async function indexUser(user: User, chats: Chat[]) {
         await addChatUser(chat.id, user.id);
       else if(chat.land && !user.memberships.find(m => m.landId === chat.land?.id && m.status !== "suspended")) {
         try {
-          await Bot.banChatMember(chat.chatId, +user.telegramId);
-          await Bot.unbanChatMember(chat.chatId, +user.telegramId);
+          await queueFunction(async () => await Bot.banChatMember(chat.chatId, +user.telegramId));
+          await queueFunction(async () => await Bot.unbanChatMember(chat.chatId, +user.telegramId));
         } catch (err) {}
         try {
           await removeUserFromChat(chat, user);
@@ -84,11 +85,11 @@ export async function setUserRoles(user: User, chat: Chat) {
 
   try {
     if(!isAdmin)
-      await Bot.promoteChatMember(chat.chatId, +user.telegramId, {
+      await queueFunction(async () => await Bot.promoteChatMember(chat.chatId, +user.telegramId, {
         can_pin_messages: true,
-      });
+      }));
     else
-      await Bot.promoteChatMember(chat.chatId, +user.telegramId, {
+      await queueFunction(async () => await Bot.promoteChatMember(chat.chatId, +user.telegramId, {
         can_change_info: true,
         can_delete_messages: true,
         can_edit_messages: true,
@@ -101,9 +102,8 @@ export async function setUserRoles(user: User, chat: Chat) {
         can_promote_members: false,
         can_restrict_members: false,
         is_anonymous: false,
-      });
-    await Bot.setChatAdministratorCustomTitle(chat.chatId, +user.telegramId, title);
-    console.log(title);
+      }));
+    await queueFunction(async () => await Bot.setChatAdministratorCustomTitle(chat.chatId, +user.telegramId, title));
   } catch(err) {}
 
 }

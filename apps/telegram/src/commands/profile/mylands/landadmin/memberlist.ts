@@ -1,3 +1,4 @@
+import { queueFunction } from "apps/telegram/src/core/cooldown";
 import { Land } from "../../../../../../core/src/entities";
 import { getMemberNames, getUserNames } from "../../../../api";
 import { Bot } from "../../../../core";
@@ -22,7 +23,6 @@ $memberList.make()
   .send<StateType>(async state => {
     const path = `cache/memberList-${state.data.storage.user?.id ?? ""}.csv`;
     const land = state.data.options["profile:chosenLand"] as Land;
-    console.log("data", await getMemberNames(land));
     const members = (await getMemberNames(land) ?? []).filter(m => m.status !== "suspended");
     const users = await getUserNames() ?? [];
     const usernameTable: {
@@ -35,7 +35,7 @@ $memberList.make()
       await new Promise((res) => {
         fs.writeFile(path, data, "utf8", res);
       });
-      const msg = await Bot.sendDocument(state.core.chatId, fs.createReadStream(path));
+      const msg = await queueFunction(async () => await Bot.sendDocument(state.core.chatId, fs.createReadStream(path)));
       state.data.options["admin:fileSent"] = msg.message_id;
     } catch (err) { console.log(err) }
     return "<u><b>Адмінська Панель</b></u>\n\nЗавантаж таблицю з ID користувачів та їхніми нікнеймами!";

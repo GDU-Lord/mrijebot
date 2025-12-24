@@ -41,7 +41,6 @@ export const $landChangeProceed = optionsField<StateType>(
     if(!user) return;
     if(data !== CONTROL.next) return;
     // change here
-    console.log("change", user, state.data.options["profile:becomeParticipantLandId"]);
     const member = user.memberships.find(m => m.status === "participant");
     if(!member) return;
     const localAdminRole = state.data.storage.roles.find(r => r.tag === "local_admin");

@@ -82,5 +82,4 @@ export async function loadMasterPrefs(state: LocalState<StateType>) {
   setInputOptionsList(state, "masterPanel", "systemsPlayed", user.masterPlayedGameSystems.map(s => s.id));
   setInputOptionsList(state, "masterPanel", "gamesPreferred", user.masterPreferredDuration);
   state.data.options["masterPanel:gamesPlayed"] = user.masterGamesPlayed;
-  console.log(state.data.options);
 }

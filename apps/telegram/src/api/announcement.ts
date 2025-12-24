@@ -59,9 +59,3 @@ export async function getAnnouncement(id: number): Promise<Announcement | null> 
     id
   } as GetAnnouncementsQuery, (err) => console.log(err)) ?? [])[0];
 }
-
-// export async function getAnnouncement(id: number) {
-//   return await api.get("/announcements", {
-//     id
-//   } as GetAnnouncementsQuery, (err) => console.log(err));
-// }

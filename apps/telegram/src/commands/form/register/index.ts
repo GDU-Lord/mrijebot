@@ -268,8 +268,6 @@ export const $formDone = optionsField<StateType>(
       }
     }
 
-    console.log("data", customSystemsPlayed, customSystemsMastered);
-
     let user = await createUser(
       String(state.core.userId),
       state.data.options["form:username"],
@@ -279,8 +277,6 @@ export const $formDone = optionsField<StateType>(
       state.data.options["form:gamesPlayed"] ?? 0,
       state.data.options["form:gamesMastered"] ?? 0,
     );
-
-    console.log("initial", user);
 
     if(!user) return;
 
@@ -296,8 +292,6 @@ export const $formDone = optionsField<StateType>(
 
     if(!playerPrefs) return;
 
-    console.log("player");
-
     const masterPrefs = await setMasterPreferences(
       user.id,
       systemsMastered,
@@ -311,8 +305,6 @@ export const $formDone = optionsField<StateType>(
 
     if(!masterPrefs) return;
 
-    console.log("master");
-
     const membership = joinLand(
       user.id, 
       state.data.options["form:land"], 
@@ -321,15 +313,11 @@ export const $formDone = optionsField<StateType>(
 
     if(!membership) return;
 
-    console.log("membership");
-
     user = await getUser(user.id);
 
     if(!user) return;
 
     state.data.storage.user = user;
-
-    console.log(state.data.storage.user);
 
   }
 );

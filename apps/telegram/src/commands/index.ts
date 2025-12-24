@@ -14,6 +14,7 @@ import { initState } from "../custom/hooks/state";
 import { $setchat } from "./chat/addchat";
 import { indexUsers } from "./chat/indexusers";
 import { processChatRequest } from "./chat/chatrequest";
+import { queueFunction } from "../core/cooldown";
 
 afterInit.push(initDefault);
 
@@ -59,7 +60,7 @@ export async function initCommands() {
     setTimeout(async () => {
       if(msg.chat.type !== "private") return;
       try {
-        await Bot.deleteMessage(msg.chat.id, msg.message_id);
+        await queueFunction(async () => await Bot.deleteMessage(msg.chat.id, msg.message_id));
       } catch {}
     }, 2000);
   });

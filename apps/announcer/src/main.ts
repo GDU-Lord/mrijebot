@@ -1,10 +1,12 @@
 import { pollPendingMessages } from "./annnounce";
 import { initCommands } from "./commands";
+import { initQueueLoop } from "./cooldown";
 import { pollFileUpdates } from "./files";
 import { init } from "./init";
 
 async function bootstrap() {
-  
+
+  initQueueLoop();
   init();
   initCommands();
   

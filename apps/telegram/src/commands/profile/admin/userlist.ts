@@ -1,3 +1,4 @@
+import { queueFunction } from "apps/telegram/src/core/cooldown";
 import { getUserNames } from "../../../api";
 import { Bot } from "../../../core";
 import { CHAIN } from "../../../core/actions";
@@ -29,7 +30,7 @@ $userList.make()
       await new Promise((res) => {
         fs.writeFile(path, data, "utf-8", res);
       });
-      const msg = await Bot.sendDocument(state.core.chatId, fs.createReadStream(path));
+      const msg = await queueFunction(async () => await Bot.sendDocument(state.core.chatId, fs.createReadStream(path)));
       state.data.options["admin:fileSent"] = msg.message_id;
     } catch (err) { console.log(err) }
     return "<u><b>Адмінська Панель</b></u>\n\nЗавантаж таблицю з ID користувачів та їхніми нікнеймами!";

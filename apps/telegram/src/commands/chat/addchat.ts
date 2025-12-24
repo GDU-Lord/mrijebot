@@ -7,21 +7,40 @@ import { procedure } from "../../core/chain";
 import { addChat, editChat, getChatByChatId } from "../../api/chat";
 import { editLast } from "../../custom/hooks/messageOptions";
 import { indexUsers } from "./indexusers";
+import { queueFunction } from "../../core/cooldown";
 
 export const $setchat = procedure();
 $setchat.make()
   .send(async state => {
-    state.data = {};
     const chatId = String(state.core.chatId);
-    state.data.currentChat = await getChatByChatId(chatId);
-    const chat = await Bot.getChat(chatId);
+    const chat = await queueFunction(async () => await Bot.getChat(chatId));
     if(chat?.type !== "group" && chat?.type !== "supergroup")
       return ["Це не груповий чат!", CHAIN.NEXT_LISTENER];
+    state.data = {};
+    state.data.currentChat = await getChatByChatId(chatId);
     const user = state.data.user = await getUserByTelegram(state.core.userId);
     if(!user)
       return ["Ти не зареєстрований!\n\n/setchat - щоб спробувати знову", CHAIN.NEXT_LISTENER];
     return [`Введи ID свого Осередку!${ state.data.currentChat ? " Поточне значення: " + (state.data.currentChat.land?.id ?? "/common") : "" }\n\n/common - для чату, що прив'язаний до Осередку\n/cancel - щоб скасувати`, CHAIN.NEXT_ACTION];
-  })
+  }, async state => {
+    if(state) {
+      const chat = await queueFunction(async () => await Bot.getChat(state.core.chatId));
+      if(chat.type === "group" || chat.type === "supergroup")
+        return {};
+    }
+    return {
+      reply_markup: {
+        inline_keyboard: [
+          [
+            {
+              text: "RESTART",
+              callback_data: "RESTART"
+            }
+          ]
+        ]
+      }
+    };
+  }, editLast())
   .input("setchat:landId", true)
   .send(async state => {
     const user = state.data.user as User;

@@ -42,7 +42,6 @@ export const $localRequests = optionsField<StateType>(
             role: await getRoleByTag(state, "local_admin")
           }, {}, "open"),
         ].filter(r => {
-          console.log(r);
           return +r.content! === state.data.options["profile:chosenLand"]?.id;
         }),
       );

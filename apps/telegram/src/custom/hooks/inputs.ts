@@ -2,6 +2,7 @@ import TelegramBot from "node-telegram-bot-api";
 import { inputListener, Bot } from "../../core/index";
 import { LocalState } from "../../core/state";
 import { StateType } from "./state";
+import { queueFunction } from "../../core/cooldown";
 
 export function removeInputs() {
   return async (state: LocalState) => {
@@ -20,7 +21,7 @@ export function removeInputs() {
 export function deleteLastInput(key: string) {
   return async (state: LocalState) => {
     try {
-      await Bot.deleteMessage(state.core.chatId, state.core.inputs[key]?.message_id ?? -1);
+      await queueFunction(async () => await Bot.deleteMessage(state.core.chatId, state.core.inputs[key]?.message_id ?? -1));
     } catch {}
   }
 }
@@ -31,7 +32,7 @@ export function deleteLastMessage() {
       const msg = state.lastInput as TelegramBot.Message;
       const query = state.lastInput as TelegramBot.CallbackQuery;
       const toDelete = msg.message_id ?? query.message?.message_id ?? -1;
-      await Bot.deleteMessage(state.core.chatId, toDelete);
+      await queueFunction(async () => await Bot.deleteMessage(state.core.chatId, toDelete));
     } catch {}
   }
 }

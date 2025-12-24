@@ -5,6 +5,13 @@ import { env } from "process";
 import "dotenv/config";
 import { api } from "./api";
 import { UpdateAnnouncementDto } from "../../core/src/controllers/announcement/dtos/update-announcement.dto";
+import { queueFunction } from "./cooldown";
+
+let systemEmptyPng = "";
+
+export function getSystemEmptyPng() {
+  return systemEmptyPng;
+}
 
 export async function pollFileUpdates() {
 
@@ -13,8 +20,8 @@ export async function pollFileUpdates() {
       console.error('Error reading folder:', err);
     } else if (files.length > 0) {
       for(const file of files) {
-        await cacheImageId(file);
-        await new Promise((res, rej) => fs.rm("./cache/img/" + file, res));
+        const res = await cacheImageId(file);
+        if(res) await new Promise((res, rej) => fs.rm("./cache/img/" + file, res));
       }
     }
   });
@@ -26,12 +33,20 @@ export async function cacheImageId(filename: string) {
   try {
     const [announcementId, oldId] = filename.split("__");
 
+    if(announcementId === "SYSTEM_EMPTY_PNG" && systemEmptyPng !== "") return false;
+
     const imageBuffer = fs.readFileSync("./cache/img/" + filename);
   
-    const res = await Bot.sendPhoto(process.env.BOT_CACHE_CHAT_ID!, imageBuffer);
+    const res = await queueFunction(async () => await Bot.sendPhoto(process.env.BOT_CACHE_CHAT_ID!, imageBuffer));
   
     const p = res.photo?.[res.photo?.length-1] ?? null;
-    if(!p) return;
+    if(!p) return false;
+
+    if(announcementId === "SYSTEM_EMPTY_PNG") {
+      systemEmptyPng = p.file_id;
+      return false;
+    }
+    
     const photo = {
       id: p.file_id,
       uid: p.file_unique_id,
@@ -45,6 +60,8 @@ export async function cacheImageId(filename: string) {
     };
   
     await api.put("/announcements/" + announcementId, data, {}, err => console.log(err));
+
+    return true;
   
   } catch (err) {
     console.log(err);
@@ -55,7 +72,7 @@ export async function cacheImageId(filename: string) {
 
 export async function getChatId(msg: TelegramBot.Message) {
 
-  return await Bot.sendMessage(msg.chat.id, String(msg.chat.id));
+  return await queueFunction(async () => await Bot.sendMessage(msg.chat.id, String(msg.chat.id)));
 
 }
 

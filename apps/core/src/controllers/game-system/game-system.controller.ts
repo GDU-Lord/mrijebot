@@ -32,7 +32,7 @@ export class GameSystemController {
 
   @Post()
   async createSystem(@Body() body: CreateGameSystemDto) {
-    this.gameSystemRepository.save(body);
+    return await this.gameSystemRepository.save(body);
   }
  
 }

@@ -4,8 +4,10 @@ import { Announcement } from "../../core/src/entities/announcement.entity";
 import { api } from "./api";
 import { Bot, defeaultMessageOptions } from "./init";
 import { UpdateAnnouncementDto } from "../../core/src/controllers/announcement/dtos/update-announcement.dto";
-import { awaitTimeout } from "./files";
 import "dotenv/config";
+import { queueFunction } from "./cooldown";
+import * as fs from "fs";
+import { getSystemEmptyPng } from "./files";
 
 export let cache: {
   userTelegramIds: Record<number, number>;
@@ -209,11 +211,11 @@ export async function updateToTelegram(telegramId: number, messageId: number, up
 }
 
 export async function removeFromTelegram(telegramId: number, messageId: number, usersUpdated: number[]): Promise<boolean> {
-
+  
   if(usersUpdated.includes(telegramId)) return false;
-
+  
   const res = await deleteMessage(telegramId, messageId);
-
+  
   if(!res) return false;
 
   usersUpdated.push(telegramId);
@@ -224,7 +226,7 @@ export async function removeFromTelegram(telegramId: number, messageId: number, 
 
 export async function sendMessage(chatId: number, text: string, options: TelegramBot.SendMessageOptions = {}) {
   try { 
-    const msg = await Bot.sendMessage(chatId, text, {...defeaultMessageOptions, ...options});
+    const msg = await queueFunction(async () => await Bot.sendMessage(chatId, text, {...defeaultMessageOptions, ...options}));
     return msg.message_id;
   } catch {
     return null;
@@ -232,32 +234,32 @@ export async function sendMessage(chatId: number, text: string, options: Telegra
 }
 
 export async function sendPhoto(chatId: number, text: string, photo: string, options: TelegramBot.SendMessageOptions = {}) {
+  
   try {
-    const msg = await Bot.sendPhoto(chatId, photo, {...defeaultMessageOptions, ...options, caption: text });
+    const msg = await queueFunction(async () => await Bot.sendPhoto(chatId, photo, {...defeaultMessageOptions, ...options, caption: text }));
     return msg?.message_id ?? null;
   } catch (err) {
-    console.log(err);
     return null;
   }
 }
 
 export async function editMessage(chat_id: number, message_id: number, text: string, options: TelegramBot.SendMessageOptions = {}) {
   try {
-    const msg = await Bot.editMessageText(text, {
+    const msg = await queueFunction(async () => await Bot.editMessageText(text, {
       message_id,
       chat_id,
       ...(defeaultMessageOptions as EditMessageTextOptions), 
       ...(options as EditMessageTextOptions)
-    });
+    }));
     return !!msg;
   } catch(err) {
     try {
-      const cpt = await Bot.editMessageCaption(text, {
+      const cpt = await queueFunction(async () => await Bot.editMessageCaption(text, {
         message_id,
         chat_id,
         ...(defeaultMessageOptions as EditMessageTextOptions), 
         ...(options as EditMessageTextOptions)
-      });
+      }));
       return !!cpt;
     } catch {
       return false;
@@ -267,8 +269,32 @@ export async function editMessage(chat_id: number, message_id: number, text: str
 
 export async function deleteMessage(chat_id: number, message_id: number) {
   try {
-    return await Bot.deleteMessage(chat_id, message_id);
+    return await queueFunction(async () => await Bot.deleteMessage(chat_id, message_id));
   } catch {
-    return false;
+    try {
+      await queueFunction(async () => await Bot.editMessageMedia({
+        type: "photo",
+        media: getSystemEmptyPng(),
+        caption: "<b>ОГОЛОШЕННЯ ВИДАЛЕНО</b>"
+      }, {
+        message_id,
+        chat_id,
+        ...(defeaultMessageOptions as EditMessageTextOptions), 
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: "💟 MrijeBot",
+                url: `https://t.me/${process.env.MRIJEBOT_TAG}`
+              }
+            ]
+          ]
+        }
+      }));
+      return true;
+    } catch {}
+    finally {
+      return false;
+    }
   }
 }

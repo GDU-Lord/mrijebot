@@ -16,8 +16,8 @@ $createSystem.make()
   .func(deleteLastInput("wizard:newSystemName"))
   .send<StateType>(async state => {
     const name = state.core.inputs["wizard:newSystemName"]?.text;
-    if(!name) return ["Помилка!", CHAIN.EXIT];
+    if(!name) return ["Помилка!", CHAIN.NEXT_LISTENER];
     const res = await createSystem(name);
-    if(!res) return ["Помилка!", CHAIN.EXIT];
+    if(!res) return ["Помилка!", CHAIN.NEXT_LISTENER];
     return "Систему додано!";
   }, wizardButtons.get, editLast());

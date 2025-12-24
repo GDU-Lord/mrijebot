@@ -3,12 +3,13 @@ import { on, procedure } from "../core/chain";
 import { $start } from "./start";
 import { Bot } from "../core";
 import { call } from "../custom/hooks/menu";
+import { queueFunction } from "../core/cooldown";
 
 export const $setup = procedure();
 $setup.make()
   .func(async (state) => {
     try {
-      await Bot.deleteMessage(state.core.chatId, state.lastMessageSent.message_id);
+      await queueFunction(async () => await Bot.deleteMessage(state.core.chatId, state.lastMessageSent.message_id));
     } catch {}
   })
   .send("Заважтаження...", {

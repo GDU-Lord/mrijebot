@@ -1,6 +1,7 @@
 import TelegramBot from "node-telegram-bot-api";
 import { InputListener } from "./input";
 import { ProcedureListener } from "./on";
+import { initQueueLoop } from "./cooldown";
 
 export let Bot: TelegramBot;
 export let inputListener: InputListener;
@@ -12,6 +13,7 @@ export let initPromise = new Promise<void>((res) => {
 });
 
 export function init(token: string, options: TelegramBot.ConstructorOptions) {
+  initQueueLoop();
   Bot = new TelegramBot(token, options);
   inputListener = new InputListener;
   procedureListener = new ProcedureListener;

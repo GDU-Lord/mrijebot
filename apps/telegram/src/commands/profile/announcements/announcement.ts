@@ -99,7 +99,6 @@ export const $announcementArchive = optionsField<StateType>(
     if(data !== CONTROL.next) return;
     const announcement = state.data.options["announcements:current"] as Announcement;
     const res = await setAnnouncementStatus(announcement.id, "archive");
-    console.log(res);
   }
 );
 

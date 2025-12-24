@@ -1,9 +1,9 @@
-import TelegramBot, { EditMessageTextOptions, SendMessageOptions, User } from "node-telegram-bot-api";
+import { EditMessageTextOptions, SendMessageOptions, User } from "node-telegram-bot-api";
 import { On } from "./on";
 import { LocalState, UserState } from "./state";
 import { Bot, inputListener } from "./index";
 import { insertText } from "./insert";
-import { inputType } from "./chain";
+import { queueFunction } from "./cooldown";
 
 export enum CHAIN {
   NEXT_ACTION = 0,
@@ -45,20 +45,20 @@ export class Send<LocalData = any, UserData = any> extends Action<On | UserInput
       let _options = typeof options === "function" ? await options(state) : options;
       if(message_id) {
         try {
-          await Bot.editMessageText(stateText, {
+          await queueFunction(async () => await Bot.editMessageText(stateText, {
             chat_id: state.core.chatId,
             disable_web_page_preview: true,
             message_id: +(typeof message_id === "function" ? await message_id(state) : message_id),
             ...(_options as EditMessageTextOptions)
-          });
+          }));
           return chain;
         } catch {}
       }
-      state.lastMessageSent = await Bot.sendMessage(state.core.chatId, stateText, {
+      state.lastMessageSent = await queueFunction(async () => await Bot.sendMessage(state.core.chatId, stateText, {
         message_thread_id: state.core.threadId,
         disable_web_page_preview: true,
         ..._options
-      });
+      }));
       return chain;
     });
   }
@@ -83,7 +83,7 @@ export class UserInput extends Action<On | UserInput> {
     super(parent, async (p, state) => {
       const res = await inputListener.getInput(state);
       try {
-        if(remove) await Bot.deleteMessage(state.core.chatId, res?.message_id ?? -1);
+        if(remove) await queueFunction(async () => await Bot.deleteMessage(state.core.chatId, res?.message_id ?? -1));
       } catch {}
       if(res == null) {
         return CHAIN.NEXT_LISTENER;

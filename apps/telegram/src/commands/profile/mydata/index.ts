@@ -43,5 +43,4 @@ $editData.chain.func<StateType>(async state => {
   if(!text) return;
   await setUserData(state.data.storage.user!.id, state.data.options["profile:dataField"].field, text);
   await loadUser(state);
-  console.log(state.data.options["profile:dataField"], text);
 }).func(call($back));

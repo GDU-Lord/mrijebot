@@ -1,6 +1,7 @@
 import { getUserByTelegram } from "../../api";
 import { getChatByChatId } from "../../api/chat";
 import { Bot } from "../../core";
+import { queueFunction } from "../../core/cooldown";
 import { indexUsers } from "./indexusers";
 
 export async function processChatRequest(chatId: number, telegamId: number) {
@@ -8,7 +9,7 @@ export async function processChatRequest(chatId: number, telegamId: number) {
   const user = await getUserByTelegram(telegamId);
 
   if(!user) {
-    await Bot.declineChatJoinRequest(chatId, telegamId);
+    await queueFunction(async () => await Bot.declineChatJoinRequest(chatId, telegamId));
     return;
   }
 
@@ -19,7 +20,7 @@ export async function processChatRequest(chatId: number, telegamId: number) {
   const landId = chat.land?.id;
 
   if(!landId) {
-    await Bot.approveChatJoinRequest(chatId, telegamId);
+    await queueFunction(async () => await Bot.approveChatJoinRequest(chatId, telegamId));
     await indexUsers();
     return;
   }
@@ -27,11 +28,11 @@ export async function processChatRequest(chatId: number, telegamId: number) {
   const member = user.memberships.find(m => m.landId === landId);
 
   if(member) {
-    await Bot.approveChatJoinRequest(chatId, telegamId);
+    await queueFunction(async () => await Bot.approveChatJoinRequest(chatId, telegamId));
     await indexUsers();
     return;
   }
 
-  await Bot.declineChatJoinRequest(chatId, telegamId);
+  await queueFunction(async () => await Bot.declineChatJoinRequest(chatId, telegamId));
 
 }

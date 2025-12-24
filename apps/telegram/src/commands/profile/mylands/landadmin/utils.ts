@@ -4,9 +4,10 @@ import axios from "axios";
 import "dotenv/config";
 import { Bot } from "../../../../core";
 import { User } from "../../../../../../core/src/entities/user.entity";
+import { queueFunction } from "apps/telegram/src/core/cooldown";
 
 export async function downloadFile(fileId: string, announcementId: number, destFolder: string) {
-  const file = await Bot.getFile(fileId);
+  const file = await queueFunction(async () => await Bot.getFile(fileId));
   const filePath = file.file_path;
   if(!filePath) return;
   const downloadUrl = `https://api.telegram.org/file/bot${process.env.TOKEN}/${filePath}`;
